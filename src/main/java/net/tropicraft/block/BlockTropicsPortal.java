@@ -57,16 +57,11 @@ public class BlockTropicsPortal extends BlockFluidClassic {
                     if (this.messageTick % 50 == 0) {
                         player.addChatMessage(
                             (IChatComponent) new ChatComponentText(
-                                "You should drink a pi\u00f1a colada before teleporting!"));
+                                "You should drink a piña colada before teleporting!"));
                     }
                 }
             }
         }
-    }
-
-    public boolean onBlockActivated(final World par1World, final int par2, final int par3, final int par4,
-        final EntityPlayer par5EntityPlayer, final int par6, final float par7, final float par8, final float par9) {
-        return false;
     }
 
     public void onBlockExploded(final World world, final int x, final int y, final int z, final Explosion explosion) {}
@@ -99,14 +94,6 @@ public class BlockTropicsPortal extends BlockFluidClassic {
         return material != this.blockMaterial && side == 1;
     }
 
-    public boolean isOpaqueCube() {
-        return false;
-    }
-
-    public boolean renderAsNormalBlock() {
-        return false;
-    }
-
     public int tickRate(final World par1World) {
         return 10;
     }
@@ -114,18 +101,6 @@ public class BlockTropicsPortal extends BlockFluidClassic {
     @SideOnly(Side.CLIENT)
     public int getRenderBlockPass() {
         return 1;
-    }
-
-    public AxisAlignedBB getCollisionBoundingBoxFromPool(final World world, final int i, final int j, final int k) {
-        return null;
-    }
-
-    public Item getItemDropped(final int par1, final Random par2Random, final int par3) {
-        return null;
-    }
-
-    public int quantityDropped(final Random random) {
-        return 0;
     }
 
     @SideOnly(Side.CLIENT)
