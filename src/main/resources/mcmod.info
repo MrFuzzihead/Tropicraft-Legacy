@@ -1,15 +1,23 @@
 [
 {
-  "modid": "tropicraft",
-  "name": "Tropicraft",
-  "description": "This is Tropicraft, the utopian idyllic getaway that you have been waiting for!",
-  "version": "6.0.5",
-  "mcversion": "1.7.10",
-  "url": "http://tropicraft.net",
-  "updateUrl": "http://coros.us/versionchecker/tropiversion.txt",
-  "authors": ["Cojomax99", "Corosus", "Fishtaco567", "Mr_okushama", "MrRube", "newthead", "303"],
+  "modid": "${modId}",
+  "name": "${modName}",
+  "version": "${modVersion}",
+  "mcversion" : "${minecraftVersion}",
+  "url" : "https://github.com/MrFuzzihead/Tropicraft-Legacy",
   "credits": "",
+  "authors": [
+      "Cojomax99",
+      "Corosus",
+      "Fishtaco567",
+      "Mr_okushama",
+      "MrRube",
+      "newthead",
+      "303"],
+  "description": "This is Tropicraft, the utopian idyllic getaway that you have been waiting for!",
   "logoFile": "",
+  "updateUrl" : "https://github.com/MrFuzzihead/Tropicraft-Legacy/releases/latest",
+  "parent" : "",
   "screenshots": [],
   "dependencies": []
 }

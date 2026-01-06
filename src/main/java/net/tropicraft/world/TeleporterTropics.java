@@ -1,6 +1,10 @@
 package net.tropicraft.world;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
 
 import net.minecraft.block.*;
 import net.minecraft.entity.*;
@@ -19,14 +23,14 @@ public class TeleporterTropics extends Teleporter {
     private final WorldServer world;
     private final Random random;
     private final LongHashMap destinationCoordinateCache;
-    private final List destinationCoordinateKeys;
+    private final List<Long> destinationCoordinateKeys;
 
     public TeleporterTropics(final WorldServer world) {
         super(world);
         this.destinationCoordinateCache = new LongHashMap();
-        this.destinationCoordinateKeys = new ArrayList();
-        TeleporterTropics.PORTAL_BLOCK = (Block) TCBlockRegistry.tropicsPortal;
-        TeleporterTropics.PORTAL_WALL_BLOCK = (Block) TCBlockRegistry.tropicsPortalWall;
+        this.destinationCoordinateKeys = new ArrayList<Long>();
+        TeleporterTropics.PORTAL_BLOCK = TCBlockRegistry.tropicsPortal;
+        TeleporterTropics.PORTAL_WALL_BLOCK = TCBlockRegistry.tropicsPortalWall;
         this.world = world;
         this.random = new Random(world.getSeed());
     }

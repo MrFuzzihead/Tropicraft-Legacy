@@ -1,6 +1,6 @@
 package net.tropicraft.entity.placeable;
 
-import java.util.*;
+import java.util.List;
 
 import net.minecraft.block.*;
 import net.minecraft.client.*;
@@ -29,7 +29,7 @@ public class EntitySnareTrap extends Entity implements IEntityAdditionalSpawnDat
     public static final int MAX_HEIGHT = 6;
     public static final int SCAN_INTERVAL = 5;
     public EntityLivingBase caughtEntity;
-    private EntityAITasks caughtEntityAITasks;
+    private EntityAITasks caughtEntityAITTasks;
     private float caughtEntityMoveSpeed;
     public int trapPosX;
     public int trapPosY;
@@ -108,10 +108,10 @@ public class EntitySnareTrap extends Entity implements IEntityAdditionalSpawnDat
             --this.scanCoolDown;
             if (this.scanCoolDown == 0) {
                 this.scanCoolDown = 5;
-                final List ents = this.worldObj
-                    .getEntitiesWithinAABBExcludingEntity((Entity) this, this.boundingBox.expand(5.0, 5.0, 5.0));
-                for (final Object obj : ents) {
-                    final Entity ent = (Entity) obj;
+                final List<Entity> ents = this.worldObj
+                    .getEntitiesWithinAABBExcludingEntity(this, this.boundingBox.expand(5.0, 5.0, 5.0));
+                for (final Entity obj : ents) {
+                    final Entity ent = obj;
                     if (ent instanceof EntityLivingBase && ((EntityLivingBase) ent).isEntityAlive()
                         && ent.posX >= this.trapPosX
                         && ent.posX <= this.trapPosX + 1
@@ -231,13 +231,13 @@ public class EntitySnareTrap extends Entity implements IEntityAdditionalSpawnDat
     }
 
     protected void entityInit() {
-        this.dataWatcher.addObject(16, (Object) 0);
-        this.dataWatcher.addObject(17, (Object) "");
-        this.dataWatcher.addObject(18, (Object) 0);
+        this.dataWatcher.addObject(FULL_ID, (byte) 0);
+        this.dataWatcher.addObject(USERNAME_ID, "");
+        this.dataWatcher.addObject(ENTITY_HEIGHT_ID, 0);
     }
 
     public void setEntityHeight(final float height) {
-        this.dataWatcher.updateObject(18, (Object) (int) (height * 100.0f));
+        this.dataWatcher.updateObject(ENTITY_HEIGHT_ID, (int) (height * 100.0f));
     }
 
     public float getEntityHeight() {
@@ -245,7 +245,7 @@ public class EntitySnareTrap extends Entity implements IEntityAdditionalSpawnDat
     }
 
     public void setUsername(final String username) {
-        this.dataWatcher.updateObject(17, (Object) username);
+        this.dataWatcher.updateObject(USERNAME_ID, username);
     }
 
     public String getUsername() {
@@ -253,7 +253,7 @@ public class EntitySnareTrap extends Entity implements IEntityAdditionalSpawnDat
     }
 
     public void setFull(final boolean full) {
-        this.dataWatcher.updateObject(16, (Object) (byte) (full ? 1 : 0));
+        this.dataWatcher.updateObject(FULL_ID, (byte) (full ? 1 : 0));
     }
 
     public boolean getFull() {

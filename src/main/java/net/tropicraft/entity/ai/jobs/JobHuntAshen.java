@@ -42,8 +42,7 @@ public class JobHuntAshen extends JobBase {
     }
 
     public boolean shouldContinue() {
-        return this.ai.entityToAttack == null
-            || this.ai.entityToAttack.getDistanceToEntity((Entity) this.ent) > this.huntRange;
+        return this.ai.entityToAttack == null || this.ai.entityToAttack.getDistanceToEntity(this.ent) > this.huntRange;
     }
 
     public void onLowHealth() {
@@ -82,8 +81,8 @@ public class JobHuntAshen extends JobBase {
                 this.ent.posZ,
                 this.ent.rotationYaw);
             this.ent.getDataWatcher()
-                .updateObject(16, (Object) (-1));
-            this.ent.worldObj.spawnEntityInWorld((Entity) mask);
+                .updateObject(16, -1);
+            this.ent.worldObj.spawnEntityInWorld(mask);
         }
         return true;
     }
@@ -96,18 +95,18 @@ public class JobHuntAshen extends JobBase {
             .getWatchableObjectInt(16) == -1) {
             this.ai.entityToAttack = null;
             this.ent.getDataWatcher()
-                .updateObject(17, (Object) 1);
+                .updateObject(17, 1);
             returnVal = true;
         } else if (this.ai.entityToAttack != null) {
             this.ent.getDataWatcher()
-                .updateObject(17, (Object) 2);
+                .updateObject(17, 2);
         } else {
             this.ent.getDataWatcher()
-                .updateObject(17, (Object) 0);
+                .updateObject(17, 0);
         }
         if (!returnVal && !this.useMelee
             && this.ai.entityToAttack != null
-            && this.ai.entityToAttack.getDistanceToEntity((Entity) this.ai.ent) < this.keepDistantRange - 2L) {
+            && this.ai.entityToAttack.getDistanceToEntity(this.ai.ent) < this.keepDistantRange - 2L) {
             returnVal = true;
         }
         return returnVal || this.checkHealth();
@@ -125,14 +124,13 @@ public class JobHuntAshen extends JobBase {
             return true;
         }
         if (this.panicTicks <= 0) {
-            final List list = this.ent.worldObj.getEntitiesWithinAABB(
-                (Class) EntityLostMask.class,
-                this.ent.boundingBox.expand((double) range, (double) (range / 2), (double) range));
-            for (int j = 0; j < list.size(); ++j) {
-                final EntityLostMask entity1 = (EntityLostMask) list.get(j);
+            final List<?> list = this.ent.worldObj
+                .getEntitiesWithinAABB(EntityLostMask.class, this.ent.boundingBox.expand(range, range / 2.0, range));
+            for (final Object o : list) {
+                final EntityLostMask entity1 = (EntityLostMask) o;
                 if (!entity1.isDead) {
                     seesMask = true;
-                    final float dist = this.ent.getDistanceToEntity((Entity) entity1);
+                    final float dist = this.ent.getDistanceToEntity(entity1);
                     if (dist < closest) {
                         closest = dist;
                         clEnt = entity1;
@@ -145,11 +143,11 @@ public class JobHuntAshen extends JobBase {
                 this.ent.getDataWatcher()
                     .updateObject(
                         16,
-                        (Object) clEnt.getDataWatcher()
+                        clEnt.getDataWatcher()
                             .getWatchableObjectInt(17));
                 clEnt.setDead();
             } else if (this.ent.worldObj.getWorldTime() % 10L == 0L) {
-                PFQueue.getPath((Entity) this.ent, (Entity) clEnt, range + 16.0f);
+                PFQueue.getPath(this.ent, clEnt, range + 16.0f);
             }
             return true;
         }
@@ -189,17 +187,14 @@ public class JobHuntAshen extends JobBase {
         this.setJobState(EnumJobState.IDLE);
         if (this.ent.getHealth() > this.ent.getHealth() * 0.9f
             && (this.ai.entityToAttack == null || this.ai.rand.nextInt(20) == 0)) {
-            final boolean found = false;
             Entity clEnt = null;
             float closest = 9999.0f;
-            final List list = this.ent.worldObj.getEntitiesWithinAABBExcludingEntity(
-                (Entity) this.ent,
-                this.ent.boundingBox
-                    .expand((double) this.huntRange, (double) (this.huntRange / 2L), (double) this.huntRange));
-            for (int j = 0; j < list.size(); ++j) {
-                final Entity entity1 = (Entity) list.get(j);
-                if (this.isEnemy(entity1)
-                    && (this.xRay || ((EntityLivingBase) entity1).canEntityBeSeen((Entity) this.ent))
+            final List<?> list = this.ent.worldObj.getEntitiesWithinAABBExcludingEntity(
+                this.ent,
+                this.ent.boundingBox.expand(this.huntRange, this.huntRange / 2.0, this.huntRange));
+            for (final Object o : list) {
+                final Entity entity1 = (Entity) o;
+                if (this.isEnemy(entity1) && (this.xRay || ((EntityLivingBase) entity1).canEntityBeSeen(this.ent))
                     && this.sanityCheck(entity1)) {
                     final float dist = this.ent.getDistanceToEntity(entity1);
                     if (dist < closest) {
@@ -216,8 +211,8 @@ public class JobHuntAshen extends JobBase {
                 }
             }
         } else if (this.ai.entityToAttack != null) {
-            if (!this.useMelee
-                && this.ai.entityToAttack.getDistanceToEntity((Entity) this.ent) < this.keepDistantRange) {
+            if (!this.useMelee && this.ai.entityToAttack != null
+                && this.ai.entityToAttack.getDistanceToEntity(this.ai.ent) < this.keepDistantRange - 2L) {
                 this.ent.getNavigator()
                     .clearPathEntity();
             }
@@ -225,9 +220,9 @@ public class JobHuntAshen extends JobBase {
                 .noPath()
                 && (this.ent.getDistanceToEntity(this.ai.entityToAttack) > this.keepDistantRange + 1L
                     || this.useMelee)) {
-                PFQueue.getPath((Entity) this.ent, this.ai.entityToAttack, (float) this.ai.maxPFRange);
+                PFQueue.getPath(this.ent, this.ai.entityToAttack, (float) this.ai.maxPFRange);
             } else if (!this.useMelee && !this.ai.fleeing
-                && this.ai.entityToAttack.getDistanceToEntity((Entity) this.ent) < this.keepDistantRange) {
+                && this.ai.entityToAttack.getDistanceToEntity(this.ent) < this.keepDistantRange) {
                     this.ent.getNavigator()
                         .clearPathEntity();
                 }
@@ -244,14 +239,12 @@ public class JobHuntAshen extends JobBase {
     public boolean sanityCheckHelp(final Entity caller, final Entity target) {
         return this.ent.getHealth() >= 10.0f
             && (!this.dontStrayFromHome
-                || target.getDistance((double) this.ai.homeX, (double) this.ai.homeY, (double) this.ai.homeZ)
-                    <= this.ai.maxDistanceFromHome * 1.5)
+                || target.getDistance(this.ai.homeX, this.ai.homeY, this.ai.homeZ) <= this.ai.maxDistanceFromHome * 1.5)
             && this.ai.rand.nextInt(2) == 0;
     }
 
     public boolean sanityCheck(final Entity target) {
         return this.ent.getHealth() >= 6.0f && (!this.dontStrayFromHome
-            || target.getDistance((double) this.ai.homeX, (double) this.ai.homeY, (double) this.ai.homeZ)
-                <= this.ai.maxDistanceFromHome);
+            || target.getDistance(this.ai.homeX, this.ai.homeY, this.ai.homeZ) <= this.ai.maxDistanceFromHome);
     }
 }

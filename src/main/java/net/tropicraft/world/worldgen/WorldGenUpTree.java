@@ -1,12 +1,12 @@
 package net.tropicraft.world.worldgen;
 
-import java.util.*;
+import java.util.Random;
 
 import net.minecraft.block.*;
-import net.minecraft.block.material.*;
-import net.minecraft.init.*;
+import net.minecraft.block.material.Material;
+import net.minecraft.init.Blocks;
 import net.minecraft.world.*;
-import net.tropicraft.registry.*;
+import net.tropicraft.registry.TCBlockRegistry;
 
 public class WorldGenUpTree extends TCGenBase {
 
@@ -50,24 +50,8 @@ public class WorldGenUpTree extends TCGenBase {
         }
         final int radius = this.rand.nextInt(2) + 3;
         this.genCircle(i, j + height, k, radius, 0.0, WorldGenUpTree.LEAF_BLOCK, 1, false);
-        this.genCircle(
-            i,
-            j + height + 1,
-            k,
-            (radius + 2),
-            radius,
-            WorldGenUpTree.LEAF_BLOCK,
-            1,
-            false);
-        this.genCircle(
-            i,
-            j + height + 2,
-            k,
-            (radius + 3),
-            (radius + 2),
-            WorldGenUpTree.LEAF_BLOCK,
-            1,
-            false);
+        this.genCircle(i, j + height + 1, k, (radius + 2), radius, WorldGenUpTree.LEAF_BLOCK, 1, false);
+        this.genCircle(i, j + height + 2, k, (radius + 3), (radius + 2), WorldGenUpTree.LEAF_BLOCK, 1, false);
         return true;
     }
 

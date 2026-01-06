@@ -128,7 +128,7 @@ public abstract class EntityEchinoderm extends EntityWaterMob {
 
     public void entityInit() {
         super.entityInit();
-        this.dataWatcher.addObject(16, (Object) 0);
+        this.dataWatcher.addObject(16, 0);
     }
 
     public int getGrowingAge() {
@@ -136,7 +136,7 @@ public abstract class EntityEchinoderm extends EntityWaterMob {
     }
 
     public void setGrowingAge(final int age) {
-        this.dataWatcher.updateObject(16, (Object) age);
+        this.dataWatcher.updateObject(16, age);
     }
 
     public void writeEntityToNBT(final NBTTagCompound compound) {

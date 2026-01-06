@@ -1,7 +1,7 @@
 package net.tropicraft.block;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import java.util.Random;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.IIcon;
@@ -9,12 +9,11 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.BlockFluidClassic;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidStack;
 import net.tropicraft.registry.TCBlockRegistry;
 import net.tropicraft.registry.TCFluidRegistry;
 
-import java.util.Random;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockTropicsWater extends BlockFluidClassic {
 
@@ -49,9 +48,11 @@ public class BlockTropicsWater extends BlockFluidClassic {
             .getMaterial();
         return material != this.blockMaterial && (side == 1 || super.shouldSideBeRendered(world, x, y, z, side));
     }
+
     @Override
     public void updateTick(World world, int x, int y, int z, Random rand) {
-        if (world.getBlockMetadata(x, y, z) > 0 && world.getBlock(x, y - 1, z).getMaterial() != Material.air) {
+        if (world.getBlockMetadata(x, y, z) > 0 && world.getBlock(x, y - 1, z)
+            .getMaterial() != Material.air) {
             int neighbourSources = 0;
             neighbourSources += IsNeighbourSource(world, x + 1, y, z) ? 1 : 0;
             neighbourSources += IsNeighbourSource(world, x - 1, y, z) ? 1 : 0;
@@ -66,9 +67,7 @@ public class BlockTropicsWater extends BlockFluidClassic {
         super.updateTick(world, x, y, z, rand);
     }
 
-    private boolean IsNeighbourSource(World world, int x, int y, int z)
-    {
-        return world.getBlock(x, y, z) == this &&
-                world.getBlockMetadata(x, y, z) == 0;
+    private boolean IsNeighbourSource(World world, int x, int y, int z) {
+        return world.getBlock(x, y, z) == this && world.getBlockMetadata(x, y, z) == 0;
     }
 }

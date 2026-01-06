@@ -63,7 +63,14 @@ public class TCEntityRegistry {
 
     private static void registerEntity(final Class<? extends Entity> entityClass, final String entityName,
         final int trackingRange, final int updateFrequency, final boolean sendsVelocityUpdates) {
-        EntityRegistry.registerModEntity(entityClass, entityName, TCEntityRegistry.entityID++, Tropicraft.instance, trackingRange, updateFrequency, sendsVelocityUpdates);
+        EntityRegistry.registerModEntity(
+            entityClass,
+            entityName,
+            TCEntityRegistry.entityID++,
+            Tropicraft.instance,
+            trackingRange,
+            updateFrequency,
+            sendsVelocityUpdates);
     }
 
     static {

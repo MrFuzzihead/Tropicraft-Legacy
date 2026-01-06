@@ -1,6 +1,6 @@
 package net.tropicraft.world.worldgen;
 
-import java.util.*;
+import java.util.Random;
 
 import net.minecraft.block.*;
 import net.minecraft.block.material.*;
@@ -25,13 +25,18 @@ public class WorldGenBamboo extends TCGenBase {
             return false;
         }
 
-        Material material1 = this.worldObj.getBlock(i + 1, j - 1, k).getMaterial();
-        Material material2 = this.worldObj.getBlock(i - 1, j - 1, k).getMaterial();
-        Material material3 = this.worldObj.getBlock(i, j - 1, k + 1).getMaterial();
-        Material material4 = this.worldObj.getBlock(i, j - 1, k - 1).getMaterial();
+        Material material1 = this.worldObj.getBlock(i + 1, j - 1, k)
+            .getMaterial();
+        Material material2 = this.worldObj.getBlock(i - 1, j - 1, k)
+            .getMaterial();
+        Material material3 = this.worldObj.getBlock(i, j - 1, k + 1)
+            .getMaterial();
+        Material material4 = this.worldObj.getBlock(i, j - 1, k - 1)
+            .getMaterial();
 
-        if (material1 != Material.water && material2 != Material.water &&
-            material3 != Material.water && material4 != Material.water) {
+        if (material1 != Material.water && material2 != Material.water
+            && material3 != Material.water
+            && material4 != Material.water) {
             return false;
         }
 
@@ -40,8 +45,8 @@ public class WorldGenBamboo extends TCGenBase {
 
         for (int l = 0; l < amount; ++l) {
             for (int x = i + this.rand.nextInt(spread) - this.rand.nextInt(spread),
-                 z = k + this.rand.nextInt(spread) - this.rand.nextInt(spread), y = this.getTerrainHeightAt(x, z),
-                 height = this.rand.nextInt(4) + 4, h = 0; h < height && this.worldObj.isAirBlock(x, y + h, z); ++h) {
+                z = k + this.rand.nextInt(spread) - this.rand.nextInt(spread), y = this.getTerrainHeightAt(x, z),
+                height = this.rand.nextInt(4) + 4, h = 0; h < height && this.worldObj.isAirBlock(x, y + h, z); ++h) {
                 this.worldObj.setBlock(x, y + h, z, WorldGenBamboo.BAMBOO_BLOCK, 0, WorldGenBamboo.blockGenNotifyFlag);
             }
         }

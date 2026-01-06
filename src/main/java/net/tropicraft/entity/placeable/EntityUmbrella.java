@@ -75,10 +75,10 @@ public class EntityUmbrella extends Entity {
     }
 
     protected void entityInit() {
-        this.dataWatcher.addObject(2, (Object) new Integer(ColorHelper.DEFAULT_VALUE));
-        this.dataWatcher.addObject(3, (Object) new Float(0.0f));
-        this.dataWatcher.addObject(4, (Object) new Integer(0));
-        this.dataWatcher.addObject(5, (Object) new Integer(0));
+        this.dataWatcher.addObject(DATAWATCHER_COLOR, ColorHelper.DEFAULT_VALUE);
+        this.dataWatcher.addObject(DATAWATCHER_DAMAGE, 0.0f);
+        this.dataWatcher.addObject(DATAWATCHER_TIME_SINCE_HIT, 0);
+        this.dataWatcher.addObject(DATAWATCHER_ROCK_DIRECTION, 0);
     }
 
     @SideOnly(Side.CLIENT)
@@ -290,38 +290,38 @@ public class EntityUmbrella extends Entity {
     }
 
     public void setColor(final int color) {
-        this.dataWatcher.updateObject(2, (Object) color);
+        this.dataWatcher.updateObject(DATAWATCHER_COLOR, color);
     }
 
     public void setColor(final float red, final float green, final float blue) {
-        this.dataWatcher.updateObject(2, (Object) ColorHelper.getColor(red, green, blue));
+        this.dataWatcher.updateObject(DATAWATCHER_COLOR, ColorHelper.getColor(red, green, blue));
     }
 
     public int getColor() {
-        return this.dataWatcher.getWatchableObjectInt(2);
+        return this.dataWatcher.getWatchableObjectInt(DATAWATCHER_COLOR);
     }
 
     public void setDamage(final float damage) {
-        this.dataWatcher.updateObject(3, (Object) damage);
+        this.dataWatcher.updateObject(DATAWATCHER_DAMAGE, damage);
     }
 
     public float getDamage() {
-        return this.dataWatcher.getWatchableObjectFloat(3);
+        return this.dataWatcher.getWatchableObjectFloat(DATAWATCHER_DAMAGE);
     }
 
     public void setTimeSinceHit(final int time) {
-        this.dataWatcher.updateObject(4, (Object) time);
+        this.dataWatcher.updateObject(DATAWATCHER_TIME_SINCE_HIT, time);
     }
 
     public int getTimeSinceHit() {
-        return this.dataWatcher.getWatchableObjectInt(4);
+        return this.dataWatcher.getWatchableObjectInt(DATAWATCHER_TIME_SINCE_HIT);
     }
 
     public void setRockDirection(final int direction) {
-        this.dataWatcher.updateObject(5, (Object) direction);
+        this.dataWatcher.updateObject(DATAWATCHER_ROCK_DIRECTION, direction);
     }
 
     public int getRockDirection() {
-        return this.dataWatcher.getWatchableObjectInt(5);
+        return this.dataWatcher.getWatchableObjectInt(DATAWATCHER_ROCK_DIRECTION);
     }
 }

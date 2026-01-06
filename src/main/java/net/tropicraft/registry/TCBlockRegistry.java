@@ -1,6 +1,10 @@
 package net.tropicraft.registry;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import net.minecraft.block.*;
 import net.minecraft.block.material.*;

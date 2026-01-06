@@ -1,11 +1,11 @@
 package net.tropicraft.world.worldgen;
 
+import java.util.Random;
+
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-
-import java.util.Random;
 
 public class WorldGenTallFlower extends TCGenBase {
 
@@ -14,8 +14,8 @@ public class WorldGenTallFlower extends TCGenBase {
     private final int plantBottomMeta;
     private final int plantTopMeta;
 
-    public WorldGenTallFlower(final World world, final Random rand, final Block plantBlock,
-                              final int plantBottomMeta, final int plantTopMeta) {
+    public WorldGenTallFlower(final World world, final Random rand, final Block plantBlock, final int plantBottomMeta,
+        final int plantTopMeta) {
         super(world, rand);
         this.FLOWER_TRIES = 4;
         this.plantBlock = plantBlock;
@@ -43,8 +43,7 @@ public class WorldGenTallFlower extends TCGenBase {
                 Block block = this.worldObj.getBlock(i2, j2, k2);
                 Block blockAbove = this.worldObj.getBlock(i2, j2 + 1, k2);
 
-                if (block == Blocks.grass
-                    && (blockAbove == Blocks.air || blockAbove == Blocks.tallgrass)
+                if (block == Blocks.grass && (blockAbove == Blocks.air || blockAbove == Blocks.tallgrass)
                     && this.plantBlock.canBlockStay(this.worldObj, i2, j2, k2)) {
                     placeFlower(i2, j2, k2);
                 }

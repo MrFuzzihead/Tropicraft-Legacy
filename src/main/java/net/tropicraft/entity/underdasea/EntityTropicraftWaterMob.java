@@ -365,7 +365,7 @@ public abstract class EntityTropicraftWaterMob extends EntityWaterMob {
     }
 
     public void entityInit() {
-        this.dataWatcher.addObject(26, (Object) (-1));
+        this.dataWatcher.addObject(26, -1);
         super.entityInit();
     }
 
@@ -374,7 +374,7 @@ public abstract class EntityTropicraftWaterMob extends EntityWaterMob {
     }
 
     public void setHookID(final int i) {
-        this.dataWatcher.updateObject(26, (Object) i);
+        this.dataWatcher.updateObject(26, i);
     }
 
     public void onFishingUpdate() {

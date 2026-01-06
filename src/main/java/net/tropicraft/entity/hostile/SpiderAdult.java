@@ -39,7 +39,7 @@ public class SpiderAdult extends SpiderBase {
     protected void entityInit() {
         super.entityInit();
         this.getDataWatcher()
-            .addObject(29, (Object) 0);
+            .addObject(29, 0);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class SpiderAdult extends SpiderBase {
             job.eggSpawnMax = this.maxEggsToSpawn;
             this.agent.jobMan.addJob((JobBase) job);
             this.getDataWatcher()
-                .updateObject(29, (Object) (int) (this.isMother ? 1 : 0));
+                .updateObject(29, (this.isMother ? 1 : 0));
         }
     }
 

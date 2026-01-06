@@ -4,10 +4,8 @@ import java.util.*;
 
 import net.minecraft.block.*;
 import net.minecraft.init.*;
-import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.*;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.gen.ChunkProviderServer;
 import net.tropicraft.registry.*;
 
 public class WorldGenTCUndergrowth extends TCGenBase {
@@ -50,8 +48,22 @@ public class WorldGenTCUndergrowth extends TCGenBase {
                     final int zVariance = z - k;
                     int blockChunkX = x >> 4;
                     int blockChunkZ = z >> 4;
-                    if (shouldPlaceLeafBlock(xVariance, zVariance, blockChunkX, blockChunkZ, chunkStartX, chunkStartZ, chunkEndX, chunkEndZ)) {
-                            this.worldObj.setBlock(x, y, z, WorldGenTCUndergrowth.LEAF_BLOCK, 1, WorldGenTCUndergrowth.blockGenNotifyFlag);
+                    if (shouldPlaceLeafBlock(
+                        xVariance,
+                        zVariance,
+                        blockChunkX,
+                        blockChunkZ,
+                        chunkStartX,
+                        chunkStartZ,
+                        chunkEndX,
+                        chunkEndZ)) {
+                        this.worldObj.setBlock(
+                            x,
+                            y,
+                            z,
+                            WorldGenTCUndergrowth.LEAF_BLOCK,
+                            1,
+                            WorldGenTCUndergrowth.blockGenNotifyFlag);
                     }
                 }
             }
@@ -70,10 +82,11 @@ public class WorldGenTCUndergrowth extends TCGenBase {
     }
 
     private boolean shouldPlaceLeafBlock(int xVariance, int zVariance, int blockChunkX, int blockChunkZ,
-                                         int chunkStartX, int chunkStartZ, int chunkEndX, int chunkEndZ) {
+        int chunkStartX, int chunkStartZ, int chunkEndX, int chunkEndZ) {
         return (Math.abs(xVariance) != 2 || Math.abs(zVariance) != 2 || this.rand.nextInt(2) != 0)
-            && (blockChunkX >= chunkStartX && blockChunkX <= chunkEndX &&
-            blockChunkZ >= chunkStartZ && blockChunkZ <= chunkEndZ);
+            && (blockChunkX >= chunkStartX && blockChunkX <= chunkEndX
+                && blockChunkZ >= chunkStartZ
+                && blockChunkZ <= chunkEndZ);
     }
 
     static {

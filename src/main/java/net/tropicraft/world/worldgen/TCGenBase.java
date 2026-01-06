@@ -1,6 +1,11 @@
 package net.tropicraft.world.worldgen;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 import net.minecraft.block.*;
 import net.minecraft.init.*;
@@ -19,8 +24,7 @@ public abstract class TCGenBase extends WorldGenerator {
     public static int blockGenNotifyFlag;
 
     public TCGenBase(final World world, final Random random) {
-        this.standardAllowedBlocks = Arrays
-            .asList(Blocks.air, Blocks.leaves, Blocks.tallgrass, Blocks.snow_layer);
+        this.standardAllowedBlocks = Arrays.asList(Blocks.air, Blocks.leaves, Blocks.tallgrass, Blocks.snow_layer);
         this.worldObj = world;
         this.rand = random;
     }
@@ -37,8 +41,8 @@ public abstract class TCGenBase extends WorldGenerator {
         return this.generate(i, j, k);
     }
 
-    public List<ChunkCoordinates> genCircle(final int x, final int y, final int z, final double outerRadius, final double innerRadius,
-                                            final Block block, final int meta, final boolean solid) {
+    public List<ChunkCoordinates> genCircle(final int x, final int y, final int z, final double outerRadius,
+        final double innerRadius, final Block block, final int meta, final boolean solid) {
         List<ChunkCoordinates> generatedPositions = new ArrayList<>();
         int chunkX = x >> 4;
         int chunkZ = z >> 4;
@@ -48,20 +52,21 @@ public abstract class TCGenBase extends WorldGenerator {
         }
         for (int chunkI = chunkX - (int) outerRadius - 1; chunkI <= chunkX + (int) outerRadius + 1; ++chunkI) {
             for (int chunkK = chunkZ - (int) outerRadius - 1; chunkK <= chunkZ + (int) outerRadius + 1; ++chunkK) {
-                    for (int i = chunkI << 4; i < (chunkI << 4) + 16; ++i) {
-                        for (int k = chunkK << 4; k < (chunkK << 4) + 16; ++k) {
-                            final double d = (double) ((i - x) * (i - x)) + (k - z) * (k - z);
-                            if (d <= outerRadius * outerRadius && d >= innerRadius * innerRadius
-                                && (this.worldObj.isAirBlock(i, y, k) || solid)
-                                && this.worldObj.setBlock(i, y, k, block, meta, TCGenBase.blockGenNotifyFlag)) {
-                                generatedPositions.add(new ChunkCoordinates(i, y, k));
-                            }
+                for (int i = chunkI << 4; i < (chunkI << 4) + 16; ++i) {
+                    for (int k = chunkK << 4; k < (chunkK << 4) + 16; ++k) {
+                        final double d = (double) ((i - x) * (i - x)) + (k - z) * (k - z);
+                        if (d <= outerRadius * outerRadius && d >= innerRadius * innerRadius
+                            && (this.worldObj.isAirBlock(i, y, k) || solid)
+                            && this.worldObj.setBlock(i, y, k, block, meta, TCGenBase.blockGenNotifyFlag)) {
+                            generatedPositions.add(new ChunkCoordinates(i, y, k));
                         }
                     }
+                }
             }
         }
         return generatedPositions;
     }
+
     public boolean checkCircle(final int i, final int j, final int k, final double outerRadius,
         final double innerRadius, final List allowedBlockList) {
         for (int x = (int) (-outerRadius - 2.0) + i; x < (int) (outerRadius + 2.0) + i; ++x) {
@@ -126,8 +131,9 @@ public abstract class TCGenBase extends WorldGenerator {
         }
         return true;
     }
+
     public void placeBlockLine(final int[] start, final int[] end, final Block block, final int meta) {
-        int[] difference = new int[]{end[0] - start[0], end[1] - start[1], end[2] - start[2]};
+        int[] difference = new int[] { end[0] - start[0], end[1] - start[1], end[2] - start[2] };
         int largestDifferenceIndex = getLargestDifferenceIndex(difference);
 
         if (difference[largestDifferenceIndex] == 0) {
@@ -168,7 +174,8 @@ public abstract class TCGenBase extends WorldGenerator {
             String blockKey = currentPos[0] + "_" + currentPos[1] + "_" + currentPos[2];
 
             if (worldObj.getBlock(currentPos[0], currentPos[1], currentPos[2]) != block) {
-                worldObj.setBlock(currentPos[0], currentPos[1], currentPos[2], block, meta, TCGenBase.blockGenNotifyFlag);
+                worldObj
+                    .setBlock(currentPos[0], currentPos[1], currentPos[2], block, meta, TCGenBase.blockGenNotifyFlag);
                 placedBlocks.add(blockKey);
             }
         }
@@ -183,7 +190,6 @@ public abstract class TCGenBase extends WorldGenerator {
         }
         return largestIndex;
     }
-
 
     public boolean checkBlockCircleLine(final int[] ai, final int[] ai1, final double outerRadius,
         final double innerRadius, final List allowedBlockList) {

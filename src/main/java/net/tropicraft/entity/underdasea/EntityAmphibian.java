@@ -56,7 +56,7 @@ public class EntityAmphibian extends EntityCreature {
 
     protected void entityInit() {
         super.entityInit();
-        this.dataWatcher.addObject(16, (Object) 10000);
+        this.dataWatcher.addObject(DATAWATCHER_AGE, 10000);
     }
 
     public void writeEntityToNBT(final NBTTagCompound nbttagcompound) {
@@ -225,11 +225,11 @@ public class EntityAmphibian extends EntityCreature {
     }
 
     public void setAmphibianAge(final float age) {
-        this.dataWatcher.updateObject(16, (Object) new Integer((int) (age * 10000.0f)));
+        this.dataWatcher.updateObject(DATAWATCHER_AGE, (int) (age * 10000.0f));
     }
 
     public float getAmphibianAge() {
-        return this.dataWatcher.getWatchableObjectInt(16) / 10000.0f;
+        return this.dataWatcher.getWatchableObjectInt(DATAWATCHER_AGE) / 10000.0f;
     }
 
     static {

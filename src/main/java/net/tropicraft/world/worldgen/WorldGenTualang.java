@@ -1,6 +1,6 @@
 package net.tropicraft.world.worldgen;
 
-import java.util.*;
+import java.util.Random;
 
 import net.minecraft.block.*;
 import net.minecraft.init.*;
@@ -52,7 +52,8 @@ public class WorldGenTualang extends TCGenBase {
     private boolean checkBlocks(int i, int j, int k, int height) {
         for (int y = j; y < j + height; ++y) {
             Block block = this.worldObj.getBlock(i, y, k);
-            if (block != null && block.getMaterial().isOpaque()) {
+            if (block != null && block.getMaterial()
+                .isOpaque()) {
                 return true;
             }
         }
@@ -75,7 +76,8 @@ public class WorldGenTualang extends TCGenBase {
             int midZ = k + this.sign((bz - k) / 2);
 
             for (int y = height; y <= branchHeight; y++) {
-                this.worldObj.setBlock(midX, y, midZ, WorldGenTualang.WOOD_BLOCK, 1, WorldGenTualang.blockGenNotifyFlag);
+                this.worldObj
+                    .setBlock(midX, y, midZ, WorldGenTualang.WOOD_BLOCK, 1, WorldGenTualang.blockGenNotifyFlag);
             }
 
             this.genCircle(bx, branchHeight, bz, 2.0, 1.0, WorldGenTualang.LEAF_BLOCK, 1, false);

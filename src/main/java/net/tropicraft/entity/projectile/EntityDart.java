@@ -1,6 +1,6 @@
 package net.tropicraft.entity.projectile;
 
-import java.util.*;
+import java.util.List;
 
 import net.minecraft.block.*;
 import net.minecraft.block.material.*;
@@ -128,17 +128,16 @@ public class EntityDart extends Entity implements IProjectile {
                     movingobjectposition.hitVec.zCoord);
             }
             Entity entity = null;
-            final List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(
-                (Entity) this,
+            final List<Entity> list = this.worldObj.getEntitiesWithinAABBExcludingEntity(
+                this,
                 this.boundingBox.addCoord(this.motionX, this.motionY, this.motionZ)
                     .expand(1.0, 1.0, 1.0));
             double d0 = 0.0;
             for (int i = 0; i < list.size(); ++i) {
-                final Entity entity2 = (Entity) list.get(i);
+                final Entity entity2 = list.get(i);
                 if (entity2.canBeCollidedWith() && (entity2 != this.shootingEntity || this.ticksInAir >= 5)) {
                     final float f2 = 0.3f;
-                    final AxisAlignedBB axisalignedbb1 = entity2.boundingBox
-                        .expand((double) f2, (double) f2, (double) f2);
+                    final AxisAlignedBB axisalignedbb1 = entity2.boundingBox.expand(f2, f2, f2);
                     final MovingObjectPosition movingobjectposition2 = axisalignedbb1.calculateIntercept(vec31, vec32);
                     if (movingobjectposition2 != null) {
                         final double d2 = vec31.distanceTo(movingobjectposition2.hitVec);
@@ -166,7 +165,7 @@ public class EntityDart extends Entity implements IProjectile {
                         this.motionX * this.motionX + this.motionY * this.motionY + this.motionZ * this.motionZ);
                     DamageSource damagesource = null;
                     if (this.shootingEntity == null) {
-                        damagesource = TCDamageSource.causeDartDamage(this, (Entity) this);
+                        damagesource = TCDamageSource.causeDartDamage(this, this);
                     } else {
                         damagesource = TCDamageSource.causeDartDamage(this, this.shootingEntity);
                     }
@@ -179,7 +178,7 @@ public class EntityDart extends Entity implements IProjectile {
                                     if (entitylivingbase instanceof EntityPlayerMP) {
                                         final NBTTagCompound nbt = new NBTTagCompound();
                                         nbt.setString("packetCommand", "effectAdd");
-                                        nbt.setInteger("effectID", (int) this.dartType);
+                                        nbt.setInteger("effectID", this.dartType);
                                         nbt.setInteger("effectTime", 100);
                                         Tropicraft.eventChannel.sendTo(
                                             PacketHelper.getNBTPacket(nbt, Tropicraft.eventChannelName),
@@ -196,7 +195,7 @@ public class EntityDart extends Entity implements IProjectile {
                                 && movingobjectposition.entityHit instanceof EntityPlayer
                                 && this.shootingEntity instanceof EntityPlayerMP) {
                                 ((EntityPlayerMP) this.shootingEntity).playerNetServerHandler
-                                    .sendPacket((Packet) new S2BPacketChangeGameState(6, 0.0f));
+                                    .sendPacket(new S2BPacketChangeGameState(6, 0.0f));
                             }
                         }
                         this.playSound("random.bowhit", 1.0f, 1.2f / (this.rand.nextFloat() * 0.2f + 0.9f));
@@ -311,13 +310,13 @@ public class EntityDart extends Entity implements IProjectile {
     protected void entityInit() {
         EntityDart.potions = new int[] { Potion.blindness.id, Potion.poison.id, Potion.moveSlowdown.id, Potion.harm.id,
             Potion.confusion.id, Potion.hunger.id, Potion.weakness.id };
-        this.dataWatcher.addObject(17, (Object) (short) 200);
-        this.dataWatcher.addObject(18, (Object) (byte) 0);
+        this.dataWatcher.addObject(17, (short) 200);
+        this.dataWatcher.addObject(18, (byte) 0);
     }
 
     public void writeEntityToNBT(final NBTTagCompound nbttagcompound) {
         nbttagcompound.setByte("shake", (byte) this.dartShake);
-        nbttagcompound.setByte("inGround", (byte) (byte) (this.inGround ? 1 : 0));
+        nbttagcompound.setByte("inGround", (byte) (this.inGround ? 1 : 0));
         nbttagcompound.setBoolean("player", this.doesDartBelongToPlayer);
         nbttagcompound.setBoolean("hit", this.getIsHit());
         nbttagcompound.setShort("hitTime", (short) this.getHitTimer());
@@ -334,7 +333,7 @@ public class EntityDart extends Entity implements IProjectile {
     }
 
     public void setIsHit(final boolean set) {
-        this.dataWatcher.updateObject(18, (Object) (byte) (set ? 1 : 0));
+        this.dataWatcher.updateObject(18, (byte) (set ? 1 : 0));
     }
 
     public boolean getIsHit() {
@@ -342,7 +341,7 @@ public class EntityDart extends Entity implements IProjectile {
     }
 
     public void setHitTimer(final short hitTime) {
-        this.dataWatcher.updateObject(17, (Object) hitTime);
+        this.dataWatcher.updateObject(17, (short) hitTime);
     }
 
     public int getHitTimer() {

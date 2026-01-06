@@ -1,13 +1,13 @@
 package net.tropicraft.world.worldgen;
 
-import java.util.*;
+import java.util.Random;
 
 import net.minecraft.block.*;
-import net.minecraft.init.*;
+import net.minecraft.init.Blocks;
 import net.minecraft.world.*;
 import net.tropicraft.registry.*;
 
-public class WorldGenWaterfall extends TCDirectionalGen {
+public class WorldGenWaterfall extends TCGenBase {
 
     private static final Block WATER_BLOCK = TCBlockRegistry.tropicsWater;
 
@@ -18,8 +18,7 @@ public class WorldGenWaterfall extends TCDirectionalGen {
     public boolean generate(int i, int j, int k) {
         if (worldObj.getBlock(i, j, k) == Blocks.stone) {
             int size = rand.nextInt(4) + 3;
-            sizeLoop:
-            for (int[] direction : new int[][]{{1, 0, 0}, {-1, 0, 0}, {0, 0, 1}, {0, 0, -1}}) {
+            sizeLoop: for (int[] direction : new int[][] { { 1, 0, 0 }, { -1, 0, 0 }, { 0, 0, 1 }, { 0, 0, -1 } }) {
                 int dirX = direction[0];
                 int dirY = direction[1];
                 int dirZ = direction[2];
@@ -29,10 +28,16 @@ public class WorldGenWaterfall extends TCDirectionalGen {
                     size *= dir;
 
                     for (int x = 0; x < size; x += dir) {
-                        worldObj.setBlock(i + (dirX * x), j + (dirY * x), k + (dirZ * x), WATER_BLOCK, 0, WorldGenWaterfall.blockGenNotifyFlag);
+                        worldObj.setBlock(
+                            i + (dirX * x),
+                            j + (dirY * x),
+                            k + (dirZ * x),
+                            WATER_BLOCK,
+                            0,
+                            WorldGenWaterfall.blockGenNotifyFlag);
 
-                        if (worldObj.getBlock(i + (dirX * (x + dir)), j + (dirY * (x + dir)), k + dirZ) != Blocks.air ||
-                            worldObj.getBlock(i + (dirX * (x + dir)), j + (dirY * (x + dir)), k) != Blocks.stone) {
+                        if (worldObj.getBlock(i + (dirX * (x + dir)), j + (dirY * (x + dir)), k + dirZ) != Blocks.air
+                            || worldObj.getBlock(i + (dirX * (x + dir)), j + (dirY * (x + dir)), k) != Blocks.stone) {
                             continue sizeLoop;
                         }
                     }

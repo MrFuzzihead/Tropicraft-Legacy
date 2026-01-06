@@ -1,5 +1,7 @@
 package net.tropicraft.world.worldgen;
 
+import java.util.Random;
+
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -7,8 +9,6 @@ import net.tropicraft.block.tileentity.TileEntityBambooChest;
 import net.tropicraft.block.tileentity.TileEntityTropicraftFlowerPot;
 import net.tropicraft.registry.TCBlockRegistry;
 import net.tropicraft.registry.TCItemRegistry;
-
-import java.util.Random;
 
 public class WorldGenForestAltarRuin extends TCDirectionalGen {
 
@@ -62,41 +62,42 @@ public class WorldGenForestAltarRuin extends TCDirectionalGen {
                         this.placeBlockWithDir(x, j + 1, z, TCBlockRegistry.singleSlabs, 2);
                         this.placeBlockWithDir(x, j + 2, z, TCBlockRegistry.palmFence, 0);
 
-                        }
-                    } else if (z == 1) {
-                        if (x == 0 || x == width - 1) {
-                            this.placeBlockWithDir(x, j + 1, z, TCBlockRegistry.palmFence, 0);
-                        } else if (x == 1 || x == width - 2) {
-                            this.placeBlockWithDir(x, j + 1, z, TCBlockRegistry.chunkOHead, 0);
-                            this.placeBlockWithDir(x, j + 2, z, TCBlockRegistry.flowerPot, 0);
-                            final TileEntityTropicraftFlowerPot pot = (TileEntityTropicraftFlowerPot) this.getTEWithDir(x, j + 2, z);
-                            if (pot != null) {
-                                pot.setFlowerID((short) (this.rand.nextInt(13) + 1));
-                            }
-                        } else if (x == halfWidth - 1 || x == halfWidth) {
-                            this.placeBlockWithDir(x, j, z, Blocks.netherrack, 0);
-                            this.placeBlockWithDir(x, j + 1, z, Blocks.fire, 0);
-                        } else {
-                            this.placeBlockWithDir(x, j + 1, z, TCBlockRegistry.singleSlabs, 2);
-                        }
-                    } else if (z == 2) {
-                        if (x == 0 || x == width - 1) {
-                            this.placeBlockWithDir(x, j + 1, z, TCBlockRegistry.palmFence, 0);
-                        } else {
-                            this.placeBlockWithDir(x, j + 1, z, TCBlockRegistry.singleSlabs, 2);
-                        }
-                    } else if (z % 2 == 1 && (x == 0 || x == width - 1)) {
-                        this.placeBlockWithDir(x, j + 1, z, TCBlockRegistry.palmFence, 0);
-                    } else if (x != 0 && x != width - 1 && !(x == halfWidth - 1 || x == halfWidth)) {
-                        this.placeBlockWithDir(x, j + 1, z, TCBlockRegistry.palmStairs, this.dir);
-                        if (!hasGennedTunnel) {
-                            this.generateTunnel(x, j, z);
-                            hasGennedTunnel = true;
-                        }
                     }
-                    x++;
+                } else if (z == 1) {
+                    if (x == 0 || x == width - 1) {
+                        this.placeBlockWithDir(x, j + 1, z, TCBlockRegistry.palmFence, 0);
+                    } else if (x == 1 || x == width - 2) {
+                        this.placeBlockWithDir(x, j + 1, z, TCBlockRegistry.chunkOHead, 0);
+                        this.placeBlockWithDir(x, j + 2, z, TCBlockRegistry.flowerPot, 0);
+                        final TileEntityTropicraftFlowerPot pot = (TileEntityTropicraftFlowerPot) this
+                            .getTEWithDir(x, j + 2, z);
+                        if (pot != null) {
+                            pot.setFlowerID((short) (this.rand.nextInt(13) + 1));
+                        }
+                    } else if (x == halfWidth - 1 || x == halfWidth) {
+                        this.placeBlockWithDir(x, j, z, Blocks.netherrack, 0);
+                        this.placeBlockWithDir(x, j + 1, z, Blocks.fire, 0);
+                    } else {
+                        this.placeBlockWithDir(x, j + 1, z, TCBlockRegistry.singleSlabs, 2);
+                    }
+                } else if (z == 2) {
+                    if (x == 0 || x == width - 1) {
+                        this.placeBlockWithDir(x, j + 1, z, TCBlockRegistry.palmFence, 0);
+                    } else {
+                        this.placeBlockWithDir(x, j + 1, z, TCBlockRegistry.singleSlabs, 2);
+                    }
+                } else if (z % 2 == 1 && (x == 0 || x == width - 1)) {
+                    this.placeBlockWithDir(x, j + 1, z, TCBlockRegistry.palmFence, 0);
+                } else if (x != 0 && x != width - 1 && !(x == halfWidth - 1 || x == halfWidth)) {
+                    this.placeBlockWithDir(x, j + 1, z, TCBlockRegistry.palmStairs, this.dir);
+                    if (!hasGennedTunnel) {
+                        this.generateTunnel(x, j, z);
+                        hasGennedTunnel = true;
+                    }
                 }
+                x++;
             }
+        }
         return true;
     }
 

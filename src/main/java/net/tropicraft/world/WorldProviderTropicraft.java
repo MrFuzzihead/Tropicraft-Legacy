@@ -13,9 +13,7 @@ public class WorldProviderTropicraft extends WorldProvider {
     public static final int INTER_HEIGHT = 193;
 
     protected void registerWorldChunkManager() {
-        this.worldChunkMgr = new WorldChunkManagerTropicraft(
-            this.worldObj.getSeed(),
-            this.terrainType);
+        this.worldChunkMgr = new WorldChunkManagerTropicraft(this.worldObj.getSeed(), this.terrainType);
     }
 
     public IChunkProvider createChunkGenerator() {

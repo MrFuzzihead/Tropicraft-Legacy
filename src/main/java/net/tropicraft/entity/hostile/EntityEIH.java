@@ -1,5 +1,7 @@
 package net.tropicraft.entity.hostile;
 
+import java.util.Objects;
+
 import net.minecraft.block.*;
 import net.minecraft.entity.*;
 import net.minecraft.entity.monster.*;
@@ -11,8 +13,6 @@ import net.minecraft.util.*;
 import net.minecraft.world.*;
 import net.tropicraft.entity.*;
 import net.tropicraft.registry.*;
-
-import java.util.Objects;
 
 public class EntityEIH extends EntityLand implements IMob {
 

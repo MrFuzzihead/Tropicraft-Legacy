@@ -1,6 +1,6 @@
 package net.tropicraft.world.perlin.generator;
 
-import java.util.*;
+import java.util.Random;
 
 import net.tropicraft.world.perlin.*;
 

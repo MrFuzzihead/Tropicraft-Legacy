@@ -16,12 +16,15 @@ import cpw.mods.fml.common.network.*;
 import cpw.mods.fml.common.registry.*;
 import modconfig.*;
 
-@Mod(modid = "tropicraft", name = "Tropicraft", version = "v6.0.5")
+@Mod(modid = Tropicraft.MODID, name = Tropicraft.MODNAME, version = Tags.VERSION)
 public class Tropicraft {
+
+    public static final String MODNAME = "Tropicraft";
+    public static final String MODID = "tropicraft";
 
     @SidedProxy(clientSide = "net.tropicraft.proxy.ClientProxy", serverSide = "net.tropicraft.proxy.ServerProxy")
     public static ISuperProxy proxy;
-    @Mod.Instance("tropicraft")
+    @Mod.Instance(value = MODID)
     public static Tropicraft instance;
     public static Encyclopedia encyclopedia;
     public static String eventChannelName;

@@ -58,8 +58,7 @@ public class Drink {
         caipirinha = new Drink(4, 9764662, "Caipirinha").addAction(new DrinkActionPotion(Potion.moveSpeed.id, 5, 1))
             .setHasUmbrella(true);
         blackCoffee = new Drink(5, 6833196, "Black Coffee");
-        pinaColada = new Drink(6, 15662848, "Pi\u00f1a Colada")
-            .addAction(new DrinkActionPotion(Potion.confusion.id, 10, 0))
+        pinaColada = new Drink(6, 15662848, "Piña Colada").addAction(new DrinkActionPotion(Potion.confusion.id, 10, 0))
             .setAlwaysEdible(true);
     }
 }

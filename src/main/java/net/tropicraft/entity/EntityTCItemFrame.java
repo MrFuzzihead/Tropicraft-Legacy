@@ -1,6 +1,6 @@
 package net.tropicraft.entity;
 
-import java.util.*;
+import java.util.List;
 
 import net.minecraft.block.*;
 import net.minecraft.block.material.*;
@@ -40,7 +40,7 @@ public class EntityTCItemFrame extends EntityItemFrame implements IEntityAdditio
 
     protected void entityInit() {
         super.entityInit();
-        this.dataWatcher.addObject(16, (Object) 0);
+        this.dataWatcher.addObject(16, (byte) 0);
     }
 
     public void onBroken(final Entity par1Entity) {
@@ -89,7 +89,7 @@ public class EntityTCItemFrame extends EntityItemFrame implements IEntityAdditio
     }
 
     public void setShouldDropContents(final boolean par1) {
-        this.dataWatcher.updateObject(16, (Object) (par1 ? 1 : (0)));
+        this.dataWatcher.updateObject(16, (byte) (par1 ? 1 : 0));
     }
 
     public void onUpdate() {
@@ -137,7 +137,7 @@ public class EntityTCItemFrame extends EntityItemFrame implements IEntityAdditio
                 }
             }
         }
-        final List var9 = this.worldObj.getEntitiesWithinAABBExcludingEntity((Entity) this, this.boundingBox);
+        final List<?> var9 = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.boundingBox);
         for (final Object var11 : var9) {
             if (var11 instanceof EntityHanging) {
                 return false;
@@ -158,7 +158,7 @@ public class EntityTCItemFrame extends EntityItemFrame implements IEntityAdditio
         this.field_146063_b = data.readInt();
         this.field_146064_c = data.readInt();
         this.field_146062_d = data.readInt();
-        this.setDirection((int) data.readByte());
+        this.setDirection(data.readByte());
         this.setShouldDropContents(data.readBoolean());
     }
 }
