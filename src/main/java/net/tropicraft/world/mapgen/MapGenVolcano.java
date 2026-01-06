@@ -1,6 +1,9 @@
 package net.tropicraft.world.mapgen;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 
 import net.minecraft.block.*;
 import net.minecraft.init.*;
@@ -14,7 +17,7 @@ import net.tropicraft.world.perlin.generator.*;
 
 public class MapGenVolcano {
 
-    protected HashMap coordMap;
+    protected HashMap<Long, ChunkCoordinates> coordMap;
     public static List<BiomeGenBase> volcanoSpawnBiomesLand;
     public static List<BiomeGenBase> volcanoSpawnBiomesOcean;
     private World worldObj;
@@ -35,7 +38,7 @@ public class MapGenVolcano {
     private static final Block LAVA_BLOCK;
 
     public MapGenVolcano(final World worldObj, final boolean useArrays) {
-        this.coordMap = new HashMap();
+        this.coordMap = new HashMap<Long, ChunkCoordinates>();
         this.worldObj = worldObj;
         this.useArrays = useArrays;
     }
@@ -142,11 +145,11 @@ public class MapGenVolcano {
         randZ += rand.nextInt(numChunks - offsetChunks);
         if (oldi == randX && oldj == randZ) {
             if (worldObj.getWorldChunkManager()
-                .areBiomesViable(oldi * 16 + 8, oldj * 16 + 8, 0, (List) MapGenVolcano.volcanoSpawnBiomesLand)) {
+                .areBiomesViable(oldi * 16 + 8, oldj * 16 + 8, 0, MapGenVolcano.volcanoSpawnBiomesLand)) {
                 return 1;
             }
             if (worldObj.getWorldChunkManager()
-                .areBiomesViable(oldi * 16 + 8, oldj * 16 + 8, 0, (List) MapGenVolcano.volcanoSpawnBiomesOcean)) {
+                .areBiomesViable(oldi * 16 + 8, oldj * 16 + 8, 0, MapGenVolcano.volcanoSpawnBiomesOcean)) {
                 return 2;
             }
         }

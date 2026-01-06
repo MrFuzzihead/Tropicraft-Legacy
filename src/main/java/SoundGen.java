@@ -1,4 +1,8 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.zip.*;
 
 public class SoundGen {
@@ -67,12 +71,18 @@ public class SoundGen {
                 final boolean isRecord = name3.startsWith("records");
                 final String category = isRecord ? "record" : (name3.contains("wpn_portal") ? "player" : "neutral");
                 final String ingameName = name3.replaceAll("\\/", ".");
-                sb.append("  \"").append(ingameName).append("\": { \n");
-                sb.append("    \"category\": \"").append(category).append("\",\n");
+                sb.append("  \"")
+                    .append(ingameName)
+                    .append("\": { \n");
+                sb.append("    \"category\": \"")
+                    .append(category)
+                    .append("\",\n");
                 sb.append("    \"sounds\": [\n");
                 if (isRecord) {
                     sb.append("      {\n");
-                    sb.append("        \"name\": \"").append(name3).append("\",\n        \"stream\": true\n");
+                    sb.append("        \"name\": \"")
+                        .append(name3)
+                        .append("\",\n        \"stream\": true\n");
                     sb.append("      }\n");
                 } else {
                     ArrayList<String> soundPaths = numbered.get(oriName2);
@@ -81,7 +91,9 @@ public class SoundGen {
                         soundPaths.add(name3);
                     }
                     for (int k = 0; k < soundPaths.size(); ++k) {
-                        sb.append("      \"").append(soundPaths.get(k)).append("\"");
+                        sb.append("      \"")
+                            .append(soundPaths.get(k))
+                            .append("\"");
                         if (k != soundPaths.size() - 1) {
                             sb.append(",\n");
                         } else {

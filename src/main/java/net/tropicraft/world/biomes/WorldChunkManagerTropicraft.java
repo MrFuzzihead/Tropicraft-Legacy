@@ -1,6 +1,9 @@
 package net.tropicraft.world.biomes;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 import net.minecraft.crash.*;
 import net.minecraft.util.*;
@@ -14,12 +17,12 @@ public class WorldChunkManagerTropicraft extends WorldChunkManager {
     public static final List<BiomeGenBase> allowedBiomes;
     private GenLayer genBiomes;
     private GenLayer biomeIndexLayer;
-    private BiomeCache biomeCache;
-    private List biomesToSpawnIn;
+    private final BiomeCache biomeCache;
+    private final List<BiomeGenBase> biomesToSpawnIn;
 
     protected WorldChunkManagerTropicraft() {
         this.biomeCache = new BiomeCache((WorldChunkManager) this);
-        (this.biomesToSpawnIn = new ArrayList()).addAll(WorldChunkManagerTropicraft.allowedBiomes);
+        (this.biomesToSpawnIn = new ArrayList<BiomeGenBase>()).addAll(WorldChunkManagerTropicraft.allowedBiomes);
     }
 
     public WorldChunkManagerTropicraft(final long seed, final WorldType worldType) {
@@ -36,7 +39,7 @@ public class WorldChunkManagerTropicraft extends WorldChunkManager {
                 .getTerrainType());
     }
 
-    public List getBiomesToSpawnIn() {
+    public List<BiomeGenBase> getBiomesToSpawnIn() {
         return this.biomesToSpawnIn;
     }
 

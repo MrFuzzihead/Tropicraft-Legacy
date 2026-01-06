@@ -1,12 +1,13 @@
 package net.tropicraft.world.worldgen;
 
-import java.util.*;
+import java.util.Random;
 
 import net.minecraft.block.*;
 import net.minecraft.tileentity.*;
 import net.minecraft.world.*;
 
 public abstract class TCDirectionalGen extends TCGenBase {
+
     public int originX;
     public int originZ;
     public int dir;

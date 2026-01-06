@@ -86,26 +86,21 @@ public class BiomeGenTropicraft extends BiomeGenBase {
         if (rand.nextInt(3) == 0) {
             int terrainHeight = this.getTerrainHeightAt(world, i, k);
             if (terrainHeight > 0 && world.isAirBlock(i, terrainHeight, k)) {
-                new WorldGenTallFlower(world, rand, TCBlockRegistry.tallFlowers, 0, 1)
-                    .generate(i, terrainHeight, k);
+                new WorldGenTallFlower(world, rand, TCBlockRegistry.tallFlowers, 0, 1).generate(i, terrainHeight, k);
             }
         }
 
         if (rand.nextInt(3) == 0) {
             int terrainHeight = this.getTerrainHeightAt(world, i, k);
             if (terrainHeight > 0 && world.isAirBlock(i, terrainHeight, k)) {
-                new WorldGenTallFlower(world, rand, TCBlockRegistry.pineapple, 7, 8)
-                    .generate(i, terrainHeight, k);
+                new WorldGenTallFlower(world, rand, TCBlockRegistry.pineapple, 7, 8).generate(i, terrainHeight, k);
             }
         }
 
         int terrainHeight = this.getTerrainHeightAt(world, i, k);
         if (terrainHeight > 0 && world.isAirBlock(i, terrainHeight, k)) {
-            new WorldGenTropicraftFlowers(
-                world,
-                rand,
-                TCBlockRegistry.flowers,
-                BiomeGenTropicraft.DEFAULT_FLOWER_META).generate(i, terrainHeight, k);
+            new WorldGenTropicraftFlowers(world, rand, TCBlockRegistry.flowers, BiomeGenTropicraft.DEFAULT_FLOWER_META)
+                .generate(i, terrainHeight, k);
         }
         if (rand.nextInt(300) == 0) {
             new WorldGenSunkenShip(world, rand).generate(i, this.getTerrainHeightAt(world, i, k), k);
@@ -146,7 +141,8 @@ public class BiomeGenTropicraft extends BiomeGenBase {
             if (id == Blocks.grass || id == Blocks.dirt || id == Blocks.sand) {
                 return y + 1;
             }
-            if (id.getMaterial().isSolid()) {
+            if (id.getMaterial()
+                .isSolid()) {
                 break;
             }
         }

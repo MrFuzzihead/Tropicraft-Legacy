@@ -130,16 +130,17 @@ public class WorldGenHomeTree extends TCGenBase {
         int[][] coords = new int[6][3];
 
         for (final BranchNode bnode : this.branchList) {
-            coords[0] = new int[]{bnode.x1, bnode.y1, bnode.z1};
-            coords[1] = new int[]{bnode.x2, bnode.y2, bnode.z2};
-            coords[2] = new int[]{bnode.x1 + 1, bnode.y1, bnode.z1};
-            coords[3] = new int[]{bnode.x2 + 1, bnode.y2, bnode.z2};
-            coords[4] = new int[]{bnode.x1 - 1, bnode.y1, bnode.z1};
-            coords[5] = new int[]{bnode.x2 - 1, bnode.y2, bnode.z2};
+            coords[0] = new int[] { bnode.x1, bnode.y1, bnode.z1 };
+            coords[1] = new int[] { bnode.x2, bnode.y2, bnode.z2 };
+            coords[2] = new int[] { bnode.x1 + 1, bnode.y1, bnode.z1 };
+            coords[3] = new int[] { bnode.x2 + 1, bnode.y2, bnode.z2 };
+            coords[4] = new int[] { bnode.x1 - 1, bnode.y1, bnode.z1 };
+            coords[5] = new int[] { bnode.x2 - 1, bnode.y2, bnode.z2 };
 
             boolean shouldPlaceBlock = false;
             for (int i = 0; i < 6; i += 2) {
-                shouldPlaceBlock = shouldPlaceBlock || this.checkBlockLine(coords[i], coords[i + 1], this.standardAllowedBlocks);
+                shouldPlaceBlock = shouldPlaceBlock
+                    || this.checkBlockLine(coords[i], coords[i + 1], this.standardAllowedBlocks);
             }
 
             if (shouldPlaceBlock) {
@@ -148,7 +149,11 @@ public class WorldGenHomeTree extends TCGenBase {
                 }
 
                 if (bnode.y2 + 1 <= height) {
-                    this.placeBlockLine(new int[]{bnode.x1, bnode.y1 + 1, bnode.z1}, new int[]{bnode.x2, bnode.y2 + 1, bnode.z2}, this.woodID, 1);
+                    this.placeBlockLine(
+                        new int[] { bnode.x1, bnode.y1 + 1, bnode.z1 },
+                        new int[] { bnode.x2, bnode.y2 + 1, bnode.z2 },
+                        this.woodID,
+                        1);
                 }
 
                 this.genLeafCircle(bnode.x2, bnode.y2 - 1, bnode.z2, lSize + 5, lSize + 3, this.leafID, 0, true);
@@ -160,6 +165,7 @@ public class WorldGenHomeTree extends TCGenBase {
 
         final int topBranches = this.rand.nextInt(6) + 6;
     }
+
     public boolean genTopBranch(final int i, final int j, final int k, final int sX, final int sY, final int sZ,
         final int topX, final int topZ) {
         final ArrayList<Block> allowedBlocks = new ArrayList<Block>(this.standardAllowedBlocks);
@@ -196,7 +202,7 @@ public class WorldGenHomeTree extends TCGenBase {
     }
 
     public void genLeafCircle(final int x, final int y, final int z, final int outerRadius, final int innerRadius,
-                              final Block leafID2, final int meta, final boolean vines) {
+        final Block leafID2, final int meta, final boolean vines) {
         final int outerRadiusSquared = outerRadius * outerRadius;
         final int innerRadiusSquared = innerRadius * innerRadius;
 
@@ -224,7 +230,7 @@ public class WorldGenHomeTree extends TCGenBase {
     }
 
     public boolean placeBlock(final int i, final int j, final int k, final Block woodID2, final int meta,
-                              final boolean force) {
+        final boolean force) {
         final Block bID = this.worldObj.getBlock(i, j, k);
         if (!force && !canReplaceBlock(bID)) {
             return false;
@@ -234,12 +240,13 @@ public class WorldGenHomeTree extends TCGenBase {
     }
 
     private boolean canReplaceBlock(Block block) {
-        return block == Blocks.water || block == Blocks.flowing_water ||
-            block == TCBlockRegistry.tropicsWater || block == Blocks.air;
+        return block == Blocks.water || block == Blocks.flowing_water
+            || block == TCBlockRegistry.tropicsWater
+            || block == Blocks.air;
     }
 
-    public List<ChunkCoordinates> genCircle(final int i, final int j, final int k, final double outerRadius, final double innerRadius,
-                                            final Block id, final int meta, final boolean solid) {
+    public List<ChunkCoordinates> genCircle(final int i, final int j, final int k, final double outerRadius,
+        final double innerRadius, final Block id, final int meta, final boolean solid) {
         List<ChunkCoordinates> generatedCoordinates = new ArrayList<>();
         final double outerRadiusSquared = outerRadius * outerRadius;
         final double innerRadiusSquared = innerRadius * innerRadius;

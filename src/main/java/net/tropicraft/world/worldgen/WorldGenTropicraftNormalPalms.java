@@ -1,6 +1,6 @@
 package net.tropicraft.world.worldgen;
 
-import java.util.*;
+import java.util.Random;
 
 import net.minecraft.block.*;
 import net.minecraft.init.*;

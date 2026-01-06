@@ -22,7 +22,7 @@ public class EntitySeaTurtle extends EntityAmphibian {
 
     protected void entityInit() {
         super.entityInit();
-        this.dataWatcher.addObject(17, (Object) 0);
+        this.dataWatcher.addObject(17, (byte) 0);
     }
 
     public void writeEntityToNBT(final NBTTagCompound nbttagcompound) {
@@ -47,7 +47,7 @@ public class EntitySeaTurtle extends EntityAmphibian {
             final double d4 = this.posY;
             final double d5 = this.posZ;
             entityEgg.setLocationAndAngles(d3, d4, d5, 0.0f, 0.0f);
-            this.worldObj.spawnEntityInWorld((Entity) entityEgg);
+            this.worldObj.spawnEntityInWorld(entityEgg);
             this.returnToLand = false;
         }
     }
@@ -62,7 +62,7 @@ public class EntitySeaTurtle extends EntityAmphibian {
         if (this.getAmphibianAge() >= 1.0f && !this.isUserRiding()
             && !this.worldObj.isRemote
             && (this.riddenByEntity == null || this.riddenByEntity == entityplayer)) {
-            entityplayer.mountEntity((Entity) this);
+            entityplayer.mountEntity(this);
             return true;
         }
         return false;
@@ -73,10 +73,10 @@ public class EntitySeaTurtle extends EntityAmphibian {
     }
 
     public boolean isUserRiding() {
-        return (this.dataWatcher.getWatchableObjectInt(17) & 0x1) != 0x0;
+        return this.dataWatcher.getWatchableObjectByte(17) == 1;
     }
 
     public void setUserRiding(final boolean flag) {
-        this.dataWatcher.updateObject(17,(flag ? 1 : 0));
+        this.dataWatcher.updateObject(17, (byte) (flag ? 1 : 0));
     }
 }

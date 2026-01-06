@@ -72,10 +72,10 @@ public class EntityLostMask extends Entity implements WindHandler {
     }
 
     protected void entityInit() {
-        this.dataWatcher.addObject(17, (Object) new Integer(0));
-        this.dataWatcher.addObject(18, (Object) new Integer(0));
-        this.dataWatcher.addObject(19, (Object) new Integer(0));
-        this.dataWatcher.addObject(20, (Object) new Integer(0));
+        this.dataWatcher.addObject(17, 0);
+        this.dataWatcher.addObject(18, 0);
+        this.dataWatcher.addObject(19, 0);
+        this.dataWatcher.addObject(20, 0);
     }
 
     protected void readEntityFromNBT(final NBTTagCompound nbt) {
@@ -108,9 +108,9 @@ public class EntityLostMask extends Entity implements WindHandler {
     public void dropItemStack() {}
 
     private void setRotator(final int[] a) {
-        this.dataWatcher.updateObject(18, (Object) new Integer(a[0]));
-        this.dataWatcher.updateObject(19, (Object) new Integer(a[1]));
-        this.dataWatcher.updateObject(20, (Object) new Integer(a[2]));
+        this.dataWatcher.updateObject(18, a[0]);
+        this.dataWatcher.updateObject(19, a[1]);
+        this.dataWatcher.updateObject(20, a[2]);
     }
 
     public int[] getRotator() {
@@ -119,7 +119,7 @@ public class EntityLostMask extends Entity implements WindHandler {
     }
 
     private void setType(final int i) {
-        this.dataWatcher.updateObject(17, (Object) new Integer(i));
+        this.dataWatcher.updateObject(17, i);
     }
 
     public boolean checkForWater(final int i) {

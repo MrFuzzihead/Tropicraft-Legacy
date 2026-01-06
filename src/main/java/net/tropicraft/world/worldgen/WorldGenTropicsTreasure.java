@@ -1,6 +1,8 @@
 package net.tropicraft.world.worldgen;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import net.minecraft.block.*;
 import net.minecraft.init.*;
@@ -39,7 +41,8 @@ public class WorldGenTropicsTreasure extends TCGenBase {
                 boolean shouldContinue = false;
                 for (int surroundZ = z - sandArea; surroundZ <= z + sandArea; ++surroundZ) {
                     for (int surroundX = x - sandArea; surroundX <= x + sandArea; ++surroundX) {
-                        if (!WorldGenTropicsTreasure.sandBlocks.contains(this.worldObj.getBlock(surroundX, y, surroundZ))) {
+                        if (!WorldGenTropicsTreasure.sandBlocks
+                            .contains(this.worldObj.getBlock(surroundX, y, surroundZ))) {
                             shouldContinue = true;
                             break;
                         }
@@ -71,7 +74,8 @@ public class WorldGenTropicsTreasure extends TCGenBase {
                             hasAddedMap = true;
                             this.initializeMap(this.worldObj, itemStack, x, y, z);
                         }
-                        tileEntityChest.setInventorySlotContents(this.rand.nextInt(tileEntityChest.getSizeInventory()), itemStack);
+                        tileEntityChest
+                            .setInventorySlotContents(this.rand.nextInt(tileEntityChest.getSizeInventory()), itemStack);
                     }
                 }
                 return true;

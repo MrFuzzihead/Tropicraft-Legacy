@@ -1,6 +1,6 @@
 package net.tropicraft.world;
 
-import java.util.*;
+import java.util.Random;
 
 import net.minecraft.block.*;
 import net.minecraft.world.*;
@@ -38,7 +38,7 @@ public class TCWorldGenerator implements IWorldGenerator {
                             new WorldGenTropicraftFlowers(
                                 world,
                                 random,
-                                    TCBlockRegistry.flowers,
+                                TCBlockRegistry.flowers,
                                 BiomeGenTropicraft.DEFAULT_FLOWER_META).generate(world, random, k, l, i1);
                         }
                     }

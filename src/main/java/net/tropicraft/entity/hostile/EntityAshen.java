@@ -44,8 +44,8 @@ public abstract class EntityAshen extends EntityMob implements IRangedAttackMob 
 
     protected void entityInit() {
         super.entityInit();
-        this.dataWatcher.addObject(16, (Object) new Integer(0));
-        this.dataWatcher.addObject(17, (Object) new Integer(0));
+        this.dataWatcher.addObject(DATAWATCHER_MASK_TYPE, 0);
+        this.dataWatcher.addObject(DATAWATCHER_ACTION_STATE, 0);
     }
 
     protected void applyEntityAttributes() {
@@ -65,7 +65,7 @@ public abstract class EntityAshen extends EntityMob implements IRangedAttackMob 
     }
 
     public void setMaskType(final int type) {
-        this.dataWatcher.updateObject(16, (Object) new Integer(type));
+        this.dataWatcher.updateObject(DATAWATCHER_MASK_TYPE, type);
     }
 
     public int getMaskType() {
@@ -73,7 +73,7 @@ public abstract class EntityAshen extends EntityMob implements IRangedAttackMob 
     }
 
     public void setActionState(final int state) {
-        this.dataWatcher.updateObject(17, (Object) new Integer(state));
+        this.dataWatcher.updateObject(DATAWATCHER_ACTION_STATE, state);
     }
 
     public int getActionState() {

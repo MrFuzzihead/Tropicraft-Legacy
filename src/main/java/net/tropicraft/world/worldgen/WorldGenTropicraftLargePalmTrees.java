@@ -1,13 +1,13 @@
 package net.tropicraft.world.worldgen;
 
-import java.util.*;
+import java.util.Random;
 
 import net.minecraft.block.*;
-import net.minecraft.init.*;
+import net.minecraft.init.Blocks;
 import net.minecraft.world.*;
-import net.minecraft.world.gen.feature.*;
-import net.tropicraft.block.*;
-import net.tropicraft.registry.*;
+import net.minecraft.world.gen.feature.WorldGenerator;
+import net.tropicraft.block.BlockTropicraftLog;
+import net.tropicraft.registry.TCBlockRegistry;
 
 public class WorldGenTropicraftLargePalmTrees extends WorldGenerator {
 

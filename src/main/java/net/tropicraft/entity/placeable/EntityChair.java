@@ -77,7 +77,7 @@ public class EntityChair extends Entity {
         double d0 = 0.0;
         if (this.getComeSailAway()) {
             for (int i = 0; i < b0; ++i) {
-                final double d2 = this.boundingBox.minY + (this.boundingBox.maxY - this.boundingBox.minY) * (i + 0) / b0
+                final double d2 = this.boundingBox.minY + (this.boundingBox.maxY - this.boundingBox.minY) * i / b0
                     - 0.125;
                 final double d3 = this.boundingBox.minY + (this.boundingBox.maxY - this.boundingBox.minY) * (i + 1) / b0
                     - 0.125;
@@ -163,10 +163,8 @@ public class EntityChair extends Entity {
                 }
                 this.motionY += 0.007000000216066837;
             }
-            if (this.getComeSailAway() && this.riddenByEntity != null
-                && this.riddenByEntity instanceof EntityLivingBase) {
-                final EntityLivingBase entitylivingbase = (EntityLivingBase) this.riddenByEntity;
-                final float f = this.riddenByEntity.rotationYaw + -entitylivingbase.moveStrafing * 90.0f;
+            if (this.getComeSailAway() && this.riddenByEntity instanceof EntityLivingBase entitylivingbase) {
+                final float f = entitylivingbase.rotationYaw + -entitylivingbase.moveStrafing * 90.0f;
                 this.motionX += -Math.sin(f * 3.1415927f / 180.0f) * this.speedMultiplier
                     * entitylivingbase.moveForward
                     * 0.05000000074505806;
@@ -195,7 +193,7 @@ public class EntityChair extends Entity {
             if (this.getComeSailAway()) {
                 for (int l = 0; l < 4; ++l) {
                     final int i2 = MathHelper.floor_double(this.posX + (l % 2 - 0.5) * 0.8);
-                    final int j = MathHelper.floor_double(this.posZ + (l / 2 - 0.5) * 0.8);
+                    final int j = MathHelper.floor_double(this.posZ + (l / 2.0 - 0.5) * 0.8);
                     for (int j2 = 0; j2 < 2; ++j2) {
                         final int k = MathHelper.floor_double(this.posY) + j2;
                         final Block block = this.worldObj.getBlock(i2, k, j);
@@ -241,14 +239,14 @@ public class EntityChair extends Entity {
             }
             this.setRotation(this.rotationYaw += (float) d13, this.rotationPitch);
             if (!this.worldObj.isRemote) {
-                final List<?> list = (List<?>) this.worldObj.getEntitiesWithinAABBExcludingEntity(
-                    (Entity) this,
+                final List<?> list = this.worldObj.getEntitiesWithinAABBExcludingEntity(
+                    this,
                     this.boundingBox.expand(0.20000000298023224, 0.0, 0.20000000298023224));
                 if (list != null && !list.isEmpty()) {
-                    for (int k2 = 0; k2 < list.size(); ++k2) {
-                        final Entity entity = (Entity) list.get(k2);
+                    for (final Object obj : list) {
+                        final Entity entity = (Entity) obj;
                         if (entity != this.riddenByEntity && entity.canBePushed() && entity instanceof EntityChair) {
-                            entity.applyEntityCollision((Entity) this);
+                            entity.applyEntityCollision(this);
                         }
                     }
                 }
@@ -260,21 +258,22 @@ public class EntityChair extends Entity {
     }
 
     protected void entityInit() {
-        this.dataWatcher.addObject(2, (Object) new Integer(ColorHelper.DEFAULT_VALUE));
-        this.dataWatcher.addObject(3, (Object) new Float(0.0f));
-        this.dataWatcher.addObject(4, (Object) new Byte((byte) 0));
-        this.dataWatcher.addObject(5, (Object) new Integer(1));
-        this.dataWatcher.addObject(6, (Object) new Integer(0));
+        // Pass primitives and allow autoboxing to avoid unnecessary explicit boxing calls
+        this.dataWatcher.addObject(DATAWATCHER_COLOR, ColorHelper.DEFAULT_VALUE);
+        this.dataWatcher.addObject(DATAWATCHER_DAMAGE, 0.0f);
+        this.dataWatcher.addObject(DATAWATCHER_COMESAILAWAY, (byte) 0);
+        this.dataWatcher.addObject(DATAWATCHER_FORWARD_DIRECTION, 1);
+        this.dataWatcher.addObject(DATAWATCHER_TIME_SINCE_HIT, 0);
     }
 
     protected void readEntityFromNBT(final NBTTagCompound nbt) {
         this.setColor(nbt.getInteger("COLOR"));
-        this.setComeSailAway((boolean) nbt.getBoolean("COME_SAIL_AWAY"));
+        this.setComeSailAway(nbt.getBoolean("COME_SAIL_AWAY"));
     }
 
     protected void writeEntityToNBT(final NBTTagCompound nbt) {
-        nbt.setInteger("COLOR", (int) this.getColor());
-        nbt.setBoolean("COME_SAIL_AWAY", (boolean) this.getComeSailAway());
+        nbt.setInteger("COLOR", this.getColor());
+        nbt.setBoolean("COME_SAIL_AWAY", this.getComeSailAway());
     }
 
     public boolean attackEntityFrom(final DamageSource par1DamageSource, final float par2) {
@@ -290,10 +289,10 @@ public class EntityChair extends Entity {
                 && ((EntityPlayer) par1DamageSource.getEntity()).capabilities.isCreativeMode;
             if (flag || this.getDamage() > 40.0f) {
                 if (this.riddenByEntity != null) {
-                    this.riddenByEntity.mountEntity((Entity) this);
+                    this.riddenByEntity.mountEntity(this);
                 }
                 if (!flag) {
-                    this.entityDropItem(new ItemStack((Item) TCItemRegistry.chair, 1, this.getDamageFromColor()), 0.0f);
+                    this.entityDropItem(new ItemStack(TCItemRegistry.chair, 1, this.getDamageFromColor()), 0.0f);
                 }
                 this.setDead();
             }
@@ -320,7 +319,7 @@ public class EntityChair extends Entity {
         }
         if (!this.worldObj.isRemote) {
             System.out.println("mount");
-            player.mountEntity((Entity) this);
+            player.mountEntity(this);
         }
         return true;
     }
@@ -385,8 +384,7 @@ public class EntityChair extends Entity {
     }
 
     private float getAngleToPlayer(final EntityPlayer player) {
-        final float angle = MathHelper.wrapAngleTo180_float(player.rotationYaw);
-        return angle;
+        return MathHelper.wrapAngleTo180_float(player.rotationYaw);
     }
 
     public AxisAlignedBB getCollisionBox(final Entity par1Entity) {
@@ -395,10 +393,6 @@ public class EntityChair extends Entity {
 
     public AxisAlignedBB getBoundingBox() {
         return this.boundingBox;
-    }
-
-    public boolean canBePushed() {
-        return false;
     }
 
     protected boolean canTriggerWalking() {
@@ -420,7 +414,7 @@ public class EntityChair extends Entity {
                             0.0f);
                     }
                     for (int l = 0; l < this.rand.nextInt(5) + 1; ++l) {
-                        this.dropItem((Item) TCItemRegistry.bambooStick, 1);
+                        this.dropItem(TCItemRegistry.bambooStick, 1);
                     }
                 }
                 this.fallDistance = 0.0f;
@@ -432,46 +426,47 @@ public class EntityChair extends Entity {
     }
 
     public void setColor(final int color) {
-        this.dataWatcher.updateObject(2, (Object) color);
+        this.dataWatcher.updateObject(DATAWATCHER_COLOR, color);
     }
 
+    @SuppressWarnings("unused")
     public void setColor(final float red, final float green, final float blue) {
-        this.dataWatcher.updateObject(2, (Object) ColorHelper.getColor(red, green, blue));
+        this.dataWatcher.updateObject(DATAWATCHER_COLOR, ColorHelper.getColor(red, green, blue));
     }
 
     public int getColor() {
-        return this.dataWatcher.getWatchableObjectInt(2);
+        return this.dataWatcher.getWatchableObjectInt(DATAWATCHER_COLOR);
     }
 
     public void setDamage(final float damage) {
-        this.dataWatcher.updateObject(3, (Object) damage);
+        this.dataWatcher.updateObject(DATAWATCHER_DAMAGE, damage);
     }
 
     public float getDamage() {
-        return this.dataWatcher.getWatchableObjectFloat(3);
+        return this.dataWatcher.getWatchableObjectFloat(DATAWATCHER_DAMAGE);
     }
 
     public void setComeSailAway(final boolean sail) {
-        this.dataWatcher.updateObject(4, (Object) (sail ? 1 : (0)));
+        this.dataWatcher.updateObject(DATAWATCHER_COMESAILAWAY, (byte) (sail ? 1 : 0));
     }
 
     public boolean getComeSailAway() {
-        return this.dataWatcher.getWatchableObjectByte(4) == 1;
+        return this.dataWatcher.getWatchableObjectByte(DATAWATCHER_COMESAILAWAY) == 1;
     }
 
     public void setForwardDirection(final int dir) {
-        this.dataWatcher.updateObject(5, (Object) dir);
+        this.dataWatcher.updateObject(DATAWATCHER_FORWARD_DIRECTION, dir);
     }
 
     public int getForwardDirection() {
-        return this.dataWatcher.getWatchableObjectInt(5);
+        return this.dataWatcher.getWatchableObjectInt(DATAWATCHER_FORWARD_DIRECTION);
     }
 
     public void setTimeSinceHit(final int time) {
-        this.dataWatcher.updateObject(6, (Object) time);
+        this.dataWatcher.updateObject(DATAWATCHER_TIME_SINCE_HIT, time);
     }
 
     public int getTimeSinceHit() {
-        return this.dataWatcher.getWatchableObjectInt(6);
+        return this.dataWatcher.getWatchableObjectInt(DATAWATCHER_TIME_SINCE_HIT);
     }
 }

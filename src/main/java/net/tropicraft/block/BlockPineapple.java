@@ -1,6 +1,7 @@
 package net.tropicraft.block;
 
-import java.util.*;
+import java.util.List;
+import java.util.Random;
 
 import net.minecraft.block.*;
 import net.minecraft.block.material.*;

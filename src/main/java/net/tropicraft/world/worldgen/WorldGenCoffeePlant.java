@@ -1,5 +1,7 @@
 package net.tropicraft.world.worldgen;
 
+import java.util.Random;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
@@ -7,13 +9,12 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.tropicraft.registry.TCBlockRegistry;
 
-import java.util.Random;
-
 public class WorldGenCoffeePlant extends TCGenBase {
 
     public WorldGenCoffeePlant(final World world, final Random rand) {
         super(world, rand);
     }
+
     public boolean generate(final int x, final int y, final int z) {
         final int nx = generateRandomOffset(x);
         final int nz = generateRandomOffset(z);
@@ -46,7 +47,8 @@ public class WorldGenCoffeePlant extends TCGenBase {
         for (final ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
             final int neighborx = x + dir.offsetX;
             final int neighborz = z + dir.offsetZ;
-            if (this.worldObj.getBlock(neighborx, y - 1, neighborz).getMaterial() == Material.water) {
+            if (this.worldObj.getBlock(neighborx, y - 1, neighborz)
+                .getMaterial() == Material.water) {
                 return dir;
             }
         }
@@ -85,7 +87,13 @@ public class WorldGenCoffeePlant extends TCGenBase {
             return;
         }
 
-        this.worldObj.setBlock(x + direction.offsetX, y - 1, z + direction.offsetZ, Blocks.water, 0, WorldGenCoffeePlant.blockGenNotifyFlag);
+        this.worldObj.setBlock(
+            x + direction.offsetX,
+            y - 1,
+            z + direction.offsetZ,
+            Blocks.water,
+            0,
+            WorldGenCoffeePlant.blockGenNotifyFlag);
         this.worldObj.setBlock(x, y - 1, z, Blocks.farmland, 7, WorldGenCoffeePlant.blockGenNotifyFlag);
 
         for (int i = 0; i < 3 && this.worldObj.isAirBlock(x, y + i, z); ++i) {

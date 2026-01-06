@@ -96,7 +96,11 @@ public class WorldGenTallTree extends TCGenBase {
                 this.genCircle(nx, y + 3, nz, (leafSize - 2), 0.0, WorldGenTallTree.LEAF_BLOCK, 1, false);
                 this.genCircle(nx, y + 2, nz, (leafSize - 1), (leafSize - 3), WorldGenTallTree.LEAF_BLOCK, 1, false);
                 this.genCircle(nx, y + 1, nz, leafSize, (leafSize - 1), WorldGenTallTree.LEAF_BLOCK, 1, false);
-                this.placeBlockLine(new int[] { i, y - 2, k }, new int[] { nx, y + 2, nz }, WorldGenTallTree.WOOD_BLOCK, 1);
+                this.placeBlockLine(
+                    new int[] { i, y - 2, k },
+                    new int[] { nx, y + 2, nz },
+                    WorldGenTallTree.WOOD_BLOCK,
+                    1);
                 for (int x3 = nx - leafSize; x3 <= nx + leafSize; ++x3) {
                     for (int z3 = nz - leafSize; z3 <= nz + leafSize; ++z3) {
                         for (int y3 = y; y3 <= y + 2; ++y3) {
@@ -198,8 +202,7 @@ public class WorldGenTallTree extends TCGenBase {
 
             if (this.worldObj.isAirBlock(blockX, blockY, blockZ)) {
                 validSides.add(1 << Direction.facingToDirection[Facing.oppositeSide[m]]);
-            } else {
-            }
+            } else {}
         }
 
         if (!validSides.isEmpty()) {
@@ -229,12 +232,12 @@ public class WorldGenTallTree extends TCGenBase {
             int localX = x & 15;
             int localZ = z & 15;
 
-            if (chunk.getBlock(localX, yCoord, localZ).isAir(this.worldObj, localX, yCoord, localZ)) {
+            if (chunk.getBlock(localX, yCoord, localZ)
+                .isAir(this.worldObj, localX, yCoord, localZ)) {
                 chunk.func_150807_a(localX, yCoord, localZ, vineBlock, vineSide);
             }
         }
     }
-
 
     static {
         WOOD_BLOCK = TCBlockRegistry.logs;

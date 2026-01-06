@@ -81,7 +81,7 @@ public class EntityTropiCreeper extends EntityCoroAI implements IMob {
 
     public void readEntityFromNBT(final NBTTagCompound par1NBTTagCompound) {
         super.readEntityFromNBT(par1NBTTagCompound);
-        this.dataWatcher.updateObject(17,(par1NBTTagCompound.getBoolean("powered") ? 1 : 0));
+        this.dataWatcher.updateObject(17, (par1NBTTagCompound.getBoolean("powered") ? 1 : 0));
         if (par1NBTTagCompound.hasKey("Fuse")) {
             this.fuseTime = par1NBTTagCompound.getShort("Fuse");
         }
@@ -151,13 +151,10 @@ public class EntityTropiCreeper extends EntityCoroAI implements IMob {
                             if (TCBlockRegistry.flowers.canPlaceBlockAt(this.worldObj, x, y, z)) {
                                 this.worldObj.setBlock(x, y, z, TCBlockRegistry.flowers, flowerType, 3);
                             } else {
-                                this.entityDropItem(
-                                    new ItemStack(TCBlockRegistry.flowers, 1, flowerType),
-                                    0.5f);
+                                this.entityDropItem(new ItemStack(TCBlockRegistry.flowers, 1, flowerType), 0.5f);
                             }
                         } else if (this.rand.nextInt(10) < 7
-                            && !CoroUtilBlock
-                                .isEqual(this.worldObj.getBlock(x, y, z), TCBlockRegistry.bambooBundle)
+                            && !CoroUtilBlock.isEqual(this.worldObj.getBlock(x, y, z), TCBlockRegistry.bambooBundle)
                             && !CoroUtilBlock.isEqual(this.worldObj.getBlock(x, y, z), TCBlockRegistry.coconut)
                             && CoroUtilBlock.isEqual(this.worldObj.getBlock(x, y - 1, z), Blocks.grass)) {
                                 this.worldObj.setBlock(x, y, z, Blocks.tallgrass, 1, 3);

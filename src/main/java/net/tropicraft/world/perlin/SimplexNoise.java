@@ -1,6 +1,6 @@
 package net.tropicraft.world.perlin;
 
-import java.util.*;
+import java.util.Random;
 
 public class SimplexNoise {
 

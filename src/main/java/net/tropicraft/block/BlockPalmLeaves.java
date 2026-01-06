@@ -1,6 +1,6 @@
 package net.tropicraft.block;
 
-import java.util.*;
+import java.util.Random;
 
 import net.minecraft.block.*;
 import net.minecraft.client.renderer.texture.*;

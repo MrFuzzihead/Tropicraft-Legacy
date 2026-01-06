@@ -50,7 +50,7 @@ public class VMonkey extends EntityCoroAI {
     public void entityInit() {
         super.entityInit();
         this.getDataWatcher()
-            .addObject(16, (Object) 0);
+            .addObject(16, 0);
     }
 
     public void checkNewAgent() {

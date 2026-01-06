@@ -1,5 +1,7 @@
 package net.tropicraft.world.worldgen;
 
+import java.util.Random;
+
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -7,8 +9,6 @@ import net.minecraft.world.World;
 import net.tropicraft.block.tileentity.TileEntityBambooChest;
 import net.tropicraft.registry.TCBlockRegistry;
 import net.tropicraft.registry.TCItemRegistry;
-
-import java.util.Random;
 
 public class WorldGenSunkenShip extends TCDirectionalGen {
 
@@ -42,7 +42,7 @@ public class WorldGenSunkenShip extends TCDirectionalGen {
                     for (int z = -width; z <= width; ++z) {
                         if (this.rand.nextInt(5) < 3) {
                             if (y == j || x == length - 1) {
-                                this.placeBlockWithDir(x, y, z,  TCBlockRegistry.planks, 1);
+                                this.placeBlockWithDir(x, y, z, TCBlockRegistry.planks, 1);
                                 if (z == -width || z == width || x == length - 1) {
                                     this.placeBlockWithDir(x, y + 1, z, TCBlockRegistry.planks, 1);
                                 }

@@ -44,7 +44,7 @@ public class EntityTropicalFish extends EntityTropicraftWaterMob {
     }
 
     public void setColor(final int col) {
-        this.dataWatcher.updateObject(16, (Object) col);
+        this.dataWatcher.updateObject(DATA_COLOR, col);
     }
 
     public int getColor() {
@@ -52,7 +52,7 @@ public class EntityTropicalFish extends EntityTropicraftWaterMob {
     }
 
     public void setShouldSpawnSchool(final boolean spawnStatus) {
-        this.dataWatcher.updateObject(17, (Object) (spawnStatus ? 1 : -1));
+        this.dataWatcher.updateObject(SHOULD_SPAWN_DATAWATCHER, (spawnStatus ? 1 : -1));
     }
 
     public boolean getShouldSpawnSchool() {
@@ -115,8 +115,8 @@ public class EntityTropicalFish extends EntityTropicraftWaterMob {
     @Override
     public void entityInit() {
         super.entityInit();
-        this.dataWatcher.addObject(16, (Object) new Integer(0));
-        this.dataWatcher.addObject(17, (Object) (-1));
+        this.dataWatcher.addObject(DATA_COLOR, 0);
+        this.dataWatcher.addObject(SHOULD_SPAWN_DATAWATCHER, -1);
     }
 
     public void checkForLeader() {
