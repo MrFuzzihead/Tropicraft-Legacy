@@ -2,9 +2,9 @@ package net.tropicraft.world.worldgen;
 
 import java.util.Random;
 
-import net.minecraft.block.*;
-import net.minecraft.tileentity.*;
-import net.minecraft.world.*;
+import net.minecraft.block.Block;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 public abstract class TCDirectionalGen extends TCGenBase {
 

@@ -1,21 +1,28 @@
 package net.tropicraft.entity.ai.jobs;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
-import net.minecraft.block.*;
-import net.minecraft.entity.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.item.*;
-import net.minecraft.server.*;
-import net.minecraft.tileentity.*;
-import net.minecraft.util.*;
-import net.tropicraft.*;
-import net.tropicraft.block.tileentity.*;
-import net.tropicraft.economy.*;
-import net.tropicraft.registry.*;
+import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.MathHelper;
+import net.tropicraft.Tropicraft;
+import net.tropicraft.block.tileentity.TileEntityPurchasePlate;
+import net.tropicraft.economy.ItemEntry;
+import net.tropicraft.economy.ItemValues;
+import net.tropicraft.registry.TCBlockRegistry;
+import net.tropicraft.registry.TCKoaCurrencyRegistry;
 
-import CoroUtil.componentAI.jobSystem.*;
-import CoroUtil.util.*;
+import CoroUtil.componentAI.jobSystem.JobBase;
+import CoroUtil.componentAI.jobSystem.JobManager;
+import CoroUtil.util.CoroUtilBlock;
 
 public class JobTrade extends JobBase {
 

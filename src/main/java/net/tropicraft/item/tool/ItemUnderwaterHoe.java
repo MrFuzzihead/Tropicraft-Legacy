@@ -1,6 +1,6 @@
 package net.tropicraft.item.tool;
 
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
 
 public class ItemUnderwaterHoe extends ItemTropicraftHoe implements IUnderwaterTool {
 

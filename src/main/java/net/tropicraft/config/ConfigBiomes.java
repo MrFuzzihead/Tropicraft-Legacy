@@ -1,6 +1,6 @@
 package net.tropicraft.config;
 
-import modconfig.*;
+import modconfig.IConfigCategory;
 
 public class ConfigBiomes implements IConfigCategory {
 

@@ -2,17 +2,20 @@ package net.tropicraft.entity.hostile;
 
 import java.util.Objects;
 
-import net.minecraft.block.*;
-import net.minecraft.entity.*;
-import net.minecraft.entity.monster.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.init.*;
-import net.minecraft.item.*;
-import net.minecraft.nbt.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
-import net.tropicraft.entity.*;
-import net.tropicraft.registry.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.monster.IMob;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.EnumDifficulty;
+import net.minecraft.world.World;
+import net.tropicraft.entity.EntityLand;
+import net.tropicraft.registry.TCBlockRegistry;
 
 public class EntityEIH extends EntityLand implements IMob {
 

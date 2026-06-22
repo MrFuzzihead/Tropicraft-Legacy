@@ -1,19 +1,28 @@
 package net.tropicraft.world.chunk;
 
-import java.util.*;
+import java.util.List;
+import java.util.Random;
 
-import net.minecraft.block.*;
-import net.minecraft.entity.*;
-import net.minecraft.init.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
-import net.minecraft.world.biome.*;
-import net.minecraft.world.chunk.*;
-import net.minecraft.world.gen.*;
-import net.minecraft.world.gen.feature.*;
-import net.tropicraft.registry.*;
-import net.tropicraft.world.biomes.*;
-import net.tropicraft.world.mapgen.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockSand;
+import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.init.Blocks;
+import net.minecraft.util.IProgressUpdate;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.ChunkPosition;
+import net.minecraft.world.SpawnerAnimals;
+import net.minecraft.world.World;
+import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraft.world.gen.NoiseGeneratorOctaves;
+import net.minecraft.world.gen.feature.WorldGenMinable;
+import net.minecraft.world.gen.feature.WorldGenerator;
+import net.tropicraft.registry.TCBlockRegistry;
+import net.tropicraft.world.biomes.BiomeGenTropicraft;
+import net.tropicraft.world.mapgen.MapGenTropicsCaves;
+import net.tropicraft.world.mapgen.MapGenUndergroundGrove;
+import net.tropicraft.world.mapgen.MapGenVolcano;
 
 public class ChunkProviderTropicraft implements IChunkProvider {
 

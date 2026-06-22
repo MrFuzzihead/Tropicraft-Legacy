@@ -1,15 +1,19 @@
 package net.tropicraft.event;
 
-import net.minecraft.block.*;
-import net.minecraft.entity.*;
-import net.minecraft.entity.item.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.item.*;
-import net.minecraft.world.*;
-import net.minecraftforge.event.world.*;
-import net.tropicraft.registry.*;
+import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumAction;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
+import net.minecraft.world.World;
+import net.minecraftforge.event.world.BlockEvent;
+import net.tropicraft.registry.TCBlockRegistry;
+import net.tropicraft.registry.TCItemRegistry;
 
-import cpw.mods.fml.common.eventhandler.*;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class TCBlockEvents {
 

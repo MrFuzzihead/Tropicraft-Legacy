@@ -1,12 +1,13 @@
 package net.tropicraft.client.entity.render;
 
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.entity.*;
-import net.minecraft.entity.*;
-import net.minecraft.util.*;
-import net.tropicraft.entity.underdasea.*;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.ResourceLocation;
+import net.tropicraft.entity.underdasea.EntityStarfish;
+import net.tropicraft.entity.underdasea.StarfishType;
 
-import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.GL11;
 
 public class RenderStarfish extends Render {
 

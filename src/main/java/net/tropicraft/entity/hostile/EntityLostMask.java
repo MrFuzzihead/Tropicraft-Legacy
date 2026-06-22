@@ -1,13 +1,14 @@
 package net.tropicraft.entity.hostile;
 
-import net.minecraft.block.material.*;
-import net.minecraft.entity.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.nbt.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
+import net.minecraft.block.material.Material;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
 
-import CoroUtil.api.weather.*;
+import CoroUtil.api.weather.WindHandler;
 
 public class EntityLostMask extends Entity implements WindHandler {
 

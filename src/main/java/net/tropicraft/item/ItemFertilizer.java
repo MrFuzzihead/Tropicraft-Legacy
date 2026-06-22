@@ -1,11 +1,13 @@
 package net.tropicraft.item;
 
-import net.minecraft.block.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.init.*;
-import net.minecraft.item.*;
-import net.minecraft.world.*;
-import net.tropicraft.registry.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.IGrowable;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+import net.tropicraft.registry.TCBlockRegistry;
+import net.tropicraft.registry.TCCreativeTabRegistry;
 
 public class ItemFertilizer extends ItemTropicraft {
 

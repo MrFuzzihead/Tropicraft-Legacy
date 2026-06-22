@@ -1,14 +1,18 @@
 package net.tropicraft.command;
 
-import java.util.*;
+import java.util.Map;
 
-import net.minecraft.command.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.util.*;
-import net.tropicraft.world.location.*;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.MathHelper;
+import net.tropicraft.world.location.TownKoaVillage;
+import net.tropicraft.world.location.TownKoaVillageGenHelper;
 
-import CoroUtil.world.*;
-import CoroUtil.world.location.*;
+import CoroUtil.world.WorldDirector;
+import CoroUtil.world.WorldDirectorManager;
+import CoroUtil.world.location.ManagedLocation;
 
 public class CommandTropicraft extends CommandBase {
 

@@ -1,22 +1,37 @@
 package net.tropicraft.item;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 
-import net.minecraft.block.*;
-import net.minecraft.client.renderer.texture.*;
-import net.minecraft.creativetab.*;
-import net.minecraft.entity.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.init.*;
-import net.minecraft.item.*;
-import net.minecraft.nbt.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
-import net.tropicraft.block.tileentity.*;
-import net.tropicraft.drinks.*;
-import net.tropicraft.registry.*;
+import net.minecraft.block.Block;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.EnumAction;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.IIcon;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+import net.tropicraft.block.tileentity.TileEntityBambooMug;
+import net.tropicraft.drinks.ColorMixer;
+import net.tropicraft.drinks.Drink;
+import net.tropicraft.drinks.Ingredient;
+import net.tropicraft.drinks.MixerRecipe;
+import net.tropicraft.registry.TCBlockRegistry;
+import net.tropicraft.registry.TCCreativeTabRegistry;
+import net.tropicraft.registry.TCDrinkMixerRegistry;
+import net.tropicraft.registry.TCItemRegistry;
 
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemCocktail extends ItemTropicraft {
 

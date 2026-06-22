@@ -1,15 +1,17 @@
 package net.tropicraft.client.entity.render;
 
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.entity.*;
-import net.minecraft.entity.*;
-import net.minecraft.util.*;
-import net.minecraftforge.common.util.*;
-import net.tropicraft.entity.placeable.*;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.ForgeDirection;
+import net.tropicraft.entity.placeable.EntitySnareTrap;
 
-import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderSnareTrap extends Render {

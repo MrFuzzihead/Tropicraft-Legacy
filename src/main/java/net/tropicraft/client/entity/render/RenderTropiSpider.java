@@ -1,16 +1,20 @@
 package net.tropicraft.client.entity.render;
 
-import net.minecraft.client.model.*;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.entity.*;
-import net.minecraft.entity.*;
-import net.minecraft.util.*;
-import net.tropicraft.entity.hostile.*;
-import net.tropicraft.util.*;
+import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelSpider;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.ResourceLocation;
+import net.tropicraft.entity.hostile.SpiderBase;
+import net.tropicraft.entity.hostile.SpiderChild;
+import net.tropicraft.util.TropicraftUtils;
 
-import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderTropiSpider extends RenderLiving {

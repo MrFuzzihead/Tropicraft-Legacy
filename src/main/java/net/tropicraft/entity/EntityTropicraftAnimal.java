@@ -1,7 +1,7 @@
 package net.tropicraft.entity;
 
-import net.minecraft.entity.passive.*;
-import net.minecraft.world.*;
+import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.world.World;
 
 public abstract class EntityTropicraftAnimal extends EntityAnimal {
 

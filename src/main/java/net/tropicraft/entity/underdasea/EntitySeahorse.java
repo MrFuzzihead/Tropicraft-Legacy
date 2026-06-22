@@ -1,7 +1,7 @@
 package net.tropicraft.entity.underdasea;
 
-import net.minecraft.nbt.*;
-import net.minecraft.world.*;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 
 public class EntitySeahorse extends EntityTropicraftWaterMob {
 

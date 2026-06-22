@@ -1,22 +1,26 @@
 package net.tropicraft.entity.projectile;
 
-import java.util.*;
+import java.util.List;
 
-import net.minecraft.client.*;
-import net.minecraft.entity.*;
-import net.minecraft.entity.player.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.*;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
-import net.minecraft.world.*;
+import net.minecraft.world.World;
 
-import CoroUtil.componentAI.*;
-import CoroUtil.entity.*;
-import CoroUtil.util.*;
-import cpw.mods.fml.relauncher.*;
-import extendedrenderer.particle.*;
-import extendedrenderer.particle.behavior.*;
-import extendedrenderer.particle.entity.*;
+import CoroUtil.componentAI.AITamable;
+import CoroUtil.componentAI.ICoroAI;
+import CoroUtil.entity.EntityThrowableUsefull;
+import CoroUtil.util.CoroUtilEntity;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import extendedrenderer.particle.ParticleRegistry;
+import extendedrenderer.particle.behavior.ParticleBehaviors;
+import extendedrenderer.particle.entity.EntityRotFX;
 
 public class EntityTameBall extends EntityThrowableUsefull {
 

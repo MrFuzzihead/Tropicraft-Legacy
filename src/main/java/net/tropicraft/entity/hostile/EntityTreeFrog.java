@@ -1,17 +1,29 @@
 package net.tropicraft.entity.hostile;
 
-import net.minecraft.entity.*;
-import net.minecraft.entity.ai.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.item.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
-import net.tropicraft.entity.*;
-import net.tropicraft.entity.projectile.*;
-import net.tropicraft.registry.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityAgeable;
+import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IRangedAttackMob;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.EntityAIArrowAttack;
+import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
+import net.minecraft.entity.ai.EntityAISwimming;
+import net.minecraft.entity.ai.EntityAIWander;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.EnumDifficulty;
+import net.minecraft.world.World;
+import net.tropicraft.entity.EntityTropicraftAnimal;
+import net.tropicraft.entity.projectile.EntityPoisonBlot;
+import net.tropicraft.registry.TCItemRegistry;
 
-import cpw.mods.fml.common.registry.*;
-import io.netty.buffer.*;
+import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
+import io.netty.buffer.ByteBuf;
 
 public abstract class EntityTreeFrog extends EntityTropicraftAnimal
     implements IEntityAdditionalSpawnData, IRangedAttackMob {

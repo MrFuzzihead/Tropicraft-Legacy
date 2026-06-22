@@ -1,16 +1,16 @@
 package net.tropicraft.item;
 
-import java.util.*;
+import java.util.List;
 
-import net.minecraft.entity.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.init.*;
-import net.minecraft.item.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
-import net.minecraftforge.common.util.*;
-import net.tropicraft.entity.placeable.*;
-import net.tropicraft.registry.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+import net.tropicraft.entity.placeable.EntitySnareTrap;
+import net.tropicraft.registry.TCCreativeTabRegistry;
 
 public class ItemSnareTrap extends ItemTropicraft {
 

@@ -1,13 +1,14 @@
 package net.tropicraft.block;
 
-import java.util.*;
+import java.util.Random;
 
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.item.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
-import net.tropicraft.registry.*;
+import net.minecraft.item.Item;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.IBlockAccess;
+import net.tropicraft.registry.TCBlockRegistry;
+import net.tropicraft.registry.TCItemRegistry;
 
 public class BlockTropicraftOre extends BlockTropicraft {
 

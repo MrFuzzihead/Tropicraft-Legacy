@@ -1,8 +1,8 @@
 package net.tropicraft.economy;
 
-import java.util.*;
+import java.util.ArrayList;
 
-import net.minecraft.item.*;
+import net.minecraft.item.ItemStack;
 
 public class ItemValues {
 

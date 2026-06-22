@@ -1,18 +1,24 @@
 package net.tropicraft.item;
 
-import java.util.*;
+import java.util.List;
 
-import net.minecraft.block.*;
-import net.minecraft.client.renderer.texture.*;
-import net.minecraft.creativetab.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.item.*;
-import net.minecraft.util.*;
-import net.tropicraft.curare.*;
-import net.tropicraft.registry.*;
-import net.tropicraft.util.*;
+import net.minecraft.block.Block;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
+import net.tropicraft.curare.CurareMix;
+import net.tropicraft.curare.CurareMixRegistry;
+import net.tropicraft.curare.CurareType;
+import net.tropicraft.registry.TCBlockRegistry;
+import net.tropicraft.registry.TCCreativeTabRegistry;
+import net.tropicraft.util.ColorHelper;
+import net.tropicraft.util.TropicraftUtils;
 
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemCurare extends ItemTropicraft {
 

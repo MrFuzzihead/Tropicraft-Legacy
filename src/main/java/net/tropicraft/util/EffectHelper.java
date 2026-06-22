@@ -1,8 +1,10 @@
 package net.tropicraft.util;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-import net.minecraft.entity.*;
+import net.minecraft.entity.EntityLivingBase;
 
 public class EffectHelper {
 

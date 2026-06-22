@@ -1,8 +1,8 @@
 package net.tropicraft.curare;
 
-import java.util.*;
+import java.util.Arrays;
 
-import net.minecraft.item.*;
+import net.minecraft.item.ItemStack;
 
 public class CurareMix {
 

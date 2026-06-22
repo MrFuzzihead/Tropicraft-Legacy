@@ -1,10 +1,12 @@
 package net.tropicraft.entity.ai.jobs;
 
-import net.minecraft.entity.player.*;
+import net.minecraft.entity.player.EntityPlayer;
 
-import CoroUtil.componentAI.jobSystem.*;
-import CoroUtil.quest.*;
-import CoroUtil.quest.quests.*;
+import CoroUtil.componentAI.jobSystem.JobBase;
+import CoroUtil.componentAI.jobSystem.JobManager;
+import CoroUtil.quest.EnumQuestState;
+import CoroUtil.quest.PlayerQuestManager;
+import CoroUtil.quest.quests.ActiveQuest;
 
 public class JobQuestGiver extends JobBase {
 

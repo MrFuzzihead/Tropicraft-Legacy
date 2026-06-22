@@ -5,15 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.block.*;
-import net.minecraft.init.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
-import net.minecraft.world.biome.*;
-import net.tropicraft.registry.*;
-import net.tropicraft.world.biomes.*;
-import net.tropicraft.world.perlin.*;
-import net.tropicraft.world.perlin.generator.*;
+import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.world.World;
+import net.minecraft.world.biome.BiomeGenBase;
+import net.tropicraft.registry.TCBlockRegistry;
+import net.tropicraft.world.biomes.BiomeGenTropicraft;
+import net.tropicraft.world.perlin.NoiseModule;
+import net.tropicraft.world.perlin.generator.Billowed;
 
 public class MapGenVolcano {
 

@@ -1,11 +1,12 @@
 package net.tropicraft.entity.hostile;
 
-import net.minecraft.entity.monster.*;
-import net.minecraft.init.*;
-import net.minecraft.world.*;
-import net.tropicraft.entity.*;
+import net.minecraft.entity.monster.IMob;
+import net.minecraft.init.Items;
+import net.minecraft.world.World;
+import net.tropicraft.entity.EntityCoroAI;
 
-import CoroUtil.componentAI.jobSystem.*;
+import CoroUtil.componentAI.jobSystem.JobBase;
+import CoroUtil.componentAI.jobSystem.JobFormation;
 
 public class EntityTropiSkeleton extends EntityCoroAI implements IMob {
 

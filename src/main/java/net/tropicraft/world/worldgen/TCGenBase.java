@@ -7,12 +7,13 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import net.minecraft.block.*;
-import net.minecraft.init.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
+import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.gen.feature.*;
+import net.minecraft.world.gen.feature.WorldGenerator;
 
 public abstract class TCGenBase extends WorldGenerator {
 

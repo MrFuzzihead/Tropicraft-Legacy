@@ -1,11 +1,13 @@
 package net.tropicraft.entity.ai.jobs;
 
-import net.minecraft.entity.player.*;
-import net.minecraft.item.*;
-import net.minecraft.util.*;
-import net.tropicraft.item.tool.*;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemPickaxe;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
+import net.tropicraft.item.tool.ItemTropicraftPickaxe;
 
-import CoroUtil.componentAI.jobSystem.*;
+import CoroUtil.componentAI.jobSystem.JobBase;
+import CoroUtil.componentAI.jobSystem.JobManager;
 
 public class JobSleep extends JobBase {
 

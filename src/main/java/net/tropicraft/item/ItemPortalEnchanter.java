@@ -1,22 +1,28 @@
 package net.tropicraft.item;
 
-import java.util.*;
+import java.util.List;
 
-import net.minecraft.block.*;
-import net.minecraft.block.material.*;
-import net.minecraft.creativetab.*;
-import net.minecraft.entity.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.init.*;
-import net.minecraft.item.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
-import net.tropicraft.registry.*;
-import net.tropicraft.util.*;
-import net.tropicraft.world.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
+import net.tropicraft.registry.TCBlockRegistry;
+import net.tropicraft.registry.TCCreativeTabRegistry;
+import net.tropicraft.util.TropicraftWorldUtils;
+import net.tropicraft.world.TeleporterTropics;
 
-import cpw.mods.fml.common.*;
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemPortalEnchanter extends ItemTropicraft {
 

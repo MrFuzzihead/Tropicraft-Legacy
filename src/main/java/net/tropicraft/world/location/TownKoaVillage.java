@@ -1,19 +1,29 @@
 package net.tropicraft.world.location;
 
-import java.io.*;
+import java.io.File;
 
-import net.minecraft.entity.*;
-import net.minecraft.nbt.*;
-import net.minecraft.util.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Vec3;
-import net.minecraft.world.*;
-import net.tropicraft.entity.koa.*;
+import net.minecraft.world.World;
+import net.tropicraft.entity.koa.EntityKoaBase;
+import net.tropicraft.entity.koa.EntityKoaFisher;
+import net.tropicraft.entity.koa.EntityKoaHunter;
+import net.tropicraft.entity.koa.EntityKoaShaman;
+import net.tropicraft.entity.koa.EntityKoaTrader;
 
-import CoroUtil.util.*;
-import CoroUtil.world.location.*;
-import CoroUtil.world.location.town.*;
-import build.*;
-import build.world.*;
+import CoroUtil.util.CoroUtilFile;
+import CoroUtil.world.location.ManagedLocation;
+import CoroUtil.world.location.SpawnLocationData;
+import CoroUtil.world.location.town.TownObject;
+import build.BuildServerTicks;
+import build.ICustomGen;
+import build.world.Build;
+import build.world.BuildJob;
+import build.world.BuildManager;
 
 public class TownKoaVillage extends TownObject implements ICustomGen {
 

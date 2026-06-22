@@ -1,9 +1,15 @@
 package net.tropicraft.world.biomes;
 
-import java.util.*;
+import java.util.Random;
 
-import net.minecraft.world.*;
-import net.tropicraft.world.worldgen.*;
+import net.minecraft.world.World;
+import net.tropicraft.world.worldgen.WorldGenCoffeePlant;
+import net.tropicraft.world.worldgen.WorldGenForestAltarRuin;
+import net.tropicraft.world.worldgen.WorldGenHomeTree;
+import net.tropicraft.world.worldgen.WorldGenTCUndergrowth;
+import net.tropicraft.world.worldgen.WorldGenTallTree;
+import net.tropicraft.world.worldgen.WorldGenTualang;
+import net.tropicraft.world.worldgen.WorldGenUpTree;
 
 public class BiomeGenRainforest extends BiomeGenTropicraft {
 

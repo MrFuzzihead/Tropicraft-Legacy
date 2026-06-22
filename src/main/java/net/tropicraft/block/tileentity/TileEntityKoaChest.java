@@ -1,19 +1,22 @@
 package net.tropicraft.block.tileentity;
 
-import java.util.*;
+import java.util.List;
 
-import net.minecraft.block.*;
-import net.minecraft.entity.*;
-import net.minecraft.inventory.*;
-import net.minecraft.nbt.*;
-import net.minecraft.tileentity.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
-import net.tropicraft.entity.koa.*;
-import net.tropicraft.registry.*;
+import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntityChest;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.world.World;
+import net.tropicraft.entity.koa.EntityKoaBase;
+import net.tropicraft.entity.koa.EntityKoaFisher;
+import net.tropicraft.entity.koa.EntityKoaHunter;
+import net.tropicraft.registry.TCBlockRegistry;
 
-import CoroUtil.*;
-import CoroUtil.componentAI.*;
+import CoroUtil.OldUtil;
+import CoroUtil.componentAI.ICoroAI;
 
 public class TileEntityKoaChest extends TileEntityChest implements IInventory {
 

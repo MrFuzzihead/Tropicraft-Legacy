@@ -1,8 +1,11 @@
 package net.tropicraft.entity.hostile;
 
-import net.minecraft.entity.*;
-import net.minecraft.entity.ai.*;
-import net.minecraft.util.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.ai.RandomPositionGenerator;
+import net.minecraft.util.Vec3;
 
 public class AIAshenChaseAndPickupLostMask extends EntityAIBase {
 

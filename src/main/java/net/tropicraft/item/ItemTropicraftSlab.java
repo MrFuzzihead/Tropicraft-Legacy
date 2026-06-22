@@ -1,8 +1,9 @@
 package net.tropicraft.item;
 
-import net.minecraft.block.*;
-import net.minecraft.item.*;
-import net.tropicraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockSlab;
+import net.minecraft.item.ItemSlab;
+import net.tropicraft.block.BlockTropicraftSlab;
 
 public class ItemTropicraftSlab extends ItemSlab {
 

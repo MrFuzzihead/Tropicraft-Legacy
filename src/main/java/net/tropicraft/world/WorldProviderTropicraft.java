@@ -1,10 +1,9 @@
 package net.tropicraft.world;
 
-import net.minecraft.world.*;
-import net.minecraft.world.biome.*;
-import net.minecraft.world.chunk.*;
-import net.tropicraft.world.biomes.*;
-import net.tropicraft.world.chunk.*;
+import net.minecraft.world.WorldProvider;
+import net.minecraft.world.chunk.IChunkProvider;
+import net.tropicraft.world.biomes.WorldChunkManagerTropicraft;
+import net.tropicraft.world.chunk.ChunkProviderTropicraft;
 
 public class WorldProviderTropicraft extends WorldProvider {
 

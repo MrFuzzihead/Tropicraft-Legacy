@@ -1,11 +1,12 @@
 package net.tropicraft.client.entity.render;
 
-import net.minecraft.client.model.*;
-import net.minecraft.client.renderer.entity.*;
-import net.minecraft.entity.*;
-import net.minecraft.util.*;
-import net.tropicraft.client.entity.model.*;
-import net.tropicraft.util.*;
+import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.util.ResourceLocation;
+import net.tropicraft.client.entity.model.ModelFailgull;
+import net.tropicraft.util.TropicraftUtils;
 
 public class RenderFailgull extends RenderLiving {
 

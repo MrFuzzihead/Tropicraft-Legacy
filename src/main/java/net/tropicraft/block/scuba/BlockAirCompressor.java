@@ -1,21 +1,22 @@
 package net.tropicraft.block.scuba;
 
-import java.util.*;
+import java.util.Random;
 
-import net.minecraft.block.*;
-import net.minecraft.block.material.*;
-import net.minecraft.client.renderer.texture.*;
-import net.minecraft.entity.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.item.*;
-import net.minecraft.tileentity.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
-import net.tropicraft.block.*;
-import net.tropicraft.block.tileentity.*;
-import net.tropicraft.factory.*;
-import net.tropicraft.info.*;
-import net.tropicraft.registry.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
+import net.tropicraft.block.BlockTropicraft;
+import net.tropicraft.block.tileentity.TileEntityAirCompressor;
+import net.tropicraft.factory.TileEntityFactory;
+import net.tropicraft.info.TCRenderIDs;
+import net.tropicraft.registry.TCCreativeTabRegistry;
 
 public class BlockAirCompressor extends BlockTropicraft implements ITileEntityProvider {
 

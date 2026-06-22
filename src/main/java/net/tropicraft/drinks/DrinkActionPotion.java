@@ -1,7 +1,7 @@
 package net.tropicraft.drinks;
 
-import net.minecraft.entity.player.*;
-import net.minecraft.potion.*;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.potion.PotionEffect;
 
 public class DrinkActionPotion extends DrinkAction {
 

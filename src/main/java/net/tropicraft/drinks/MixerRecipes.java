@@ -1,9 +1,12 @@
 package net.tropicraft.drinks;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import net.minecraft.item.*;
-import net.tropicraft.registry.*;
+import net.minecraft.item.ItemStack;
+import net.tropicraft.registry.TCDrinkMixerRegistry;
 
 public final class MixerRecipes {
 

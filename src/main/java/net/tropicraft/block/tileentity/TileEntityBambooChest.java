@@ -1,9 +1,9 @@
 package net.tropicraft.block.tileentity;
 
-import net.minecraft.block.*;
-import net.minecraft.nbt.*;
-import net.minecraft.tileentity.*;
-import net.tropicraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntityChest;
+import net.tropicraft.block.BlockBambooChest;
 
 public class TileEntityBambooChest extends TileEntityChest {
 

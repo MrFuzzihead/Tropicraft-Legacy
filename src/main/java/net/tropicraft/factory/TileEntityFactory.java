@@ -1,7 +1,13 @@
 package net.tropicraft.factory;
 
-import net.minecraft.tileentity.*;
-import net.tropicraft.block.tileentity.*;
+import net.minecraft.tileentity.TileEntity;
+import net.tropicraft.block.tileentity.TileEntityAirCompressor;
+import net.tropicraft.block.tileentity.TileEntityBambooChest;
+import net.tropicraft.block.tileentity.TileEntityBambooMug;
+import net.tropicraft.block.tileentity.TileEntityCurareBowl;
+import net.tropicraft.block.tileentity.TileEntityFirePit;
+import net.tropicraft.block.tileentity.TileEntitySifter;
+import net.tropicraft.block.tileentity.TileEntityTropicraftFlowerPot;
 
 public class TileEntityFactory {
 

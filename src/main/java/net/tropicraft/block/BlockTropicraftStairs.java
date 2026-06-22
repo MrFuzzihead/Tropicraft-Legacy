@@ -1,7 +1,8 @@
 package net.tropicraft.block;
 
-import net.minecraft.block.*;
-import net.tropicraft.registry.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockStairs;
+import net.tropicraft.registry.TCCreativeTabRegistry;
 
 public class BlockTropicraftStairs extends BlockStairs {
 

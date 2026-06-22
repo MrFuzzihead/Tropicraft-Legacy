@@ -1,6 +1,6 @@
 package net.tropicraft.economy;
 
-import net.minecraft.item.*;
+import net.minecraft.item.ItemStack;
 
 public class ItemEntry {
 

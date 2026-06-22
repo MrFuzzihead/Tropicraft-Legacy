@@ -1,19 +1,22 @@
 package net.tropicraft.block;
 
-import net.minecraft.block.*;
-import net.minecraft.block.material.*;
-import net.minecraft.client.renderer.texture.*;
-import net.minecraft.entity.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.item.*;
-import net.minecraft.tileentity.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
-import net.tropicraft.block.tileentity.*;
-import net.tropicraft.info.*;
-import net.tropicraft.registry.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
+import net.tropicraft.block.tileentity.TileEntityEIHMixer;
+import net.tropicraft.info.TCRenderIDs;
+import net.tropicraft.registry.TCCreativeTabRegistry;
+import net.tropicraft.registry.TCItemRegistry;
 
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockEIHMixer extends BlockTropicraft implements ITileEntityProvider {
 

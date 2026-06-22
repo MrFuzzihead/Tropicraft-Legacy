@@ -1,18 +1,27 @@
 package net.tropicraft.registry;
 
-import net.minecraft.block.*;
-import net.minecraft.init.*;
-import net.minecraft.item.*;
-import net.minecraft.item.crafting.*;
-import net.tropicraft.*;
-import net.tropicraft.curare.*;
-import net.tropicraft.drinks.*;
-import net.tropicraft.info.*;
-import net.tropicraft.item.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockColored;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
+import net.tropicraft.Tropicraft;
+import net.tropicraft.curare.CurareMix;
+import net.tropicraft.curare.CurareMixRegistry;
+import net.tropicraft.curare.CurareType;
+import net.tropicraft.drinks.Drink;
+import net.tropicraft.drinks.MixerRecipes;
+import net.tropicraft.info.TCNames;
+import net.tropicraft.item.ItemCurare;
 
-import cpw.mods.fml.common.*;
-import cpw.mods.fml.common.registry.*;
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.IFuelHandler;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class TCCraftingRegistry {
 

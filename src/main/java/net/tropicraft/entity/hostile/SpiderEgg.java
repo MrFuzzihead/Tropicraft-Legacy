@@ -1,12 +1,12 @@
 package net.tropicraft.entity.hostile;
 
-import net.minecraft.entity.monster.*;
-import net.minecraft.nbt.*;
-import net.minecraft.world.*;
-import net.tropicraft.entity.*;
-import net.tropicraft.entity.ai.jobs.*;
+import net.minecraft.entity.monster.IMob;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
+import net.tropicraft.entity.EntityCoroAI;
+import net.tropicraft.entity.ai.jobs.JobEggHatch;
 
-import CoroUtil.componentAI.jobSystem.*;
+import CoroUtil.componentAI.jobSystem.JobBase;
 
 public class SpiderEgg extends EntityCoroAI implements IMob {
 

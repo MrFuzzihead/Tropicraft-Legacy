@@ -1,20 +1,21 @@
 package net.tropicraft.client.tileentity;
 
-import java.util.*;
+import java.util.List;
 
-import net.minecraft.client.renderer.entity.*;
-import net.minecraft.client.renderer.tileentity.*;
-import net.minecraft.entity.item.*;
-import net.minecraft.init.*;
-import net.minecraft.item.*;
-import net.minecraft.tileentity.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
-import net.tropicraft.block.tileentity.*;
-import net.tropicraft.client.block.model.*;
-import net.tropicraft.util.*;
+import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
+import net.tropicraft.block.tileentity.TileEntityCurareBowl;
+import net.tropicraft.client.block.model.ModelCurareBowl;
+import net.tropicraft.util.TropicraftUtils;
 
-import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.GL11;
 
 public class TileEntityCurareBowlRenderer extends TileEntitySpecialRenderer {
 

@@ -1,9 +1,9 @@
 package net.tropicraft.registry;
 
-import net.minecraft.command.*;
-import net.tropicraft.command.*;
+import net.minecraft.command.ICommand;
+import net.tropicraft.command.CommandTropicsTeleport;
 
-import cpw.mods.fml.common.event.*;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 public class TCCommandRegistry {
 

@@ -1,12 +1,11 @@
 package net.tropicraft.entity.underdasea;
 
-import java.util.*;
-
-import net.minecraft.entity.*;
-import net.minecraft.entity.passive.*;
-import net.minecraft.nbt.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.passive.EntityWaterMob;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.DamageSource;
+import net.minecraft.world.World;
 
 public abstract class EntityEchinoderm extends EntityWaterMob {
 

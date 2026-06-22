@@ -1,8 +1,9 @@
 package net.tropicraft.command;
 
-import net.minecraft.command.*;
-import net.minecraft.entity.player.*;
-import net.tropicraft.util.*;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.tropicraft.util.TropicraftWorldUtils;
 
 public class CommandTropicsTeleport extends CommandBase {
 

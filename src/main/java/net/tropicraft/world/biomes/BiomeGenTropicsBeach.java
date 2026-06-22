@@ -1,11 +1,11 @@
 package net.tropicraft.world.biomes;
 
-import java.util.*;
+import java.util.Random;
 
-import net.minecraft.util.*;
-import net.minecraft.world.*;
-import net.tropicraft.world.location.*;
-import net.tropicraft.world.worldgen.*;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.world.World;
+import net.tropicraft.world.location.TownKoaVillageGenHelper;
+import net.tropicraft.world.worldgen.WorldGenTropicsTreasure;
 
 public class BiomeGenTropicsBeach extends BiomeGenTropicraft {
 

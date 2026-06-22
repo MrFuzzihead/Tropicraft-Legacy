@@ -1,11 +1,12 @@
 package net.tropicraft.entity.projectile;
 
-import net.minecraft.entity.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.entity.projectile.*;
-import net.minecraft.potion.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.projectile.EntityThrowable;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.world.World;
 
 public class EntityPoisonBlot extends EntityThrowable {
 

@@ -1,10 +1,12 @@
 package net.tropicraft.registry;
 
-import net.minecraft.block.*;
-import net.minecraft.creativetab.*;
-import net.minecraft.item.*;
+import net.minecraft.block.Block;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class TCCreativeTabRegistry {
 

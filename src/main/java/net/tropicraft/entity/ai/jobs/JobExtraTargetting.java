@@ -1,8 +1,9 @@
 package net.tropicraft.entity.ai.jobs;
 
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
 
-import CoroUtil.componentAI.jobSystem.*;
+import CoroUtil.componentAI.jobSystem.JobBase;
+import CoroUtil.componentAI.jobSystem.JobManager;
 
 public class JobExtraTargetting extends JobBase {
 

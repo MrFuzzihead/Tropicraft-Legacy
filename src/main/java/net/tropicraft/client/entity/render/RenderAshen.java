@@ -1,16 +1,22 @@
 package net.tropicraft.client.entity.render;
 
-import net.minecraft.client.model.*;
-import net.minecraft.client.renderer.entity.*;
-import net.minecraft.entity.*;
-import net.minecraft.item.*;
-import net.minecraft.util.*;
-import net.tropicraft.client.entity.model.*;
-import net.tropicraft.entity.hostile.*;
-import net.tropicraft.registry.*;
-import net.tropicraft.util.*;
+import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.ResourceLocation;
+import net.tropicraft.client.entity.model.ModelAshen;
+import net.tropicraft.entity.hostile.EntityAshen;
+import net.tropicraft.entity.hostile.EntityAshenHunter;
+import net.tropicraft.registry.TCItemRegistry;
+import net.tropicraft.util.TropicraftUtils;
 
-import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.GL11;
 
 public class RenderAshen extends RenderLiving {
 

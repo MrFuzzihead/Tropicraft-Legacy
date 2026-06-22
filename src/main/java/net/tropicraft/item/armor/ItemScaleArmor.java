@@ -1,8 +1,9 @@
 package net.tropicraft.item.armor;
 
-import net.minecraft.entity.player.*;
-import net.minecraft.item.*;
-import net.minecraft.world.*;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 
 public class ItemScaleArmor extends ItemTropicraftArmor {
 

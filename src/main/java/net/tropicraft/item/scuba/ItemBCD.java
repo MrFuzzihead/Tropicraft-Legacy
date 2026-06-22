@@ -1,6 +1,6 @@
 package net.tropicraft.item.scuba;
 
-import net.tropicraft.item.*;
+import net.tropicraft.item.ItemTropicraft;
 
 public class ItemBCD extends ItemTropicraft {
 }

@@ -1,19 +1,26 @@
 package net.tropicraft.entity.ai.jobs;
 
-import java.util.*;
+import java.util.Random;
 
-import net.minecraft.entity.*;
-import net.minecraft.init.*;
-import net.minecraft.inventory.*;
-import net.minecraft.item.*;
-import net.minecraft.util.*;
-import net.tropicraft.entity.underdasea.*;
-import net.tropicraft.registry.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.init.Items;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
+import net.minecraft.util.DamageSource;
+import net.tropicraft.entity.underdasea.EntityTropicraftWaterMob;
+import net.tropicraft.registry.TCItemRegistry;
 
-import CoroUtil.componentAI.jobSystem.*;
-import CoroUtil.entity.*;
-import CoroUtil.inventory.*;
-import CoroUtil.util.*;
+import CoroUtil.componentAI.jobSystem.JobBase;
+import CoroUtil.componentAI.jobSystem.JobManager;
+import CoroUtil.entity.EntityTropicalFishHook;
+import CoroUtil.entity.EnumActState;
+import CoroUtil.entity.EnumJobState;
+import CoroUtil.inventory.AIInventory;
+import CoroUtil.util.CoroUtilEntity;
+import CoroUtil.util.CoroUtilInventory;
+import CoroUtil.util.CoroUtilItem;
 
 public class JobFish extends JobBase {
 

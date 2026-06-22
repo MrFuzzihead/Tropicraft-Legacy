@@ -1,15 +1,16 @@
 package net.tropicraft.item;
 
-import net.minecraft.entity.player.*;
-import net.minecraft.item.*;
-import net.minecraft.world.*;
-import net.tropicraft.*;
-import net.tropicraft.client.gui.*;
-import net.tropicraft.encyclopedia.*;
-import net.tropicraft.registry.*;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+import net.tropicraft.Tropicraft;
+import net.tropicraft.client.gui.GuiTropicalBook;
+import net.tropicraft.encyclopedia.TropicalBook;
+import net.tropicraft.registry.TCCreativeTabRegistry;
 
-import cpw.mods.fml.common.*;
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemTropBook extends ItemTropicraft {
 

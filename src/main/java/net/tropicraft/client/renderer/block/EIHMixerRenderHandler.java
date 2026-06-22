@@ -1,16 +1,16 @@
 package net.tropicraft.client.renderer.block;
 
-import net.minecraft.block.*;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.tileentity.*;
-import net.minecraft.tileentity.*;
-import net.minecraft.world.*;
-import net.tropicraft.block.tileentity.*;
-import net.tropicraft.info.*;
+import net.minecraft.block.Block;
+import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.IBlockAccess;
+import net.tropicraft.block.tileentity.TileEntityEIHMixer;
+import net.tropicraft.info.TCRenderIDs;
 
-import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.client.registry.*;
+import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 
 public class EIHMixerRenderHandler implements ISimpleBlockRenderingHandler {
 

@@ -1,18 +1,23 @@
 package net.tropicraft.entity.passive;
 
-import net.minecraft.entity.*;
-import net.minecraft.item.*;
-import net.minecraft.potion.*;
-import net.minecraft.util.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
-import net.minecraft.world.*;
-import net.tropicraft.entity.*;
-import net.tropicraft.registry.*;
+import net.minecraft.world.World;
+import net.tropicraft.entity.EntityCoroAI;
+import net.tropicraft.registry.TCItemRegistry;
 
-import CoroUtil.componentAI.*;
-import CoroUtil.componentAI.jobSystem.*;
-import CoroUtil.diplomacy.*;
-import CoroUtil.util.*;
+import CoroUtil.componentAI.AIAgent;
+import CoroUtil.componentAI.ICoroAI;
+import CoroUtil.componentAI.jobSystem.JobBase;
+import CoroUtil.componentAI.jobSystem.JobPlay;
+import CoroUtil.componentAI.jobSystem.JobTamable;
+import CoroUtil.diplomacy.TeamTypes;
+import CoroUtil.util.CoroUtilBlock;
 
 public class VMonkey extends EntityCoroAI {
 

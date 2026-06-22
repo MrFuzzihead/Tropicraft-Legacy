@@ -1,18 +1,20 @@
 package net.tropicraft.block.tileentity;
 
-import java.util.*;
+import java.util.Random;
 
-import net.minecraft.client.*;
-import net.minecraft.nbt.*;
-import net.minecraft.network.*;
-import net.minecraft.network.play.server.*;
-import net.minecraft.tileentity.*;
-import net.minecraft.util.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Vec3;
 
-import cpw.mods.fml.relauncher.*;
-import extendedrenderer.particle.*;
-import extendedrenderer.particle.behavior.*;
-import extendedrenderer.particle.entity.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import extendedrenderer.particle.ParticleRegistry;
+import extendedrenderer.particle.behavior.ParticleBehaviors;
+import extendedrenderer.particle.entity.EntityRotFX;
 
 public class TileEntityFirePit extends TileEntity {
 

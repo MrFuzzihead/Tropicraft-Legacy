@@ -1,18 +1,19 @@
 package net.tropicraft.client.entity.render;
 
-import java.nio.*;
+import java.nio.FloatBuffer;
 
-import net.minecraft.client.*;
-import net.minecraft.client.model.*;
-import net.minecraft.client.renderer.entity.*;
-import net.minecraft.entity.*;
-import net.minecraft.util.*;
-import net.tropicraft.client.entity.model.*;
-import net.tropicraft.entity.placeable.*;
-import net.tropicraft.util.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.ResourceLocation;
+import net.tropicraft.client.entity.model.ModelChair;
+import net.tropicraft.entity.placeable.EntityChair;
+import net.tropicraft.util.ColorHelper;
+import net.tropicraft.util.TropicraftUtils;
 
-import org.lwjgl.*;
-import org.lwjgl.opengl.*;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
 
 public class RenderChair extends Render {
 

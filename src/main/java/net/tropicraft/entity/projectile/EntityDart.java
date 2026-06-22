@@ -2,22 +2,30 @@ package net.tropicraft.entity.projectile;
 
 import java.util.List;
 
-import net.minecraft.block.*;
-import net.minecraft.block.material.*;
-import net.minecraft.entity.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.nbt.*;
-import net.minecraft.network.*;
-import net.minecraft.network.play.server.*;
-import net.minecraft.potion.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
-import net.tropicraft.*;
-import net.tropicraft.entity.damage.*;
-import net.tropicraft.util.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.play.server.S2BPacketChangeGameState;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
+import net.tropicraft.Tropicraft;
+import net.tropicraft.entity.damage.TCDamageSource;
+import net.tropicraft.util.EffectHelper;
 
-import CoroUtil.packet.*;
-import cpw.mods.fml.relauncher.*;
+import CoroUtil.packet.PacketHelper;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class EntityDart extends Entity implements IProjectile {
 

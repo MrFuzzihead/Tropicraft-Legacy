@@ -1,13 +1,15 @@
 package net.tropicraft.client.renderer.block;
 
-import net.minecraft.block.*;
-import net.minecraft.client.renderer.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
-import net.tropicraft.block.*;
-import net.tropicraft.info.*;
+import net.minecraft.block.Block;
+import net.minecraft.client.renderer.EntityRenderer;
+import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.util.IIcon;
+import net.minecraft.world.IBlockAccess;
+import net.tropicraft.block.BlockBambooChute;
+import net.tropicraft.info.TCRenderIDs;
 
-import cpw.mods.fml.client.registry.*;
+import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 
 public class BambooChuteRenderHandler implements ISimpleBlockRenderingHandler {
 

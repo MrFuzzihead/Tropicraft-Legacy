@@ -1,18 +1,27 @@
 package net.tropicraft.event;
 
-import net.minecraft.block.material.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.item.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
-import net.minecraftforge.client.event.*;
-import net.minecraftforge.event.entity.player.*;
-import net.minecraftforge.fluids.*;
-import net.tropicraft.item.tool.*;
-import net.tropicraft.registry.*;
+import net.minecraft.block.material.Material;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
+import net.minecraftforge.client.event.EntityViewRenderEvent;
+import net.minecraftforge.event.entity.player.FillBucketEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.tropicraft.item.tool.IUnderwaterTool;
+import net.tropicraft.item.tool.ItemUnderwaterShovel;
+import net.tropicraft.registry.TCBlockRegistry;
+import net.tropicraft.registry.TCFluidRegistry;
+import net.tropicraft.registry.TCItemRegistry;
 
-import cpw.mods.fml.common.eventhandler.*;
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.common.eventhandler.Event;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class TCItemEvents {
 

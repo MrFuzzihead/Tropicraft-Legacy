@@ -1,13 +1,15 @@
 package net.tropicraft.item;
 
-import net.minecraft.entity.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.item.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
-import net.tropicraft.config.*;
-import net.tropicraft.entity.projectile.*;
-import net.tropicraft.registry.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.IChatComponent;
+import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
+import net.tropicraft.config.ConfigMisc;
+import net.tropicraft.entity.projectile.EntityCoconutGrenade;
+import net.tropicraft.registry.TCCreativeTabRegistry;
 
 public class ItemCoconutBomb extends ItemTropicraft {
 

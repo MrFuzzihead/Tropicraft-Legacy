@@ -1,16 +1,19 @@
 package net.tropicraft.client.tileentity;
 
-import net.minecraft.block.*;
-import net.minecraft.client.model.*;
-import net.minecraft.client.renderer.tileentity.*;
-import net.minecraft.tileentity.*;
-import net.tropicraft.block.tileentity.*;
-import net.tropicraft.util.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockChest;
+import net.minecraft.client.model.ModelChest;
+import net.minecraft.client.model.ModelLargeChest;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.tileentity.TileEntity;
+import net.tropicraft.block.tileentity.TileEntityKoaChest;
+import net.tropicraft.util.TropicraftUtils;
 
-import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.common.*;
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class TileEntityKoaChestRenderer extends TileEntitySpecialRenderer {

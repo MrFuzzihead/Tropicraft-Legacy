@@ -1,8 +1,8 @@
 package net.tropicraft.world.genlayer;
 
-import net.minecraft.world.*;
-import net.minecraft.world.gen.layer.*;
-import net.tropicraft.world.biomes.*;
+import net.minecraft.world.WorldType;
+import net.minecraft.world.gen.layer.GenLayer;
+import net.tropicraft.world.biomes.BiomeGenTropicraft;
 
 public abstract class GenLayerTropicraft extends GenLayer {
 

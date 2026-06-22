@@ -1,14 +1,15 @@
 package net.tropicraft.util;
 
-import net.minecraft.block.material.*;
-import net.minecraft.client.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.item.*;
-import net.minecraft.network.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.network.Packet;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
 
-import cpw.mods.fml.common.*;
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class TropicraftUtils {
 

@@ -2,16 +2,22 @@ package net.tropicraft.world;
 
 import java.util.Random;
 
-import net.minecraft.block.*;
-import net.minecraft.world.*;
-import net.minecraft.world.biome.*;
-import net.minecraft.world.chunk.*;
-import net.tropicraft.config.*;
-import net.tropicraft.registry.*;
-import net.tropicraft.world.biomes.*;
-import net.tropicraft.world.worldgen.*;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldType;
+import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.chunk.IChunkProvider;
+import net.tropicraft.config.ConfigGenRates;
+import net.tropicraft.registry.TCBlockRegistry;
+import net.tropicraft.world.biomes.BiomeGenTropicraft;
+import net.tropicraft.world.worldgen.WorldGenBamboo;
+import net.tropicraft.world.worldgen.WorldGenEIH;
+import net.tropicraft.world.worldgen.WorldGenTallFlower;
+import net.tropicraft.world.worldgen.WorldGenTropicraftCurvedPalm;
+import net.tropicraft.world.worldgen.WorldGenTropicraftFlowers;
+import net.tropicraft.world.worldgen.WorldGenTropicraftLargePalmTrees;
+import net.tropicraft.world.worldgen.WorldGenTropicraftNormalPalms;
 
-import cpw.mods.fml.common.*;
+import cpw.mods.fml.common.IWorldGenerator;
 
 public class TCWorldGenerator implements IWorldGenerator {
 

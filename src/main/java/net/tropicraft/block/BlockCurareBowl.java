@@ -1,17 +1,20 @@
 package net.tropicraft.block;
 
-import net.minecraft.block.*;
-import net.minecraft.block.material.*;
-import net.minecraft.entity.*;
-import net.minecraft.entity.item.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.init.*;
-import net.minecraft.item.*;
-import net.minecraft.tileentity.*;
-import net.minecraft.world.*;
-import net.tropicraft.block.tileentity.*;
-import net.tropicraft.factory.*;
-import net.tropicraft.registry.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.material.Material;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+import net.tropicraft.block.tileentity.TileEntityCurareBowl;
+import net.tropicraft.factory.TileEntityFactory;
+import net.tropicraft.registry.TCBlockRegistry;
 
 public class BlockCurareBowl extends BlockTropicraft implements ITileEntityProvider {
 

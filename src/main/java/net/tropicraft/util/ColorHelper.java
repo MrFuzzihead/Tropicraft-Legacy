@@ -1,10 +1,12 @@
 package net.tropicraft.util;
 
-import java.util.*;
+import java.util.ArrayList;
 
-import net.minecraft.item.*;
+import net.minecraft.item.ItemDye;
 
-import com.google.common.collect.*;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.google.common.collect.Lists;
 
 public class ColorHelper {
 

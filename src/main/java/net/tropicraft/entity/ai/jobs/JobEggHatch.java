@@ -1,13 +1,15 @@
 package net.tropicraft.entity.ai.jobs;
 
-import java.util.*;
+import java.util.Random;
 
-import net.minecraft.entity.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.util.*;
-import net.tropicraft.entity.hostile.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.Vec3;
+import net.tropicraft.entity.hostile.SpiderChild;
 
-import CoroUtil.componentAI.jobSystem.*;
+import CoroUtil.componentAI.jobSystem.JobBase;
+import CoroUtil.componentAI.jobSystem.JobManager;
 
 public class JobEggHatch extends JobBase {
 

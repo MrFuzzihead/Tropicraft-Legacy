@@ -1,17 +1,49 @@
 package net.tropicraft.registry;
 
-import net.minecraft.entity.*;
-import net.tropicraft.*;
-import net.tropicraft.entity.*;
-import net.tropicraft.entity.hostile.*;
-import net.tropicraft.entity.koa.*;
-import net.tropicraft.entity.passive.*;
-import net.tropicraft.entity.placeable.*;
-import net.tropicraft.entity.projectile.*;
-import net.tropicraft.entity.underdasea.*;
+import net.minecraft.entity.Entity;
+import net.tropicraft.Tropicraft;
+import net.tropicraft.entity.EntityTCItemFrame;
+import net.tropicraft.entity.hostile.EntityAshenHunter;
+import net.tropicraft.entity.hostile.EntityEIH;
+import net.tropicraft.entity.hostile.EntityLostMask;
+import net.tropicraft.entity.hostile.EntityTreeFrogBlue;
+import net.tropicraft.entity.hostile.EntityTreeFrogRed;
+import net.tropicraft.entity.hostile.EntityTreeFrogYellow;
+import net.tropicraft.entity.hostile.EntityTropiCreeper;
+import net.tropicraft.entity.hostile.EntityTropiSkeleton;
+import net.tropicraft.entity.hostile.SpiderAdult;
+import net.tropicraft.entity.hostile.SpiderChild;
+import net.tropicraft.entity.hostile.SpiderEgg;
+import net.tropicraft.entity.koa.EntityKoaFisher;
+import net.tropicraft.entity.koa.EntityKoaHunter;
+import net.tropicraft.entity.koa.EntityKoaShaman;
+import net.tropicraft.entity.koa.EntityKoaTrader;
+import net.tropicraft.entity.passive.EntityIguana;
+import net.tropicraft.entity.passive.EntityTreeFrogGreen;
+import net.tropicraft.entity.passive.Failgull;
+import net.tropicraft.entity.passive.VMonkey;
+import net.tropicraft.entity.placeable.EntityChair;
+import net.tropicraft.entity.placeable.EntitySnareTrap;
+import net.tropicraft.entity.placeable.EntityUmbrella;
+import net.tropicraft.entity.placeable.EntityWallStarfish;
+import net.tropicraft.entity.projectile.EntityCoconutGrenade;
+import net.tropicraft.entity.projectile.EntityDart;
+import net.tropicraft.entity.projectile.EntityPoisonBlot;
+import net.tropicraft.entity.projectile.EntityTropicraftLeafballNew;
+import net.tropicraft.entity.underdasea.EntityEagleRay;
+import net.tropicraft.entity.underdasea.EntityManOWar;
+import net.tropicraft.entity.underdasea.EntityMarlin;
+import net.tropicraft.entity.underdasea.EntitySeaTurtle;
+import net.tropicraft.entity.underdasea.EntitySeaUrchin;
+import net.tropicraft.entity.underdasea.EntitySeaUrchinEgg;
+import net.tropicraft.entity.underdasea.EntitySeahorse;
+import net.tropicraft.entity.underdasea.EntityStarfish;
+import net.tropicraft.entity.underdasea.EntityStarfishEgg;
+import net.tropicraft.entity.underdasea.EntityTropicalFish;
+import net.tropicraft.entity.underdasea.EntityTurtleEgg;
 
-import CoroUtil.entity.*;
-import cpw.mods.fml.common.registry.*;
+import CoroUtil.entity.EntityTropicalFishHook;
+import cpw.mods.fml.common.registry.EntityRegistry;
 
 public class TCEntityRegistry {
 

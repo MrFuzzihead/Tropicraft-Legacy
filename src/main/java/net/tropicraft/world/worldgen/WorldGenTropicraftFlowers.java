@@ -1,11 +1,11 @@
 package net.tropicraft.world.worldgen;
 
-import java.util.*;
+import java.util.Random;
 
-import net.minecraft.block.*;
-import net.minecraft.world.*;
+import net.minecraft.block.Block;
+import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import net.tropicraft.registry.*;
+import net.tropicraft.registry.TCBlockRegistry;
 
 public class WorldGenTropicraftFlowers extends TCGenBase {
 

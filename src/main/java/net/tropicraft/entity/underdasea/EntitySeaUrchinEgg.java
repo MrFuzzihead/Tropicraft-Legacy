@@ -1,6 +1,6 @@
 package net.tropicraft.entity.underdasea;
 
-import net.minecraft.world.*;
+import net.minecraft.world.World;
 
 public class EntitySeaUrchinEgg extends EntityEchinodermEgg {
 

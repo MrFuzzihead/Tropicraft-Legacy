@@ -1,8 +1,8 @@
 package net.tropicraft.world.biomes;
 
-import java.util.*;
+import java.util.Random;
 
-import net.minecraft.world.*;
+import net.minecraft.world.World;
 
 public class BiomeGenTropicsRiver extends BiomeGenTropicraft {
 

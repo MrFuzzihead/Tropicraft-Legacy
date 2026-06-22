@@ -1,9 +1,18 @@
 package net.tropicraft.registry;
 
-import net.minecraft.tileentity.*;
-import net.tropicraft.block.tileentity.*;
+import net.minecraft.tileentity.TileEntity;
+import net.tropicraft.block.tileentity.TileEntityAirCompressor;
+import net.tropicraft.block.tileentity.TileEntityBambooChest;
+import net.tropicraft.block.tileentity.TileEntityBambooMug;
+import net.tropicraft.block.tileentity.TileEntityCurareBowl;
+import net.tropicraft.block.tileentity.TileEntityEIHMixer;
+import net.tropicraft.block.tileentity.TileEntityFirePit;
+import net.tropicraft.block.tileentity.TileEntityKoaChest;
+import net.tropicraft.block.tileentity.TileEntityPurchasePlate;
+import net.tropicraft.block.tileentity.TileEntitySifter;
+import net.tropicraft.block.tileentity.TileEntityTropicraftFlowerPot;
 
-import cpw.mods.fml.common.registry.*;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 public class TCTileEntityRegistry {
 

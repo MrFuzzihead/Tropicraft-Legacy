@@ -1,13 +1,16 @@
 package net.tropicraft.drinks;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 
-import net.minecraft.block.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.init.*;
-import net.minecraft.item.*;
-import net.minecraft.potion.*;
-import net.tropicraft.registry.*;
+import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
+import net.tropicraft.registry.TCBlockRegistry;
+import net.tropicraft.registry.TCItemRegistry;
 
 public class Ingredient implements Comparable<Ingredient> {
 

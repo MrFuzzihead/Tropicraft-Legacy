@@ -1,8 +1,8 @@
 package net.tropicraft.item;
 
-import net.minecraft.block.*;
-import net.minecraft.client.renderer.texture.*;
-import net.minecraft.item.*;
+import net.minecraft.block.Block;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.item.ItemReed;
 
 public class ItemFlowerPot extends ItemReed {
 

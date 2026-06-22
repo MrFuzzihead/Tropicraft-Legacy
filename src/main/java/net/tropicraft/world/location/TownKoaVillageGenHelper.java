@@ -1,15 +1,14 @@
 package net.tropicraft.world.location;
 
-import java.util.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.world.World;
 
-import net.minecraft.block.*;
-import net.minecraft.block.material.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
-
-import CoroUtil.world.*;
-import CoroUtil.world.location.*;
-import build.world.*;
+import CoroUtil.world.WorldDirector;
+import CoroUtil.world.WorldDirectorManager;
+import CoroUtil.world.location.ManagedLocation;
+import build.world.BuildDirectionHelper;
 
 public class TownKoaVillageGenHelper {
 

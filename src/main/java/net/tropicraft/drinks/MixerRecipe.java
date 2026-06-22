@@ -1,6 +1,6 @@
 package net.tropicraft.drinks;
 
-import java.util.*;
+import java.util.Arrays;
 
 public class MixerRecipe implements IMixerRecipe {
 

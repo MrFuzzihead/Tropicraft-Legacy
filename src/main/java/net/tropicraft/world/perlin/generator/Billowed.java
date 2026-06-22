@@ -2,7 +2,8 @@ package net.tropicraft.world.perlin.generator;
 
 import java.util.Random;
 
-import net.tropicraft.world.perlin.*;
+import net.tropicraft.world.perlin.FishyNoise;
+import net.tropicraft.world.perlin.NoiseModule;
 
 public class Billowed extends NoiseModule {
 

@@ -1,9 +1,10 @@
 package net.tropicraft.drinks;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import net.minecraft.entity.player.*;
-import net.minecraft.potion.*;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.potion.Potion;
 
 public class Drink {
 

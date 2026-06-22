@@ -1,9 +1,10 @@
 package net.tropicraft.registry;
 
-import net.minecraft.init.*;
-import net.minecraft.item.*;
-import net.tropicraft.economy.*;
-import net.tropicraft.info.*;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.tropicraft.economy.ItemValues;
+import net.tropicraft.info.TCNames;
 
 public class TCKoaCurrencyRegistry {
 

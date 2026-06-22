@@ -1,14 +1,14 @@
 package net.tropicraft.entity.underdasea;
 
-import net.minecraft.entity.*;
-import net.minecraft.item.*;
-import net.minecraft.nbt.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
-import net.tropicraft.registry.*;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.DamageSource;
+import net.minecraft.world.World;
+import net.tropicraft.registry.TCItemRegistry;
 
-import cpw.mods.fml.common.registry.*;
-import io.netty.buffer.*;
+import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
+import io.netty.buffer.ByteBuf;
 
 public class EntityStarfish extends EntityEchinoderm implements IEntityAdditionalSpawnData {
 

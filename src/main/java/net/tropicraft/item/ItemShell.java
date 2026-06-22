@@ -1,11 +1,11 @@
 package net.tropicraft.item;
 
-import net.minecraft.entity.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.item.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
-import net.tropicraft.entity.placeable.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Direction;
+import net.minecraft.world.World;
+import net.tropicraft.entity.placeable.EntityWallStarfish;
 
 public class ItemShell extends ItemTropicraftMulti {
 

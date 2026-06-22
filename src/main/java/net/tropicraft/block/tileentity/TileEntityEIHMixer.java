@@ -1,17 +1,22 @@
 package net.tropicraft.block.tileentity;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import net.minecraft.entity.*;
-import net.minecraft.entity.item.*;
-import net.minecraft.item.*;
-import net.minecraft.nbt.*;
-import net.minecraft.network.*;
-import net.minecraft.network.play.server.*;
-import net.minecraft.tileentity.*;
-import net.tropicraft.drinks.*;
-import net.tropicraft.item.*;
-import net.tropicraft.registry.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.tropicraft.drinks.Ingredient;
+import net.tropicraft.item.ItemCocktail;
+import net.tropicraft.registry.TCDrinkMixerRegistry;
+import net.tropicraft.registry.TCItemRegistry;
 
 public class TileEntityEIHMixer extends TileEntity {
 

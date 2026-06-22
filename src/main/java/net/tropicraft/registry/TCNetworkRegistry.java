@@ -1,7 +1,7 @@
 package net.tropicraft.registry;
 
-import cpw.mods.fml.common.network.*;
-import cpw.mods.fml.common.network.simpleimpl.*;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
 public class TCNetworkRegistry {
 

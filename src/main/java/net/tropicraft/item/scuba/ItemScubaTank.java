@@ -1,18 +1,20 @@
 package net.tropicraft.item.scuba;
 
-import java.util.*;
+import java.util.List;
 
-import net.minecraft.creativetab.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.item.*;
-import net.minecraft.nbt.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
-import net.tropicraft.item.*;
-import net.tropicraft.registry.*;
-import net.tropicraft.util.*;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
+import net.tropicraft.item.ItemTropicraft;
+import net.tropicraft.registry.TCCreativeTabRegistry;
+import net.tropicraft.util.ColorHelper;
 
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemScubaTank extends ItemTropicraft {
 

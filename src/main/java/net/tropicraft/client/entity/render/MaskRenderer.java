@@ -1,10 +1,10 @@
 package net.tropicraft.client.entity.render;
 
-import net.minecraft.client.*;
-import net.minecraft.client.renderer.*;
-import net.minecraft.util.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.util.IIcon;
 
-import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.GL11;
 
 public class MaskRenderer {
 

@@ -1,15 +1,16 @@
 package net.tropicraft.item.tool;
 
-import java.util.*;
+import java.util.Set;
 
-import net.minecraft.block.*;
-import net.minecraft.block.material.*;
-import net.minecraft.init.*;
-import net.minecraft.item.*;
-import net.tropicraft.block.*;
-import net.tropicraft.registry.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.tropicraft.block.BlockTropicraftOre;
+import net.tropicraft.registry.TCBlockRegistry;
 
-import com.google.common.collect.*;
+import com.google.common.collect.Sets;
 
 public class ItemTropicraftPickaxe extends ItemTropicraftTool {
 

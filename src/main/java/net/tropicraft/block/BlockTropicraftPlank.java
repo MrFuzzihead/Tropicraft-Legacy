@@ -1,7 +1,7 @@
 package net.tropicraft.block;
 
-import net.minecraft.block.material.*;
-import net.tropicraft.registry.*;
+import net.minecraft.block.material.Material;
+import net.tropicraft.registry.TCCreativeTabRegistry;
 
 public class BlockTropicraftPlank extends BlockTropicraftMulti {
 

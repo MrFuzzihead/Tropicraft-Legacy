@@ -1,13 +1,13 @@
 package net.tropicraft.client.tileentity;
 
-import net.minecraft.client.renderer.entity.*;
-import net.minecraft.client.renderer.tileentity.*;
-import net.minecraft.entity.*;
-import net.minecraft.entity.item.*;
-import net.minecraft.tileentity.*;
-import net.tropicraft.block.tileentity.*;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.tileentity.TileEntity;
+import net.tropicraft.block.tileentity.TileEntitySifter;
 
-import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.GL11;
 
 public class TileEntitySifterRenderer extends TileEntitySpecialRenderer {
 

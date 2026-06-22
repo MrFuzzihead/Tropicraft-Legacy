@@ -1,7 +1,7 @@
 package net.tropicraft.entity.damage;
 
-import net.minecraft.entity.*;
-import net.minecraft.util.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.EntityDamageSourceIndirect;
 
 public class DartDamage extends EntityDamageSourceIndirect {
 

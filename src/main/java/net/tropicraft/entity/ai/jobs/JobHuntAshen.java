@@ -1,14 +1,17 @@
 package net.tropicraft.entity.ai.jobs;
 
-import java.util.*;
+import java.util.List;
 
-import net.minecraft.entity.*;
-import net.minecraft.util.*;
-import net.tropicraft.entity.hostile.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.Vec3;
+import net.tropicraft.entity.hostile.EntityLostMask;
 
-import CoroUtil.componentAI.jobSystem.*;
-import CoroUtil.entity.*;
-import CoroUtil.pathfinding.*;
+import CoroUtil.componentAI.jobSystem.JobBase;
+import CoroUtil.componentAI.jobSystem.JobManager;
+import CoroUtil.entity.EnumJobState;
+import CoroUtil.pathfinding.PFQueue;
 
 public class JobHuntAshen extends JobBase {
 

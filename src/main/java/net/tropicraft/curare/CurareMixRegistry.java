@@ -1,8 +1,11 @@
 package net.tropicraft.curare;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
-import net.minecraft.item.*;
+import net.minecraft.item.ItemStack;
 
 public class CurareMixRegistry {
 

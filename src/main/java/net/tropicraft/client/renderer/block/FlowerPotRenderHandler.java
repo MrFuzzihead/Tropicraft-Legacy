@@ -1,16 +1,18 @@
 package net.tropicraft.client.renderer.block;
 
-import net.minecraft.block.*;
-import net.minecraft.client.renderer.*;
-import net.minecraft.init.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
-import net.tropicraft.block.*;
-import net.tropicraft.block.tileentity.*;
-import net.tropicraft.info.*;
-import net.tropicraft.registry.*;
+import net.minecraft.block.Block;
+import net.minecraft.client.renderer.EntityRenderer;
+import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.init.Blocks;
+import net.minecraft.util.IIcon;
+import net.minecraft.world.IBlockAccess;
+import net.tropicraft.block.BlockTropicraftFlowerPot;
+import net.tropicraft.block.tileentity.TileEntityTropicraftFlowerPot;
+import net.tropicraft.info.TCRenderIDs;
+import net.tropicraft.registry.TCBlockRegistry;
 
-import cpw.mods.fml.client.registry.*;
+import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 
 public class FlowerPotRenderHandler implements ISimpleBlockRenderingHandler {
 

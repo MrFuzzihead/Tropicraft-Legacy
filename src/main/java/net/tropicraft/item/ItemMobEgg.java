@@ -1,17 +1,24 @@
 package net.tropicraft.item;
 
-import java.util.*;
+import java.util.List;
+import java.util.Random;
 
-import net.minecraft.creativetab.*;
-import net.minecraft.entity.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.item.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
-import net.tropicraft.entity.underdasea.*;
-import net.tropicraft.registry.*;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Facing;
+import net.minecraft.world.World;
+import net.tropicraft.entity.underdasea.EntityTropicalFish;
+import net.tropicraft.registry.TCCreativeTabRegistry;
 
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemMobEgg extends ItemTropicraftMulti {
 

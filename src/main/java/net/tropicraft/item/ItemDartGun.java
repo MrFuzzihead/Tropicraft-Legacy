@@ -1,15 +1,19 @@
 package net.tropicraft.item;
 
-import java.util.*;
+import java.util.List;
 
-import net.minecraft.creativetab.*;
-import net.minecraft.entity.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.item.*;
-import net.minecraft.world.*;
-import net.tropicraft.entity.projectile.*;
-import net.tropicraft.registry.*;
-import net.tropicraft.util.*;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumAction;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+import net.tropicraft.entity.projectile.EntityDart;
+import net.tropicraft.registry.TCCreativeTabRegistry;
+import net.tropicraft.registry.TCItemRegistry;
+import net.tropicraft.util.TropicraftUtils;
 
 public class ItemDartGun extends ItemTropicraft {
 

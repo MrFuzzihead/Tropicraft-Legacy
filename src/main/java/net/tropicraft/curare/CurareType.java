@@ -1,6 +1,6 @@
 package net.tropicraft.curare;
 
-import net.minecraft.potion.*;
+import net.minecraft.potion.Potion;
 
 public class CurareType {
 

@@ -1,7 +1,7 @@
 package net.tropicraft.world.genlayer;
 
-import net.minecraft.world.gen.layer.*;
-import net.tropicraft.world.biomes.*;
+import net.minecraft.world.gen.layer.IntCache;
+import net.tropicraft.world.biomes.BiomeGenTropicraft;
 
 public class GenLayerTropicraftAddIsland extends GenLayerTropicraft {
 

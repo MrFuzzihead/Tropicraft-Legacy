@@ -1,6 +1,6 @@
 package net.tropicraft.drinks;
 
-import net.minecraft.entity.player.*;
+import net.minecraft.entity.player.EntityPlayer;
 
 public abstract class DrinkAction {
 

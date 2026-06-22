@@ -1,7 +1,7 @@
 package net.tropicraft.entity.passive;
 
-import net.minecraft.world.*;
-import net.tropicraft.entity.hostile.*;
+import net.minecraft.world.World;
+import net.tropicraft.entity.hostile.EntityTreeFrog;
 
 public class EntityTreeFrogGreen extends EntityTreeFrog {
 

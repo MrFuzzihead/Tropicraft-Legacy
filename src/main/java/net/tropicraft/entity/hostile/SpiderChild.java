@@ -1,11 +1,12 @@
 package net.tropicraft.entity.hostile;
 
-import net.minecraft.entity.*;
-import net.minecraft.world.*;
-import net.tropicraft.entity.ai.jobs.*;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.world.World;
+import net.tropicraft.entity.ai.jobs.JobExtraTargetting;
 
-import CoroUtil.componentAI.jobSystem.*;
-import cpw.mods.fml.relauncher.*;
+import CoroUtil.componentAI.jobSystem.JobBase;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class SpiderChild extends SpiderBase {
 

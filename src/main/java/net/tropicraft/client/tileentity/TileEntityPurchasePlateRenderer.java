@@ -1,22 +1,25 @@
 package net.tropicraft.client.tileentity;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
-import net.minecraft.client.*;
-import net.minecraft.client.gui.*;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.entity.*;
-import net.minecraft.client.renderer.tileentity.*;
-import net.minecraft.entity.*;
-import net.minecraft.item.*;
-import net.minecraft.tileentity.*;
-import net.minecraft.util.*;
-import net.tropicraft.block.tileentity.*;
-import net.tropicraft.economy.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.ResourceLocation;
+import net.tropicraft.block.tileentity.TileEntityPurchasePlate;
+import net.tropicraft.economy.ItemEntry;
+import net.tropicraft.economy.ItemValues;
 
-import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.client.*;
+import cpw.mods.fml.client.FMLClientHandler;
 
 public class TileEntityPurchasePlateRenderer extends TileEntitySpecialRenderer {
 

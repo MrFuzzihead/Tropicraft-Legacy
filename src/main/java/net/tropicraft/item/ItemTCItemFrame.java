@@ -1,13 +1,14 @@
 package net.tropicraft.item;
 
-import net.minecraft.client.renderer.texture.*;
-import net.minecraft.entity.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.item.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
-import net.tropicraft.entity.*;
-import net.tropicraft.registry.*;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemHangingEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Direction;
+import net.minecraft.world.World;
+import net.tropicraft.entity.EntityTCItemFrame;
+import net.tropicraft.registry.TCCreativeTabRegistry;
 
 public class ItemTCItemFrame extends ItemHangingEntity {
 

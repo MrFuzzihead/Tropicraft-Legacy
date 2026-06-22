@@ -1,18 +1,19 @@
 package net.tropicraft.client.renderer.item;
 
-import net.minecraft.client.*;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.texture.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.item.*;
-import net.minecraft.nbt.*;
-import net.minecraft.util.*;
-import net.minecraft.world.storage.*;
-import net.minecraftforge.client.*;
-import net.tropicraft.item.scuba.*;
-import net.tropicraft.util.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.storage.MapData;
+import net.minecraftforge.client.IItemRenderer;
+import net.tropicraft.item.scuba.ItemScubaChestplateGear;
+import net.tropicraft.util.TropicraftUtils;
 
-import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.GL11;
 
 public class ItemDiveComputerRenderer implements IItemRenderer {
 

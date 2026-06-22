@@ -1,16 +1,24 @@
 package net.tropicraft.entity;
 
-import net.minecraft.entity.*;
-import net.minecraft.entity.monster.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.nbt.*;
-import net.minecraft.pathfinding.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.monster.IMob;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.pathfinding.PathEntity;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.EnumDifficulty;
+import net.minecraft.world.EnumSkyBlock;
+import net.minecraft.world.World;
 
-import CoroUtil.componentAI.*;
-import CoroUtil.componentAI.jobSystem.*;
-import CoroUtil.diplomacy.*;
+import CoroUtil.componentAI.AIAgent;
+import CoroUtil.componentAI.ICoroAI;
+import CoroUtil.componentAI.jobSystem.JobBase;
+import CoroUtil.componentAI.jobSystem.JobHunt;
+import CoroUtil.diplomacy.DiplomacyHelper;
+import CoroUtil.diplomacy.TeamTypes;
 
 public class EntityCoroAI extends EntityLand implements ICoroAI, IMob {
 

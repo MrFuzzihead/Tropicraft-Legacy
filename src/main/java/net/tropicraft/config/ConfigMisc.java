@@ -1,8 +1,11 @@
 package net.tropicraft.config;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import modconfig.*;
+import modconfig.ConfigComment;
+import modconfig.IConfigCategory;
 
 public class ConfigMisc implements IConfigCategory {
 

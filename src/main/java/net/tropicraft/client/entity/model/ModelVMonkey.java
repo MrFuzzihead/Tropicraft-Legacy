@@ -1,11 +1,13 @@
 package net.tropicraft.client.entity.model;
 
-import java.util.*;
+import java.util.Random;
 
-import net.minecraft.client.model.*;
-import net.minecraft.entity.*;
-import net.minecraft.util.*;
-import net.tropicraft.entity.passive.*;
+import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.MathHelper;
+import net.tropicraft.entity.passive.VMonkey;
 
 public class ModelVMonkey extends ModelBase {
 

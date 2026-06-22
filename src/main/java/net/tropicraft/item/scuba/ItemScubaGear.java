@@ -1,15 +1,18 @@
 package net.tropicraft.item.scuba;
 
-import net.minecraft.client.model.*;
-import net.minecraft.entity.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.item.*;
-import net.minecraft.nbt.*;
-import net.minecraft.world.*;
-import net.tropicraft.item.armor.*;
-import net.tropicraft.registry.*;
+import net.minecraft.client.model.ModelBiped;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
+import net.tropicraft.item.armor.ItemTropicraftArmor;
+import net.tropicraft.registry.TCCreativeTabRegistry;
 
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class ItemScubaGear extends ItemTropicraftArmor {
 

@@ -1,20 +1,41 @@
 package net.tropicraft;
 
-import net.minecraftforge.common.*;
-import net.tropicraft.config.*;
-import net.tropicraft.drinks.*;
-import net.tropicraft.encyclopedia.*;
-import net.tropicraft.event.*;
-import net.tropicraft.proxy.*;
-import net.tropicraft.registry.*;
-import net.tropicraft.util.*;
-import net.tropicraft.world.*;
+import net.minecraftforge.common.MinecraftForge;
+import net.tropicraft.config.ConfigBiomes;
+import net.tropicraft.config.ConfigGenRates;
+import net.tropicraft.config.ConfigMisc;
+import net.tropicraft.drinks.MixerRecipes;
+import net.tropicraft.encyclopedia.Encyclopedia;
+import net.tropicraft.event.TCBlockEvents;
+import net.tropicraft.event.TCItemEvents;
+import net.tropicraft.event.TCMiscEvents;
+import net.tropicraft.event.TCPacketEvents;
+import net.tropicraft.proxy.ISuperProxy;
+import net.tropicraft.registry.TCBlockRegistry;
+import net.tropicraft.registry.TCCommandRegistry;
+import net.tropicraft.registry.TCCraftingRegistry;
+import net.tropicraft.registry.TCEntityRegistry;
+import net.tropicraft.registry.TCFluidRegistry;
+import net.tropicraft.registry.TCItemRegistry;
+import net.tropicraft.registry.TCKoaCurrencyRegistry;
+import net.tropicraft.registry.TCTileEntityRegistry;
+import net.tropicraft.util.ColorHelper;
+import net.tropicraft.util.TropicraftWorldUtils;
+import net.tropicraft.world.TCWorldGenerator;
 
-import cpw.mods.fml.common.*;
-import cpw.mods.fml.common.event.*;
-import cpw.mods.fml.common.network.*;
-import cpw.mods.fml.common.registry.*;
-import modconfig.*;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLInterModComms;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.network.FMLEventChannel;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
+import modconfig.ConfigMod;
+import modconfig.IConfigCategory;
 
 @Mod(modid = Tropicraft.MODID, name = Tropicraft.MODNAME, version = Tags.VERSION)
 public class Tropicraft {

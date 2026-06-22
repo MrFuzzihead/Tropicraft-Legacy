@@ -1,15 +1,18 @@
 package net.tropicraft.entity.hostile;
 
-import java.util.*;
+import java.util.Random;
 
-import net.minecraft.entity.*;
-import net.minecraft.init.*;
-import net.minecraft.nbt.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
-import net.tropicraft.entity.ai.jobs.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.init.Blocks;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
+import net.tropicraft.entity.ai.jobs.JobEggManage;
 
-import CoroUtil.componentAI.jobSystem.*;
+import CoroUtil.componentAI.jobSystem.JobBase;
 
 public class SpiderAdult extends SpiderBase {
 

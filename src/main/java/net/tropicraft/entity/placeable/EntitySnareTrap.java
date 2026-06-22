@@ -2,23 +2,27 @@ package net.tropicraft.entity.placeable;
 
 import java.util.List;
 
-import net.minecraft.block.*;
-import net.minecraft.client.*;
-import net.minecraft.entity.*;
-import net.minecraft.entity.ai.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.nbt.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
-import net.minecraftforge.common.util.*;
-import net.tropicraft.*;
-import net.tropicraft.registry.*;
-import net.tropicraft.util.*;
+import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.ai.EntityAITasks;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.DamageSource;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+import net.tropicraft.Tropicraft;
+import net.tropicraft.registry.TCItemRegistry;
+import net.tropicraft.util.EffectHelper;
 
-import CoroUtil.packet.*;
-import cpw.mods.fml.common.registry.*;
-import cpw.mods.fml.relauncher.*;
-import io.netty.buffer.*;
+import CoroUtil.packet.PacketHelper;
+import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 
 public class EntitySnareTrap extends Entity implements IEntityAdditionalSpawnData {
 

@@ -1,7 +1,9 @@
 package net.tropicraft.entity.underdasea;
 
-import net.minecraft.entity.*;
-import net.minecraft.world.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.world.World;
 
 public class EntityTurtleEgg extends EntityLiving {
 

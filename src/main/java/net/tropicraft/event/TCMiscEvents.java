@@ -1,24 +1,28 @@
 package net.tropicraft.event;
 
-import java.util.*;
+import java.util.List;
 
-import net.minecraft.client.*;
-import net.minecraft.client.gui.*;
-import net.minecraft.entity.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.potion.*;
-import net.minecraft.world.*;
-import net.minecraftforge.event.world.*;
-import net.tropicraft.entity.placeable.*;
-import net.tropicraft.util.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.potion.Potion;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.event.world.WorldEvent;
+import net.tropicraft.entity.placeable.EntityChair;
+import net.tropicraft.util.EffectHelper;
+import net.tropicraft.util.TropicraftWorldUtils;
 
-import CoroUtil.forge.*;
-import CoroUtil.world.*;
-import cpw.mods.fml.common.*;
-import cpw.mods.fml.common.eventhandler.*;
-import cpw.mods.fml.common.gameevent.*;
-import cpw.mods.fml.relauncher.*;
-import extendedrenderer.*;
+import CoroUtil.forge.CoroAI;
+import CoroUtil.world.WorldDirector;
+import CoroUtil.world.WorldDirectorManager;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import extendedrenderer.ExtendedRenderer;
 
 public class TCMiscEvents {
 

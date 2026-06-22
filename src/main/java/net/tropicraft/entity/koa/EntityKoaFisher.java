@@ -1,12 +1,12 @@
 package net.tropicraft.entity.koa;
 
-import net.minecraft.entity.*;
-import net.minecraft.item.*;
-import net.minecraft.world.*;
-import net.tropicraft.entity.ai.jobs.*;
-import net.tropicraft.registry.*;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+import net.tropicraft.entity.ai.jobs.JobFish;
+import net.tropicraft.registry.TCItemRegistry;
 
-import CoroUtil.componentAI.jobSystem.*;
+import CoroUtil.componentAI.jobSystem.JobHunt;
 
 public class EntityKoaFisher extends EntityKoaBase {
 

@@ -1,11 +1,16 @@
 package net.tropicraft.registry;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
-import net.minecraft.item.*;
-import net.tropicraft.block.tileentity.*;
-import net.tropicraft.drinks.*;
-import net.tropicraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.tropicraft.block.tileentity.TileEntityEIHMixer;
+import net.tropicraft.drinks.Ingredient;
+import net.tropicraft.drinks.MixerRecipe;
+import net.tropicraft.item.ItemCocktail;
 
 public class TCDrinkMixerRegistry {
 

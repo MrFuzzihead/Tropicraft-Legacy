@@ -1,8 +1,8 @@
 package net.tropicraft.entity.damage;
 
-import net.minecraft.entity.*;
-import net.minecraft.util.*;
-import net.tropicraft.entity.projectile.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.DamageSource;
+import net.tropicraft.entity.projectile.EntityDart;
 
 public class TCDamageSource extends DamageSource {
 

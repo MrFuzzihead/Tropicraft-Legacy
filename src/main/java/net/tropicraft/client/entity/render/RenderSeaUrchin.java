@@ -1,14 +1,16 @@
 package net.tropicraft.client.entity.render;
 
-import net.minecraft.client.model.*;
-import net.minecraft.client.renderer.entity.*;
-import net.minecraft.entity.*;
-import net.minecraft.util.*;
-import net.tropicraft.client.entity.model.*;
-import net.tropicraft.entity.underdasea.*;
-import net.tropicraft.util.*;
+import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.ResourceLocation;
+import net.tropicraft.client.entity.model.ModelSeaUrchin;
+import net.tropicraft.entity.underdasea.EntitySeaUrchin;
+import net.tropicraft.util.TropicraftUtils;
 
-import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.GL11;
 
 public class RenderSeaUrchin extends RenderLiving {
 

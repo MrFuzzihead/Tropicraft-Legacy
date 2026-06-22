@@ -1,12 +1,12 @@
 package net.tropicraft.item.tool;
 
-import java.util.*;
+import java.util.HashSet;
 
-import net.minecraft.block.*;
-import net.minecraft.init.*;
-import net.minecraft.item.*;
+import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 
-import com.google.common.collect.*;
+import com.google.common.collect.Sets;
 
 public class ItemTropicraftShovel extends ItemTropicraftTool {
 

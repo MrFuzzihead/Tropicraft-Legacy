@@ -1,11 +1,13 @@
 package net.tropicraft.client.entity.model;
 
-import net.minecraft.client.model.*;
-import net.minecraft.client.renderer.*;
-import net.minecraft.entity.*;
-import net.tropicraft.entity.underdasea.*;
+import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.tropicraft.entity.underdasea.EntityEagleRay;
 
-import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.GL11;
 
 public class ModelEagleRay extends ModelBase {
 

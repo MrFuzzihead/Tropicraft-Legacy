@@ -1,9 +1,9 @@
 package net.tropicraft.entity.koa;
 
-import net.minecraft.entity.*;
-import net.minecraft.item.*;
-import net.minecraft.world.*;
-import net.tropicraft.registry.*;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+import net.tropicraft.registry.TCItemRegistry;
 
 public class EntityKoaHunter extends EntityKoaBase {
 

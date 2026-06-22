@@ -1,8 +1,10 @@
 package net.tropicraft.client.entity.model;
 
-import net.minecraft.client.model.*;
-import net.minecraft.entity.*;
-import net.tropicraft.entity.underdasea.*;
+import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.tropicraft.entity.underdasea.EntityTurtleEgg;
 
 public class ModelTurtleEgg extends ModelBase {
 

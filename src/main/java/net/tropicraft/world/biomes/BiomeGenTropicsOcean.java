@@ -1,9 +1,9 @@
 package net.tropicraft.world.biomes;
 
-import java.util.*;
+import java.util.Random;
 
-import net.minecraft.world.*;
-import net.tropicraft.world.worldgen.*;
+import net.minecraft.world.World;
+import net.tropicraft.world.worldgen.WorldGenCoral;
 
 public class BiomeGenTropicsOcean extends BiomeGenTropicraft {
 

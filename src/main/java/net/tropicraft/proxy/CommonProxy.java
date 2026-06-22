@@ -1,6 +1,6 @@
 package net.tropicraft.proxy;
 
-import net.minecraft.client.model.*;
+import net.minecraft.client.model.ModelBiped;
 
 public abstract class CommonProxy implements ISuperProxy {
 

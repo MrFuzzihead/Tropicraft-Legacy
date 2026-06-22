@@ -1,18 +1,23 @@
 package net.tropicraft.entity.projectile;
 
-import java.util.*;
+import java.util.List;
 
-import net.minecraft.client.*;
-import net.minecraft.entity.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
-import net.tropicraft.registry.*;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
+import net.tropicraft.registry.TCItemRegistry;
 
-import CoroUtil.componentAI.*;
-import CoroUtil.entity.*;
-import cpw.mods.fml.relauncher.*;
-import extendedrenderer.particle.entity.*;
+import CoroUtil.componentAI.ICoroAI;
+import CoroUtil.entity.EntityThrowableUsefull;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import extendedrenderer.particle.entity.EntityIconFX;
+import extendedrenderer.particle.entity.EntityRotFX;
 
 public class EntityTropicraftLeafballNew extends EntityThrowableUsefull {
 

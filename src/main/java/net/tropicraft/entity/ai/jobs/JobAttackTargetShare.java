@@ -1,12 +1,14 @@
 package net.tropicraft.entity.ai.jobs;
 
-import java.util.*;
+import java.util.List;
 
-import net.minecraft.entity.*;
-import net.minecraft.util.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.DamageSource;
 
-import CoroUtil.componentAI.*;
-import CoroUtil.componentAI.jobSystem.*;
+import CoroUtil.componentAI.ICoroAI;
+import CoroUtil.componentAI.jobSystem.JobBase;
+import CoroUtil.componentAI.jobSystem.JobManager;
 
 public class JobAttackTargetShare extends JobBase {
 

@@ -1,9 +1,10 @@
 package net.tropicraft.entity.underdasea;
 
-import net.minecraft.entity.*;
-import net.minecraft.nbt.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
 
 public class EntityEagleRay extends EntityTropicraftWaterMob {
 

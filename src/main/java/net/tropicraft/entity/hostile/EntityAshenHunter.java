@@ -1,8 +1,11 @@
 package net.tropicraft.entity.hostile;
 
-import net.minecraft.entity.*;
-import net.minecraft.world.*;
-import net.tropicraft.entity.projectile.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.world.EnumDifficulty;
+import net.minecraft.world.World;
+import net.tropicraft.entity.projectile.EntityDart;
 
 public class EntityAshenHunter extends EntityAshen {
 

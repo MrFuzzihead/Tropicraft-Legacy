@@ -1,12 +1,14 @@
 package net.tropicraft.entity.koa;
 
-import net.minecraft.entity.*;
-import net.minecraft.item.*;
-import net.minecraft.world.*;
-import net.tropicraft.entity.ai.jobs.*;
-import net.tropicraft.registry.*;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+import net.tropicraft.entity.ai.jobs.JobQuestGiver;
+import net.tropicraft.registry.TCItemRegistry;
 
-import CoroUtil.componentAI.jobSystem.*;
+import CoroUtil.componentAI.jobSystem.JobBase;
 
 public class EntityKoaShaman extends EntityKoaBase {
 

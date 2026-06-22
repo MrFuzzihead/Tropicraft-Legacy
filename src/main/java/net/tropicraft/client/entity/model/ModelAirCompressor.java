@@ -1,6 +1,7 @@
 package net.tropicraft.client.entity.model;
 
-import net.minecraft.client.model.*;
+import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelRenderer;
 
 public class ModelAirCompressor extends ModelBase {
 

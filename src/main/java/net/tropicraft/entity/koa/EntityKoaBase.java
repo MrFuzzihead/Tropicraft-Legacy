@@ -1,13 +1,17 @@
 package net.tropicraft.entity.koa;
 
-import net.minecraft.entity.*;
-import net.minecraft.nbt.*;
-import net.minecraft.world.*;
-import net.tropicraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
+import net.tropicraft.entity.EntityCoroAI;
 
-import CoroUtil.componentAI.*;
-import CoroUtil.componentAI.jobSystem.*;
-import CoroUtil.diplomacy.*;
+import CoroUtil.componentAI.AIAgent;
+import CoroUtil.componentAI.ICoroAI;
+import CoroUtil.componentAI.jobSystem.JobBase;
+import CoroUtil.componentAI.jobSystem.JobHunt;
+import CoroUtil.diplomacy.DiplomacyHelper;
+import CoroUtil.diplomacy.TeamTypes;
 
 public class EntityKoaBase extends EntityCoroAI {
 

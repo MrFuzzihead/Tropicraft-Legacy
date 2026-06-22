@@ -1,11 +1,12 @@
 package net.tropicraft.util;
 
-import net.minecraft.entity.player.*;
-import net.minecraft.server.*;
-import net.minecraft.server.management.*;
-import net.minecraft.world.*;
-import net.minecraftforge.common.*;
-import net.tropicraft.world.*;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.ServerConfigurationManager;
+import net.minecraft.world.Teleporter;
+import net.minecraftforge.common.DimensionManager;
+import net.tropicraft.world.TeleporterTropics;
+import net.tropicraft.world.WorldProviderTropicraft;
 
 public class TropicraftWorldUtils {
 

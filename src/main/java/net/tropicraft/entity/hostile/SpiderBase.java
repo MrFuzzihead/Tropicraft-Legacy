@@ -1,14 +1,16 @@
 package net.tropicraft.entity.hostile;
 
-import net.minecraft.entity.*;
-import net.minecraft.entity.monster.*;
-import net.minecraft.init.*;
-import net.minecraft.world.*;
-import net.tropicraft.entity.*;
-import net.tropicraft.entity.ai.jobs.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.monster.IMob;
+import net.minecraft.init.Items;
+import net.minecraft.world.World;
+import net.tropicraft.entity.EntityCoroAI;
+import net.tropicraft.entity.ai.jobs.JobAttackTargetShare;
 
-import CoroUtil.componentAI.jobSystem.*;
-import cpw.mods.fml.relauncher.*;
+import CoroUtil.componentAI.jobSystem.JobBase;
+import CoroUtil.componentAI.jobSystem.JobHunt;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class SpiderBase extends EntityCoroAI implements IMob {
 

@@ -1,10 +1,14 @@
 package net.tropicraft.registry;
 
-import net.minecraft.block.*;
-import net.minecraft.init.*;
-import net.minecraft.item.*;
-import net.minecraftforge.fluids.*;
-import net.tropicraft.fluid.*;
+import net.minecraft.block.Block;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.tropicraft.fluid.FluidTropicsPortal;
+import net.tropicraft.fluid.FluidTropicsWater;
 
 public class TCFluidRegistry {
 

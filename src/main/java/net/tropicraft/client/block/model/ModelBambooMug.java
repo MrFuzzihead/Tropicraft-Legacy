@@ -1,8 +1,9 @@
 package net.tropicraft.client.block.model;
 
-import net.minecraft.client.model.*;
+import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelRenderer;
 
-import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.GL11;
 
 public class ModelBambooMug extends ModelBase {
 

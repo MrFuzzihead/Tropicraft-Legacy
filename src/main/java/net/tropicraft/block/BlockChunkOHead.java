@@ -1,6 +1,6 @@
 package net.tropicraft.block;
 
-import net.minecraft.block.material.*;
+import net.minecraft.block.material.Material;
 
 public class BlockChunkOHead extends BlockTropicraft {
 

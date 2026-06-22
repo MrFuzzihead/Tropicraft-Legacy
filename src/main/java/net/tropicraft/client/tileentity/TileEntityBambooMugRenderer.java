@@ -1,19 +1,20 @@
 package net.tropicraft.client.tileentity;
 
-import java.nio.*;
+import java.nio.FloatBuffer;
 
-import net.minecraft.client.*;
-import net.minecraft.client.renderer.tileentity.*;
-import net.minecraft.tileentity.*;
-import net.tropicraft.block.tileentity.*;
-import net.tropicraft.client.block.model.*;
-import net.tropicraft.client.entity.model.*;
-import net.tropicraft.drinks.*;
-import net.tropicraft.item.*;
-import net.tropicraft.util.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.tileentity.TileEntity;
+import net.tropicraft.block.tileentity.TileEntityBambooMug;
+import net.tropicraft.client.block.model.ModelBambooMug;
+import net.tropicraft.client.entity.model.ModelUmbrella;
+import net.tropicraft.drinks.Drink;
+import net.tropicraft.item.ItemCocktail;
+import net.tropicraft.util.ColorHelper;
+import net.tropicraft.util.TropicraftUtils;
 
-import org.lwjgl.*;
-import org.lwjgl.opengl.*;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
 
 public class TileEntityBambooMugRenderer extends TileEntitySpecialRenderer {
 

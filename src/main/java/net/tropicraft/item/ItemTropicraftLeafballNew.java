@@ -1,14 +1,16 @@
 package net.tropicraft.item;
 
-import net.minecraft.client.renderer.texture.*;
-import net.minecraft.entity.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.item.*;
-import net.minecraft.world.*;
-import net.tropicraft.entity.projectile.*;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+import net.tropicraft.entity.projectile.EntityTropicraftLeafballNew;
 
-import CoroUtil.entity.*;
-import cpw.mods.fml.relauncher.*;
+import CoroUtil.entity.ItemTropicraftLeafball;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemTropicraftLeafballNew extends ItemTropicraftLeafball {
 

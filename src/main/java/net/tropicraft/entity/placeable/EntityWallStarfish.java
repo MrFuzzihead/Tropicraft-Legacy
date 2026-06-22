@@ -1,12 +1,13 @@
 package net.tropicraft.entity.placeable;
 
-import net.minecraft.entity.*;
-import net.minecraft.nbt.*;
-import net.minecraft.world.*;
-import net.tropicraft.entity.underdasea.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityHanging;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
+import net.tropicraft.entity.underdasea.StarfishType;
 
-import cpw.mods.fml.common.registry.*;
-import io.netty.buffer.*;
+import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
+import io.netty.buffer.ByteBuf;
 
 public class EntityWallStarfish extends EntityHanging implements IEntityAdditionalSpawnData {
 

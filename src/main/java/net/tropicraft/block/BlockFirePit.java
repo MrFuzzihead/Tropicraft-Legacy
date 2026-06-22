@@ -1,10 +1,10 @@
 package net.tropicraft.block;
 
-import net.minecraft.block.*;
-import net.minecraft.block.material.*;
-import net.minecraft.tileentity.*;
-import net.minecraft.world.*;
-import net.tropicraft.factory.*;
+import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.material.Material;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+import net.tropicraft.factory.TileEntityFactory;
 
 public class BlockFirePit extends BlockTropicraft implements ITileEntityProvider {
 

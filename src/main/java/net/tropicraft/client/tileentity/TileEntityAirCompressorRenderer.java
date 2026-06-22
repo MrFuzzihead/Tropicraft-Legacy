@@ -1,13 +1,14 @@
 package net.tropicraft.client.tileentity;
 
-import net.minecraft.client.renderer.tileentity.*;
-import net.minecraft.tileentity.*;
-import net.minecraft.util.*;
-import net.tropicraft.block.tileentity.*;
-import net.tropicraft.client.entity.model.*;
-import net.tropicraft.util.*;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MathHelper;
+import net.tropicraft.block.tileentity.TileEntityAirCompressor;
+import net.tropicraft.client.entity.model.ModelAirCompressor;
+import net.tropicraft.client.entity.model.ModelScubaTank;
+import net.tropicraft.util.TropicraftUtils;
 
-import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.GL11;
 
 public class TileEntityAirCompressorRenderer extends TileEntitySpecialRenderer {
 

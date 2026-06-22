@@ -1,13 +1,16 @@
 package net.tropicraft.block.tileentity;
 
-import net.minecraft.entity.*;
-import net.minecraft.entity.item.*;
-import net.minecraft.item.*;
-import net.minecraft.nbt.*;
-import net.minecraft.network.*;
-import net.minecraft.network.play.server.*;
-import net.minecraft.tileentity.*;
-import net.tropicraft.item.scuba.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.tropicraft.item.scuba.ItemScubaGear;
+import net.tropicraft.item.scuba.ItemScubaTank;
 
 public class TileEntityAirCompressor extends TileEntity {
 

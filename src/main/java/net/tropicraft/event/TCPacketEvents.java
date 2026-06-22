@@ -1,17 +1,19 @@
 package net.tropicraft.event;
 
-import net.minecraft.client.*;
-import net.minecraft.entity.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.nbt.*;
-import net.minecraft.network.*;
-import net.tropicraft.util.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetHandlerPlayServer;
+import net.tropicraft.util.EffectHelper;
 
-import CoroUtil.packet.*;
-import CoroUtil.util.*;
-import cpw.mods.fml.common.eventhandler.*;
-import cpw.mods.fml.common.network.*;
-import cpw.mods.fml.relauncher.*;
+import CoroUtil.packet.PacketHelper;
+import CoroUtil.util.CoroUtilEntity;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.network.FMLNetworkEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class TCPacketEvents {
 

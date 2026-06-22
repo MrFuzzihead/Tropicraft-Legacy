@@ -1,10 +1,10 @@
 package net.tropicraft.block;
 
-import java.util.*;
+import java.util.Random;
 
-import net.minecraft.block.material.*;
-import net.minecraft.item.*;
-import net.tropicraft.registry.*;
+import net.minecraft.block.material.Material;
+import net.minecraft.item.Item;
+import net.tropicraft.registry.TCCreativeTabRegistry;
 
 public class BlockCoconut extends BlockTropicraft {
 
