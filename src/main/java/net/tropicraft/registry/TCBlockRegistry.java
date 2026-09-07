@@ -222,7 +222,8 @@ public class TCBlockRegistry {
         thatchBundle = (BlockTropicraft) new BlockBundle("thatch");
         coral = (BlockTropicraft) new BlockCoral(TCNames.coralNames);
         bambooBundle = (BlockTropicraft) new BlockBundle("bambooBundle").setHardness(1.0f)
-            .setResistance(0.1f);
+            .setResistance(0.1f)
+            .setStepSound(Block.soundTypeWood);
         logs = (BlockTropicraft) new BlockTropicraftLog(TCNames.logNames);
         planks = (BlockTropicraft) new BlockTropicraftPlank(TCNames.plankNames);
         bambooStairs = new BlockTropicraftStairs("bambooStairs", (Block) TCBlockRegistry.bambooBundle, 0);

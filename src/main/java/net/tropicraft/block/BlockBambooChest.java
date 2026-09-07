@@ -18,6 +18,7 @@ public class BlockBambooChest extends BlockChest {
 
     public BlockBambooChest() {
         super(0);
+        this.setStepSound(BlockBambooChest.soundTypeWood);
         this.disableStats();
         this.setCreativeTab(TCCreativeTabRegistry.tabBlock);
     }

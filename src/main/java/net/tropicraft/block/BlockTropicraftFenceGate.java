@@ -18,6 +18,7 @@ public class BlockTropicraftFenceGate extends BlockFenceGate {
     public BlockTropicraftFenceGate(final Block block, final int meta, final String name, final Material material) {
         this.blockForTexture = block;
         this.textureMeta = meta;
+        this.setStepSound(BlockTropicraftFenceGate.soundTypeWood);
         this.setCreativeTab(TCCreativeTabRegistry.tabDecorations);
     }
 

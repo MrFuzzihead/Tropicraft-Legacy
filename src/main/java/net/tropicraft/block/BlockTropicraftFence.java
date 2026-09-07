@@ -19,6 +19,7 @@ public class BlockTropicraftFence extends BlockFence {
     public BlockTropicraftFence(final String name, final String textureName, final BlockTropicraftFenceGate fenceGate,
         final Material material) {
         super(name, material);
+        this.setStepSound(BlockTropicraftFence.soundTypeWood);
         this.setCreativeTab(TCCreativeTabRegistry.tabDecorations);
         this.setBlockName(name);
         this.setBlockTextureName(textureName);

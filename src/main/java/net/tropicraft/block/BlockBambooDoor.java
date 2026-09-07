@@ -23,6 +23,7 @@ public class BlockBambooDoor extends BlockDoor {
     public BlockBambooDoor() {
         super(Material.plants);
         this.setBlockTextureName("bambooDoor");
+        this.setStepSound(BlockBambooDoor.soundTypeWood);
     }
 
     @SideOnly(Side.CLIENT)

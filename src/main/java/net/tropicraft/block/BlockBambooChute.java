@@ -38,6 +38,7 @@ public class BlockBambooChute extends BlockTropicraft implements IPlantable {
 
     public BlockBambooChute() {
         super(Material.plants);
+        this.setStepSound(BlockBambooChute.soundTypeGrass);
         final float f = 0.375f;
         this.setBlockBounds(0.5f - f, 0.0f, 0.5f - f, 0.5f + f, 1.0f, 0.5f + f);
         this.setTickRandomly(true);
