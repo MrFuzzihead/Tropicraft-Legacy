@@ -36,6 +36,7 @@ public class BlockCoffeePlant extends BlockTropicraft {
 
     public BlockCoffeePlant() {
         super(Material.plants);
+        this.setStepSound(BlockCoffeePlant.soundTypeGrass);
         this.setTickRandomly(true);
         this.disableStats();
         this.setCreativeTab((CreativeTabs) null);

@@ -219,10 +219,11 @@ public class TCBlockRegistry {
         azuriteOre = new BlockTropicraftOre().setHardness(3.0f)
             .setResistance(5.0f);
         oreBlocks = (BlockTropicraft) new BlockTropicraftMulti(TCNames.oreBlockNames);
-        thatchBundle = (BlockTropicraft) new BlockBundle("thatch");
+        thatchBundle = (BlockTropicraft) new BlockBundle("thatch").setStepSound(Block.soundTypeGrass);
         coral = (BlockTropicraft) new BlockCoral(TCNames.coralNames);
         bambooBundle = (BlockTropicraft) new BlockBundle("bambooBundle").setHardness(1.0f)
-            .setResistance(0.1f);
+            .setResistance(0.1f)
+            .setStepSound(Block.soundTypeWood);
         logs = (BlockTropicraft) new BlockTropicraftLog(TCNames.logNames);
         planks = (BlockTropicraft) new BlockTropicraftPlank(TCNames.plankNames);
         bambooStairs = new BlockTropicraftStairs("bambooStairs", (Block) TCBlockRegistry.bambooBundle, 0);

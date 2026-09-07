@@ -19,6 +19,7 @@ public class BlockBambooMug extends BlockContainer {
 
     public BlockBambooMug() {
         super(Material.plants);
+        this.setStepSound(BlockBambooMug.soundTypeWood);
         this.setBlockBounds(0.3f, 0.0f, 0.3f, 0.7f, 0.45f, 0.7f);
     }
 

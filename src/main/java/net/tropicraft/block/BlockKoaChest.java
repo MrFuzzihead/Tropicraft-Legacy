@@ -16,6 +16,7 @@ public class BlockKoaChest extends BlockChest {
 
     public BlockKoaChest() {
         super(0);
+        this.setStepSound(BlockKoaChest.soundTypeWood);
         this.disableStats();
         this.setCreativeTab(TCCreativeTabRegistry.tabBlock);
     }

@@ -32,6 +32,7 @@ public class BlockBongoDrum extends BlockTropicraftMulti {
 
     public BlockBongoDrum(final String[] names) {
         super(names, Material.circuits);
+        this.setStepSound(BlockBongoDrum.soundTypeWood);
         this.setBlockBounds(0.25f, 0.0f, 0.25f, 0.75f, 1.0f, 0.75f);
         this.setLightOpacity(255);
         this.setCreativeTab(TCCreativeTabRegistry.tabMisc);
