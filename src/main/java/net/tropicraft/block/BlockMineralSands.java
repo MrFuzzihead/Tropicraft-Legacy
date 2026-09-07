@@ -28,6 +28,7 @@ public class BlockMineralSands extends BlockFalling {
 
     public BlockMineralSands() {
         super(Material.sand);
+        this.setStepSound(BlockMineralSands.soundTypeSand);
         this.setCreativeTab(TCCreativeTabRegistry.tabBlock);
         this.setHardness(0.5f);
     }

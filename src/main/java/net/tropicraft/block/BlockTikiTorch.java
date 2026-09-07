@@ -29,6 +29,7 @@ public class BlockTikiTorch extends BlockTropicraft {
 
     public BlockTikiTorch() {
         super(Material.circuits);
+        this.setStepSound(BlockTikiTorch.soundTypeWood);
         this.setTickRandomly(true);
         this.setCreativeTab((CreativeTabs) null);
         this.lightValue = 15;

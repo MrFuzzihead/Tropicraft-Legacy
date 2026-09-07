@@ -12,6 +12,7 @@ public class BlockPurifiedSand extends BlockFalling {
 
     public BlockPurifiedSand() {
         super(Material.sand);
+        this.setStepSound(BlockPurifiedSand.soundTypeSand);
         this.setHardness(0.5f);
         this.setCreativeTab(TCCreativeTabRegistry.tabBlock);
     }

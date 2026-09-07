@@ -37,6 +37,7 @@ public class BlockTropicraftSapling extends BlockSapling implements IGrowable {
 
     public BlockTropicraftSapling(final String[] names) {
         this.names = names;
+        this.setStepSound(BlockTropicraftSapling.soundTypeGrass);
         this.setTickRandomly(true);
         this.disableStats();
         this.setCreativeTab(TCCreativeTabRegistry.tabBlock);

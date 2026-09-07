@@ -21,6 +21,7 @@ public class BlockSifter extends BlockTropicraft implements ITileEntityProvider 
 
     public BlockSifter() {
         super(Material.wood);
+        this.setStepSound(BlockSifter.soundTypeWood);
     }
 
     public TileEntity createNewTileEntity(final World var1, final int var2) {

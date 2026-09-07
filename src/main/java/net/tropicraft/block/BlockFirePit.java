@@ -10,6 +10,7 @@ public class BlockFirePit extends BlockTropicraft implements ITileEntityProvider
 
     public BlockFirePit() {
         super(Material.circuits);
+        this.setStepSound(BlockFirePit.soundTypeWood);
         this.setBlockTextureName("firePit");
         this.setBlockBoundsForItemRender();
         this.lightValue = 15;

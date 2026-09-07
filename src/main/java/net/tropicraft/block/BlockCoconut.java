@@ -10,6 +10,7 @@ public class BlockCoconut extends BlockTropicraft {
 
     public BlockCoconut() {
         super(Material.gourd);
+        this.setStepSound(BlockCoconut.soundTypeWood);
         final float f = 0.225f;
         this.setBlockBounds(0.5f - f, f, 0.5f - f, 0.5f + f, 1.0f - f, 0.5f + f);
         this.setCreativeTab(TCCreativeTabRegistry.tabFood);
