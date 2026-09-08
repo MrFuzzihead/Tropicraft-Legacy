@@ -123,27 +123,41 @@ public class TCBlockRegistry {
         registerBlock(TCBlockRegistry.azuriteOre, "oreAzurite");
         registerMultiBlock((Block) TCBlockRegistry.oreBlocks, "blockOre", TCNames.oreBlockNames);
         registerBlock((Block) TCBlockRegistry.thatchBundle, "thatch");
+        Blocks.fire.setFireInfo((Block) TCBlockRegistry.thatchBundle, 60, 20);
         registerMultiBlock((Block) TCBlockRegistry.coral, "coral", TCNames.coralNames);
         registerBlock((Block) TCBlockRegistry.bambooBundle, "bambooBundle");
+        Blocks.fire.setFireInfo((Block) TCBlockRegistry.bambooBundle, 5, 20);
         registerMultiBlock((Block) TCBlockRegistry.logs, "log", TCNames.logNames);
         Blocks.fire.setFireInfo((Block) TCBlockRegistry.logs, 5, 5);
         registerMultiBlock((Block) TCBlockRegistry.planks, "plank", TCNames.plankNames);
         Blocks.fire.setFireInfo((Block) TCBlockRegistry.planks, 5, 5);
         registerBlock((Block) TCBlockRegistry.bambooStairs, "bambooStairs");
+        Blocks.fire.setFireInfo((Block) TCBlockRegistry.bambooStairs, 5, 20);
         registerBlock((Block) TCBlockRegistry.thatchStairs, "thatchStairs");
+        Blocks.fire.setFireInfo((Block) TCBlockRegistry.thatchStairs, 60, 20);
         registerBlock((Block) TCBlockRegistry.palmStairs, "palmStairs");
+        Blocks.fire.setFireInfo((Block) TCBlockRegistry.palmStairs, 5, 20);
         registerBlock((Block) TCBlockRegistry.mahoganyStairs, "mahoganyStairs");
+        Blocks.fire.setFireInfo((Block) TCBlockRegistry.mahoganyStairs, 5, 20);
         registerMultiBlock((Block) TCBlockRegistry.tallFlowers, "tallFlower", TCNames.tallFlowerNames);
+        Blocks.fire.setFireInfo((Block) TCBlockRegistry.tallFlowers, 60, 100);
         registerMultiBlock((Block) TCBlockRegistry.pineapple, "pineapple", TCNames.pineappleNames);
+        Blocks.fire.setFireInfo((Block) TCBlockRegistry.pineapple, 60, 100);
         registerBlockNoName((Block) TCBlockRegistry.bambooFence, "bambooFence");
+        Blocks.fire.setFireInfo((Block) TCBlockRegistry.bambooFence, 5, 20);
         registerBlockNoName((Block) TCBlockRegistry.palmFence, "palmFence");
+        Blocks.fire.setFireInfo((Block) TCBlockRegistry.palmFence, 5, 20);
         registerMultiBlock((Block) TCBlockRegistry.saplings, "sapling", TCNames.saplingNames);
+        Blocks.fire.setFireInfo((Block) TCBlockRegistry.saplings, 30, 60);
         registerBlock((Block) TCBlockRegistry.coffeePlant, "coffeePlant");
+        Blocks.fire.setFireInfo((Block) TCBlockRegistry.coffeePlant, 60, 100);
         registerBlock((Block) TCBlockRegistry.bambooFenceGate, "bambooFenceGate");
+        Blocks.fire.setFireInfo((Block) TCBlockRegistry.bambooFenceGate, 5, 20);
         registerBlock((Block) TCBlockRegistry.palmFenceGate, "palmFenceGate");
-        Blocks.fire.setFireInfo((Block) TCBlockRegistry.palmFenceGate, 5, 5);
+        Blocks.fire.setFireInfo((Block) TCBlockRegistry.palmFenceGate, 5, 20);
         registerBlock((Block) TCBlockRegistry.tikiTorch, "tikiTorch");
         registerBlock((Block) TCBlockRegistry.bambooDoor, "bambooDoor");
+        Blocks.fire.setFireInfo((Block) TCBlockRegistry.bambooDoor, 5, 20);
         registerMultiBlock(
             (Block) TCBlockRegistry.singleSlabs,
             "singleSlabs",
@@ -157,6 +171,7 @@ public class TCBlockRegistry {
         registerBlock((Block) TCBlockRegistry.tropicsWater, "tropicsWater");
         registerBlock((Block) TCBlockRegistry.rainStopper, "rainStopper");
         registerMultiBlock((Block) TCBlockRegistry.flowers, "flower", TCNames.flowerIndices);
+        Blocks.fire.setFireInfo((Block) TCBlockRegistry.flowers, 60, 100);
         registerBlock((Block) TCBlockRegistry.flowerPot, "flowerPot");
         registerBlock((Block) TCBlockRegistry.coconut, "coconut");
         registerBlock(TCBlockRegistry.firePit, "firePit");
@@ -168,12 +183,15 @@ public class TCBlockRegistry {
         registerBlock((Block) TCBlockRegistry.palmLeaves, "leafPalm");
         Blocks.fire.setFireInfo((Block) TCBlockRegistry.palmLeaves, 30, 60);
         registerMultiBlock((Block) TCBlockRegistry.rainforestLeaves, "leafRainforest", TCNames.rainforestLeafNames);
+        Blocks.fire.setFireInfo((Block) TCBlockRegistry.rainforestLeaves, 30, 60);
         registerBlock((Block) TCBlockRegistry.bambooChute, "bambooChute");
+        Blocks.fire.setFireInfo((Block) TCBlockRegistry.bambooChute, 60, 100);
         registerBlock((Block) TCBlockRegistry.purifiedSand, "purifiedSand");
         registerMultiBlock((Block) TCBlockRegistry.mineralSands, "mineralSand", TCNames.mineralSandNames);
         registerBlock((Block) TCBlockRegistry.sifter, "sifter");
         registerBlock((Block) TCBlockRegistry.curareBowl, "curareBowl");
         registerMultiBlock((Block) TCBlockRegistry.bongoDrum, "bongoDrum", TCNames.bongoDrumNames);
+        Blocks.fire.setFireInfo((Block) TCBlockRegistry.bongoDrum, 5, 20);
         registerBlock((Block) TCBlockRegistry.koaChest, "koaChest");
         registerBlock((Block) TCBlockRegistry.purchasePlate, "purchasePlate");
         registerBlock((Block) TCBlockRegistry.bambooMug, "bambooMug");
