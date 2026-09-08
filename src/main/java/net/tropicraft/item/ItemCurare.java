@@ -142,6 +142,6 @@ public class ItemCurare extends ItemTropicraft {
     static {
         effectNames = new String[] { "paralyze", "poison", "moveSlowdown", "harm", "confusion", "hunger", "weakness" };
         colors = new int[] { 16758271, 2461347, 13621209, 14672442, 5322747, 14754852, 7129087 };
-        tooltipText = new String[] { "�d", "�3", "�7", "�6", "�1", "�4", "�9" };
+        tooltipText = new String[] { "§d", "§3", "§7", "§6", "§1", "§4", "§9" };
     }
 }
