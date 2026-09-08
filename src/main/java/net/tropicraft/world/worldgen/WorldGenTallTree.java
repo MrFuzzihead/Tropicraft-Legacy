@@ -131,7 +131,7 @@ public class WorldGenTallTree extends TCGenBase {
         for (int x = i - leafSize2; x <= i + leafSize2; ++x) {
             for (int z = k - leafSize2; z <= k + leafSize2; ++z) {
                 for (int y4 = j + height + 3; y4 <= j + height + 6; ++y4) {
-                    if (this.rand.nextInt(5) == 0) {
+                    if (this.rand.nextInt(VINE_CHANCE) == 0) {
                         vineCoordinates.add(new ChunkCoordinates(x, y4, z));
                     }
                 }
@@ -142,26 +142,15 @@ public class WorldGenTallTree extends TCGenBase {
     }
 
     private void placeVines(List<ChunkCoordinates> vineCoordinates) {
-        int vineChance = 5;
-
         for (ChunkCoordinates pos : vineCoordinates) {
-            int posX = pos.posX;
-            int posY = pos.posY;
-            int posZ = pos.posZ;
-
-            if (this.rand.nextInt(vineChance) == 0 && canPlaceVines(posX, posY, posZ)) {
-                generateVinesAt(posX, posY, posZ);
+            if (canPlaceVines(pos.posX, pos.posY, pos.posZ)) {
+                generateVinesAt(pos.posX, pos.posY, pos.posZ);
             }
         }
     }
 
     private boolean canPlaceVines(int x, int y, int z) {
-        Block vineBlock = Blocks.vine;
-
         World world = this.worldObj;
-
-        int chunkX = x >> 4;
-        int chunkZ = z >> 4;
 
         Chunk chunk = world.getChunkFromChunkCoords(x >> 4, z >> 4);
         if (!chunk.isChunkLoaded) {
@@ -176,7 +165,7 @@ public class WorldGenTallTree extends TCGenBase {
         boolean isAirAbove = blockAbove.isAir(world, x, y + 1, z);
         boolean isAirBelow = blockBelow.isAir(world, x, y - 1, z);
 
-        return isAir && isAirAbove && isAirBelow && blockAtPos == vineBlock && !vineExistsNearby(x, y, z);
+        return isAir && isAirAbove && isAirBelow && !vineExistsNearby(x, y, z);
     }
 
     private boolean vineExistsNearby(int x, int y, int z) {
@@ -200,13 +189,9 @@ public class WorldGenTallTree extends TCGenBase {
         List<Integer> validSides = new ArrayList<>();
 
         for (int m = 2; m <= 5; ++m) {
-            int blockX = x + Facing.offsetsXForSide[m];
-            int blockY = y + Facing.offsetsYForSide[m];
-            int blockZ = z + Facing.offsetsZForSide[m];
-
-            if (this.worldObj.isAirBlock(blockX, blockY, blockZ)) {
+            if (vineBlock.canPlaceBlockOnSide(this.worldObj, x, y, z, m)) {
                 validSides.add(1 << Direction.facingToDirection[Facing.oppositeSide[m]]);
-            } else {}
+            }
         }
 
         if (!validSides.isEmpty()) {

@@ -2,10 +2,8 @@ package net.tropicraft.world.worldgen;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
@@ -75,7 +73,6 @@ public abstract class TCGenBase extends WorldGenerator {
                 final double d = (i - x) * (i - x) + (k - z) * (k - z);
                 if (d <= outerRadius * outerRadius && d >= innerRadius * innerRadius
                     && !allowedBlockList.contains(this.worldObj.getBlock(x, j, z))) {
-                    System.out.println("t2");
                     return false;
                 }
             }
@@ -119,7 +116,7 @@ public abstract class TCGenBase extends WorldGenerator {
             int chunkX = ai3[0] >> 4;
             int chunkZ = ai3[2] >> 4;
 
-            Chunk chunk = world.getChunkFromChunkCoords(chunkX >> 4, chunkZ >> 4);
+            Chunk chunk = world.getChunkFromChunkCoords(chunkX, chunkZ);
             if (!chunk.isChunkLoaded) {
                 return false;
             }
@@ -151,8 +148,6 @@ public abstract class TCGenBase extends WorldGenerator {
         int chunkX = start[0] >> 4;
         int chunkZ = start[2] >> 4;
 
-        Set<String> placedBlocks = new HashSet<>();
-
         int[] currentPos = new int[3];
         for (int k = 0, l = difference[largestDifferenceIndex] + sign; k != l; k += sign) {
             currentPos[largestDifferenceIndex] = MathHelper.floor_double(start[largestDifferenceIndex] + k + 0.5);
@@ -166,18 +161,15 @@ public abstract class TCGenBase extends WorldGenerator {
                 chunkX = blockChunkX;
                 chunkZ = blockChunkZ;
 
-                Chunk chunk = worldObj.getChunkFromChunkCoords(chunkX >> 4, chunkZ >> 4);
+                Chunk chunk = worldObj.getChunkFromChunkCoords(chunkX, chunkZ);
                 if (!chunk.isChunkLoaded) {
-                    return;
+                    continue;
                 }
             }
-
-            String blockKey = currentPos[0] + "_" + currentPos[1] + "_" + currentPos[2];
 
             if (worldObj.getBlock(currentPos[0], currentPos[1], currentPos[2]) != block) {
                 worldObj
                     .setBlock(currentPos[0], currentPos[1], currentPos[2], block, meta, TCGenBase.blockGenNotifyFlag);
-                placedBlocks.add(blockKey);
             }
         }
     }
@@ -266,7 +258,6 @@ public abstract class TCGenBase extends WorldGenerator {
             }
         }
         for (int k = 0, l = ai2[j] + byte4; k != l; k += byte4) {
-            System.out.println("watwat");
             ai3[j] = MathHelper.floor_double(ai[j] + k + 0.5);
             ai3[byte2] = MathHelper.floor_double(ai[byte2] + k * d + 0.5);
             ai3[byte3] = MathHelper.floor_double(ai[byte3] + k * d2 + 0.5);
