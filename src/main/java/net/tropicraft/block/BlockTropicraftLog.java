@@ -8,7 +8,6 @@ import net.minecraft.item.Item;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.tropicraft.registry.TCBlockRegistry;
 import net.tropicraft.registry.TCCreativeTabRegistry;
 
@@ -56,10 +55,6 @@ public class BlockTropicraftLog extends BlockTropicraftMulti {
                 world.setBlockMetadataWithNotify(i, j, k, 0, 3);
             }
         }
-    }
-
-    public boolean isFireSource(final World world, final int x, final int y, final int z, final ForgeDirection side) {
-        return true;
     }
 
     public int getRenderType() {
