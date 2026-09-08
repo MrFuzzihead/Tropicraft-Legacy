@@ -242,7 +242,7 @@ public class WorldGenHomeTree extends TCGenBase {
             return false;
         }
 
-        return this.worldObj.setBlock(i, j, k, woodID2, meta, 0);
+        return this.worldObj.setBlock(i, j, k, woodID2, meta, TCGenBase.blockGenNotifyFlag);
     }
 
     private boolean canReplaceBlock(Block block) {
