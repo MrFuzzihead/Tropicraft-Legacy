@@ -182,7 +182,8 @@ public class TCCraftingRegistry {
         Tropicraft.encyclopedia.includeItem("fishingnet", new ItemStack((Item) TCItemRegistry.fishingNet));
         Tropicraft.encyclopedia.includeItem("flippers", new ItemStack(TCItemRegistry.flippers));
         Tropicraft.encyclopedia.includeItem("flippers", new ItemStack(Items.leather));
-        Tropicraft.encyclopedia.includeItem("flowerpot", new ItemStack((Item) TCItemRegistry.flowerPot));
+        Tropicraft.encyclopedia
+            .includeItem("flowerpot", new ItemStack(Item.getItemFromBlock(TCBlockRegistry.flowerPot)));
         Tropicraft.encyclopedia.includeItem("froglegs", new ItemStack((Item) TCItemRegistry.frogLeg));
         Tropicraft.encyclopedia.includeItem("froglegscooked", new ItemStack((Item) TCItemRegistry.cookedFrogLeg));
         Tropicraft.encyclopedia.includeItem("frogskin", new ItemStack((Item) TCItemRegistry.poisonFrogSkin));
@@ -585,7 +586,7 @@ public class TCCraftingRegistry {
             new Object[] { "  X", "XX ", "XX ", 'X', Items.string });
         createRecipe(
             true,
-            new ItemStack((Item) TCItemRegistry.flowerPot),
+            new ItemStack(Item.getItemFromBlock(TCBlockRegistry.flowerPot)),
             new Object[] { "# #", " # ", '#', TCItemRegistry.bambooChute });
         createRecipe(
             true,

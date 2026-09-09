@@ -20,7 +20,6 @@ import net.tropicraft.item.ItemDartGun;
 import net.tropicraft.item.ItemFertilizer;
 import net.tropicraft.item.ItemFishBucket;
 import net.tropicraft.item.ItemFlippers;
-import net.tropicraft.item.ItemFlowerPot;
 import net.tropicraft.item.ItemMobEgg;
 import net.tropicraft.item.ItemPortalEnchanter;
 import net.tropicraft.item.ItemShell;
@@ -110,7 +109,6 @@ public class TCItemRegistry {
     public static final ItemFishBucket fishBucket;
     public static final ItemChair chair;
     public static final ItemUmbrella umbrella;
-    public static final ItemFlowerPot flowerPot;
     public static final ItemFertilizer fertilizer;
     public static final ItemTropicraft coconutBomb;
     public static final ItemCurare curare;
@@ -184,7 +182,6 @@ public class TCItemRegistry {
         registerItem((Item) TCItemRegistry.bucketTropicsWater, "bucketTropicsWater");
         registerItem((Item) TCItemRegistry.chair, "chair");
         registerItem((Item) TCItemRegistry.umbrella, "umbrella");
-        registerItem((Item) TCItemRegistry.flowerPot, "flowerPot");
         registerItem((Item) TCItemRegistry.fertilizer, "fertilizer");
         registerItem((Item) TCItemRegistry.curare, "curare");
         registerItem((Item) TCItemRegistry.dart, "dart");
@@ -319,7 +316,6 @@ public class TCItemRegistry {
         fishBucket = new ItemFishBucket();
         chair = new ItemChair();
         umbrella = new ItemUmbrella();
-        flowerPot = new ItemFlowerPot((Block) TCBlockRegistry.flowerPot);
         fertilizer = new ItemFertilizer();
         coconutBomb = (ItemTropicraft) new ItemCoconutBomb().setMaxStackSize(64);
         curare = new ItemCurare();
