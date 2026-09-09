@@ -62,7 +62,7 @@ public class ItemCocktail extends ItemTropicraft {
         }
         final Drink drink = Drink.drinkList[par1ItemStack.stackTagCompound.getByte("DrinkID")];
         if (drink != null) {
-            par3List.add("�o" + drink.displayName);
+            par3List.add("§o" + drink.displayName);
         }
     }
 

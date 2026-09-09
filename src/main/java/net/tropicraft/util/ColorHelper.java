@@ -13,7 +13,7 @@ public class ColorHelper {
     private static BiMap<Integer, Integer> woolValues;
     private static ArrayList<Integer> colorValues;
     public static int DEFAULT_VALUE;
-    public static final char COLOR_CHARACTER = '�';
+    public static final char COLOR_CHARACTER = '§';
 
     public static void init() {
         for (final int color : ItemDye.field_150922_c) {
@@ -26,7 +26,7 @@ public class ColorHelper {
     }
 
     public static String color(final int val) {
-        return '�' + Integer.toHexString(val);
+        return '§' + Integer.toHexString(val);
     }
 
     public static int getNumColors() {

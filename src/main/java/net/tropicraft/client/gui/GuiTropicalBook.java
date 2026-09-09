@@ -332,7 +332,7 @@ public class GuiTropicalBook extends GuiScreen {
                 case INFO: {
                     final String pageTitle = this.book.isPageVisible(this.selectedIndex)
                         ? this.book.getPageTitleByIndex(this.selectedIndex)
-                        : "�nPage not found";
+                        : "§nPage not found";
                     this.fontRendererObj.drawString(
                         pageTitle,
                         this.width / 2 + 150 - this.fontRendererObj.getStringWidth(pageTitle),
