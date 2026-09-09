@@ -29,6 +29,7 @@ public class RenderTropicalFish extends RenderWaterMob {
 
     public void renderTropicalFish(final EntityTropicalFish fish, final double d, final double d1, final double d2,
         final float f, final float f1) {
+        this.fish.inWater = fish.isInWater();
         super.renderWaterMob(fish, d, d1, d2, f, f1);
     }
 
