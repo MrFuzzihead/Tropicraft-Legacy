@@ -46,7 +46,7 @@ public class BlockPineapple extends BlockTallFlowers implements IGrowable {
             this.topIcons[i] = iconRegister
                 .registerIcon(this.getActualName(this.getFormattedTextureName()) + "_" + TCNames.pineappleNames[i]);
         }
-        this.bottomIcon = iconRegister.registerIcon(this.getActualName(this.getFormattedTextureName()) + "_" + "Stem");
+        this.bottomIcon = iconRegister.registerIcon("tropicraft:pineapple_lower");
     }
 
     @SideOnly(Side.CLIENT)
