@@ -8,6 +8,7 @@ public class ModelFish extends ModelBase {
 
     public ModelRenderer Body;
     public ModelRenderer Tail;
+    public boolean inWater;
 
     public ModelFish() {
         this.setTextureOffset("Body.Body", 0, 0);
@@ -29,6 +30,10 @@ public class ModelFish extends ModelBase {
     public void setRotationAngles(final float f, final float f1, final float f2, final float f3, final float f4,
         final float f5, final Entity ent) {
         super.setRotationAngles(f, f1, f2, f3, f4, f5, ent);
-        this.Tail.rotateAngleY = (float) Math.sin(f2 * 0.25f) * 0.25f;
+        if (!this.inWater) {
+            this.Tail.rotateAngleY = (float) Math.sin(f2 * 0.55f) * 0.26f;
+        } else {
+            this.Tail.rotateAngleY = (float) Math.sin(f2 * 0.25f) * 0.25f;
+        }
     }
 }
