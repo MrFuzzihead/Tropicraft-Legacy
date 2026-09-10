@@ -56,6 +56,7 @@ import net.tropicraft.block.BlockTropicsPortal;
 import net.tropicraft.block.BlockTropicsWater;
 import net.tropicraft.info.TCNames;
 import net.tropicraft.item.ItemBlockTropicraft;
+import net.tropicraft.item.ItemFlowerPot;
 import net.tropicraft.item.ItemPineapple;
 import net.tropicraft.item.ItemTallFlowers;
 import net.tropicraft.item.ItemTropicraftSlab;
@@ -157,7 +158,7 @@ public class TCBlockRegistry {
         registerBlock((Block) TCBlockRegistry.tropicsWater, "tropicsWater");
         registerBlock((Block) TCBlockRegistry.rainStopper, "rainStopper");
         registerMultiBlock((Block) TCBlockRegistry.flowers, "flower", TCNames.flowerIndices);
-        registerBlock((Block) TCBlockRegistry.flowerPot, "flowerPot");
+        registerBlock((Block) TCBlockRegistry.flowerPot, ItemFlowerPot.class, "flowerPot");
         registerBlock((Block) TCBlockRegistry.coconut, "coconut");
         registerBlock(TCBlockRegistry.firePit, "firePit");
         registerBlock((Block) TCBlockRegistry.bambooChest, "bambooChest");
@@ -198,6 +199,12 @@ public class TCBlockRegistry {
 
     private static void registerBlock(final Block block, final String name) {
         GameRegistry.registerBlock(block, "tile." + name);
+        block.setBlockName(name);
+    }
+
+    private static void registerBlock(final Block block, final Class<? extends ItemBlock> itemClass,
+        final String name) {
+        GameRegistry.registerBlock(block, itemClass, "tile." + name);
         block.setBlockName(name);
     }
 

@@ -14,7 +14,7 @@ import net.tropicraft.block.tileentity.TileEntityTropicraftFlowerPot;
 import net.tropicraft.factory.TileEntityFactory;
 import net.tropicraft.info.TCRenderIDs;
 import net.tropicraft.registry.TCBlockRegistry;
-import net.tropicraft.registry.TCItemRegistry;
+import net.tropicraft.registry.TCCreativeTabRegistry;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -23,6 +23,7 @@ public class BlockTropicraftFlowerPot extends BlockTropicraft implements ITileEn
 
     public BlockTropicraftFlowerPot() {
         super(Material.circuits);
+        this.setCreativeTab(TCCreativeTabRegistry.tabDecorations);
         this.setBlockTextureName("flowerPot");
         this.setBlockBoundsForItemRender();
     }
@@ -79,7 +80,7 @@ public class BlockTropicraftFlowerPot extends BlockTropicraft implements ITileEn
     @SideOnly(Side.CLIENT)
     public Item getItem(final World world, final int x, final int y, final int z) {
         final ItemStack var5 = getPlantForMeta(world.getBlockMetadata(x, y, z));
-        return (Item) ((var5 == null) ? TCItemRegistry.flowerPot : var5.getItem());
+        return (Item) ((var5 == null) ? Item.getItemFromBlock(this) : var5.getItem());
     }
 
     public boolean canPlaceBlockAt(final World par1World, final int par2, final int par3, final int par4) {
