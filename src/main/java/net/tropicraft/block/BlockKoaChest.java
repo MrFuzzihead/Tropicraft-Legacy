@@ -55,7 +55,7 @@ public class BlockKoaChest extends BlockChest {
     }
 
     @SideOnly(Side.CLIENT)
-    public void registerIcons(final IIconRegister par1IconRegister) {
-        this.blockIcon = par1IconRegister.registerIcon("tropicraft:bamboochest");
+    public void registerBlockIcons(final IIconRegister iconRegister) {
+        this.blockIcon = iconRegister.registerIcon("tropicraft:bambooChest");
     }
 }

@@ -57,7 +57,7 @@ public class TileEntityKoaChestRenderer extends TileEntitySpecialRenderer {
         ModelChest modelchest;
         if (tileentitybamboochest.adjacentChestXPos != null || tileentitybamboochest.adjacentChestZPos != null) {
             modelchest = this.chestModelLarge;
-            TropicraftUtils.bindTextureBlock("largechest");
+            TropicraftUtils.bindTextureBlock("largeChest");
         } else {
             modelchest = this.chestModel;
             TropicraftUtils.bindTextureBlock("chest");
