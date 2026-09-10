@@ -370,12 +370,12 @@ public class EntityChair extends Entity {
 
     public void updateRiderPosition() {
         if (this.riddenByEntity != null) {
-            final double xOffset = Math.cos(this.rotationYaw * 3.141592653589793 / 180.0) * 0.4;
-            final double zOffset = Math.sin(this.rotationYaw * 3.141592653589793 / 180.0) * 0.4;
+            // Center the rider on the seat. Unlike the vanilla boat this entity was based on,
+            // the chair's seat is centered on the entity origin, so no horizontal offset is needed.
             this.riddenByEntity.setPosition(
-                this.posX + xOffset,
+                this.posX,
                 this.posY + this.getMountedYOffset() + this.riddenByEntity.getYOffset(),
-                this.posZ + zOffset);
+                this.posZ);
         }
     }
 
