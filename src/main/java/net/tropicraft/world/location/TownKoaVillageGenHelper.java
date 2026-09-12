@@ -65,37 +65,35 @@ public class TownKoaVillageGenHelper {
         final int sizeHorizMax = TownKoaVillageGenHelper.areaWidth;
         final int sizeMiddle = TownKoaVillageGenHelper.areaWidth / 2;
         final int topYBeach = 62;
-        final Block blockScanBeach = parWorld.getBlock(parCoords.posX, topYBeach, parCoords.posZ);
-        if (blockScanBeach.getMaterial() == Material.sand) {
+        final Block blockScanBeach = getBlockIfLoaded(parWorld, parCoords.posX, topYBeach, parCoords.posZ);
+        if (blockScanBeach != null && blockScanBeach.getMaterial() == Material.sand) {
             final int topYMiddle = 62;
-            final Block blockScanMiddle = parWorld
-                .getBlock(parCoords.posX + sizeMiddle * scanX, topYMiddle, parCoords.posZ + sizeMiddle * scanZ);
-            System.out.println("testing scanX: " + scanX + " scanZ: " + scanZ);
-            if (blockScanMiddle.getMaterial() == Material.water) {
-                final Block blockScanEnd = parWorld
-                    .getBlock(parCoords.posX + sizeHorizMax * scanX, topYMiddle, parCoords.posZ + sizeHorizMax * scanZ);
-                System.out.println(
-                    "testing blockScanEnd x: " + (parCoords.posX + sizeHorizMax * scanX)
-                        + " z: "
-                        + (parCoords.posZ + sizeHorizMax * scanZ));
-                if (blockScanEnd.getMaterial() == Material.water) {
+            final Block blockScanMiddle = getBlockIfLoaded(
+                parWorld,
+                parCoords.posX + sizeMiddle * scanX,
+                topYMiddle,
+                parCoords.posZ + sizeMiddle * scanZ);
+            if (blockScanMiddle != null && blockScanMiddle.getMaterial() == Material.water) {
+                final Block blockScanEnd = getBlockIfLoaded(
+                    parWorld,
+                    parCoords.posX + sizeHorizMax * scanX,
+                    topYMiddle,
+                    parCoords.posZ + sizeHorizMax * scanZ);
+                if (blockScanEnd != null && blockScanEnd.getMaterial() == Material.water) {
                     for (int i = 1; i <= 4; ++i) {
                         final int sizeStep = sizeHorizMax / 4 * i;
-                        final Block blockScanFrontLeft = parWorld
-                            .getBlock(parCoords.posX + sizeStep * scanZ, topYMiddle, parCoords.posZ + sizeStep * scanX);
-                        final Block blockScanFrontRight = parWorld.getBlock(
+                        final Block blockScanFrontLeft = getBlockIfLoaded(
+                            parWorld,
+                            parCoords.posX + sizeStep * scanZ,
+                            topYMiddle,
+                            parCoords.posZ + sizeStep * scanX);
+                        final Block blockScanFrontRight = getBlockIfLoaded(
+                            parWorld,
                             parCoords.posX + sizeStep * scanZ * -1,
                             topYMiddle,
                             parCoords.posZ + sizeStep * scanX * -1);
-                        System.out.println(
-                            "testing blockScanFrontLeft x: " + (parCoords.posX + sizeStep * scanZ)
-                                + " z: "
-                                + (parCoords.posZ + sizeStep * scanX));
-                        System.out.println(
-                            "testing blockScanFrontRight x: " + (parCoords.posX + sizeStep * scanZ * -1)
-                                + " z: "
-                                + (parCoords.posZ + sizeStep * scanX * -1));
-                        if (blockScanFrontLeft.getMaterial() != Material.water
+                        if (blockScanFrontLeft == null || blockScanFrontRight == null
+                            || blockScanFrontLeft.getMaterial() != Material.water
                             || blockScanFrontRight.getMaterial() != Material.water) {
                             return false;
                         }
@@ -105,6 +103,20 @@ public class TownKoaVillageGenHelper {
             }
         }
         return false;
+    }
+
+    /**
+     * Reads a block only if its chunk is already loaded, returning null otherwise. Village scanning can
+     * probe up to {@link #areaWidth} blocks away from the chunk being populated; reading an unloaded chunk
+     * would synchronously generate it (cascading worldgen), so unloaded probes are treated as "not clear".
+     * This method consumes no random state, so other decoration in the chunk is unaffected.
+     */
+    private static Block getBlockIfLoaded(final World parWorld, final int x, final int y, final int z) {
+        if (!parWorld.getChunkProvider()
+            .chunkExists(x >> 4, z >> 4)) {
+            return null;
+        }
+        return parWorld.getBlock(x, y, z);
     }
 
     public static ChunkCoordinates getCoordsFromAdjustedDirection(final ChunkCoordinates parCoords,

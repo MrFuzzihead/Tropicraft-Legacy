@@ -1,7 +1,10 @@
 package net.tropicraft.world.chunk;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockSand;
@@ -9,12 +12,15 @@ import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.IProgressUpdate;
 import net.minecraft.util.MathHelper;
+import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.SpawnerAnimals;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraft.world.gen.ChunkProviderServer;
 import net.minecraft.world.gen.NoiseGeneratorOctaves;
 import net.minecraft.world.gen.feature.WorldGenMinable;
 import net.minecraft.world.gen.feature.WorldGenerator;
@@ -47,6 +53,14 @@ public class ChunkProviderTropicraft implements IChunkProvider {
     private WorldGenerator coalGen;
     private WorldGenerator lapisGen;
     private float[] parabolicField;
+    /**
+     * Radius (in chunks) of the neighborhood that must be fully loaded before a chunk's decorations are applied.
+     * This guarantees that every block read/write performed by decoration (trees, villages, etc.) lands in an
+     * already-generated chunk, eliminating cascading chunk generation while keeping worldgen fully accurate.
+     */
+    private static final int DECOR_RADIUS = 3;
+    /** Chunks whose terrain is generated but whose decorations are deferred until their neighborhood is loaded. */
+    private final Set<ChunkCoordIntPair> pendingDecoration = new HashSet<>();
 
     public ChunkProviderTropicraft(final World worldObj, final long seed, final boolean par4) {
         this.worldObj = worldObj;
@@ -340,6 +354,19 @@ public class ChunkProviderTropicraft implements IChunkProvider {
     }
 
     public void populate(final IChunkProvider par1IChunkProvider, final int i, final int j) {
+        final ChunkCoordIntPair key = new ChunkCoordIntPair(i, j);
+        if (!this.isAreaLoaded(i, j, DECOR_RADIUS)) {
+            // Defer decoration until the whole neighborhood this chunk's features can touch is generated.
+            // This is what prevents cascading chunk generation without clipping any worldgen.
+            this.pendingDecoration.add(key);
+            return;
+        }
+        this.pendingDecoration.remove(key);
+        this.doPopulate(i, j);
+        this.flushPending();
+    }
+
+    private void doPopulate(final int i, final int j) {
         BlockSand.fallInstantly = true;
         final int x = i * 16;
         final int z = j * 16;
@@ -353,6 +380,34 @@ public class ChunkProviderTropicraft implements IChunkProvider {
         this.generateOres(x, z);
         SpawnerAnimals.performWorldGenSpawning(this.worldObj, biome, x + 8, z + 8, 16, 16, this.rand);
         BlockSand.fallInstantly = false;
+        this.worldObj.getChunkFromChunkCoords(i, j)
+            .setChunkModified();
+    }
+
+    private boolean isAreaLoaded(final int cx, final int cz, final int radius) {
+        final IChunkProvider provider = this.worldObj.getChunkProvider();
+        for (int dx = -radius; dx <= radius; ++dx) {
+            for (int dz = -radius; dz <= radius; ++dz) {
+                if (!provider.chunkExists(cx + dx, cz + dz)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private void flushPending() {
+        boolean progress;
+        do {
+            progress = false;
+            for (final ChunkCoordIntPair key : new ArrayList<>(this.pendingDecoration)) {
+                if (this.isAreaLoaded(key.chunkXPos, key.chunkZPos, DECOR_RADIUS)) {
+                    this.pendingDecoration.remove(key);
+                    this.doPopulate(key.chunkXPos, key.chunkZPos);
+                    progress = true;
+                }
+            }
+        } while (progress);
     }
 
     public void generateOres(final int x, final int z) {
@@ -411,7 +466,45 @@ public class ChunkProviderTropicraft implements IChunkProvider {
     }
 
     public boolean unloadQueuedChunks() {
+        if (this.worldObj instanceof WorldServer && ((WorldServer) this.worldObj).levelSaving) {
+            // World is saving/unloading: decorate everything still pending so no chunk is ever saved
+            // with terrain but without its decorations.
+            this.flushAllPendingForSave();
+        } else {
+            // Normal tick: decorate any pending chunk whose neighborhood has finished generating.
+            this.flushPending();
+        }
         return false;
+    }
+
+    private void flushAllPendingForSave() {
+        if (this.pendingDecoration.isEmpty()) {
+            return;
+        }
+        final IChunkProvider provider = this.worldObj.getChunkProvider();
+        if (!(provider instanceof ChunkProviderServer)) {
+            this.flushPending();
+            return;
+        }
+        final ChunkProviderServer serverProvider = (ChunkProviderServer) provider;
+        for (final ChunkCoordIntPair key : new ArrayList<>(this.pendingDecoration)) {
+            this.pendingDecoration.remove(key);
+            // Force-generate the decoration neighborhood as terrain-only chunks (no populate), then decorate.
+            // The terrain-only ring chunks are saved unpopulated and will be decorated normally on next load.
+            for (int dx = -DECOR_RADIUS; dx <= DECOR_RADIUS; ++dx) {
+                for (int dz = -DECOR_RADIUS; dz <= DECOR_RADIUS; ++dz) {
+                    final int nx = key.chunkXPos + dx;
+                    final int nz = key.chunkZPos + dz;
+                    if (!serverProvider.chunkExists(nx, nz)) {
+                        final Chunk chunk = this.provideChunk(nx, nz);
+                        serverProvider.loadedChunkHashMap.add(ChunkCoordIntPair.chunkXZ2Int(nx, nz), chunk);
+                        serverProvider.loadedChunks.add(chunk);
+                        chunk.onChunkLoad();
+                    }
+                }
+            }
+            this.doPopulate(key.chunkXPos, key.chunkZPos);
+        }
     }
 
     public boolean canSave() {

@@ -27,8 +27,6 @@ public class BiomeGenTropics extends BiomeGenTropicraft {
 
         int i = this.randCoord(rand, x, 16);
         int k = this.randCoord(rand, z, 16);
-        int j = this.randCoord(rand, x, 16);
-        int l = this.randCoord(rand, z, 16);
 
         if (world.isAirBlock(i, this.getTerrainHeightAt(world, i, k), k)) {
             new WorldGenTropicraftFlowers(world, rand, TCBlockRegistry.flowers, BiomeGenTropics.DEFAULT_FLOWER_META)
@@ -36,9 +34,9 @@ public class BiomeGenTropics extends BiomeGenTropicraft {
         }
 
         if (rand.nextInt(2) == 0) {
-            final int treeType = new Random((long) (j >> 2) << 32 | (l >> 2)).nextInt(4);
-            j = this.randCoord(rand, x, 16);
-            l = this.randCoord(rand, z, 16);
+            final int treeType = new Random((long) (x >> 2) << 32 | (z >> 2)).nextInt(4);
+            final int j = this.randCoord(rand, x, 16);
+            final int l = this.randCoord(rand, z, 16);
             new WorldGenTropicraftFruitTrees(world, rand, treeType)
                 .generate(j, this.getTerrainHeightAt(world, j, l), l);
         }

@@ -1,20 +1,14 @@
 package net.tropicraft.world.worldgen;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
-import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntityChest;
-import net.minecraft.tileentity.TileEntityMobSpawner;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.MathHelper;
-import net.minecraft.world.World;
-import net.tropicraft.registry.TCBlockRegistry;
-import net.tropicraft.registry.TCItemRegistry;
+import net.minecraft.block.*;
+import net.minecraft.init.*;
+import net.minecraft.item.*;
+import net.minecraft.tileentity.*;
+import net.minecraft.util.*;
+import net.minecraft.world.*;
+import net.tropicraft.registry.*;
 
 public class WorldGenHomeTree extends TCGenBase {
 
@@ -27,9 +21,9 @@ public class WorldGenHomeTree extends TCGenBase {
 
     public WorldGenHomeTree(final World world, final Random random) {
         super(world, random);
-        this.woodID = TCBlockRegistry.logs;
-        this.leafID = TCBlockRegistry.rainforestLeaves;
-        this.branchList = new ArrayList<>();
+        this.woodID = (Block) TCBlockRegistry.logs;
+        this.leafID = (Block) TCBlockRegistry.rainforestLeaves;
+        this.branchList = new ArrayList<BranchNode>();
     }
 
     public boolean generate(final int i, int j, final int k) {
@@ -47,6 +41,7 @@ public class WorldGenHomeTree extends TCGenBase {
         if (height + j + 12 > 255) {
             return false;
         }
+        System.err.println("HOME TREE INCOMING! " + i + " " + j + " " + k);
         final int[] top = this.generateTrunk(i, j, k, height);
         this.generateBranches(top[0], top[1], height + j);
         return true;
@@ -132,28 +127,63 @@ public class WorldGenHomeTree extends TCGenBase {
     }
 
     public void generateBranches(final int topX, final int topZ, final int height) {
-        final int lSize = 3;
-        int[][] coords = new int[6][3];
-
-        for (final BranchNode bnode : this.branchList) {
-            coords[0] = new int[] { bnode.x1, bnode.y1, bnode.z1 };
-            coords[1] = new int[] { bnode.x2, bnode.y2, bnode.z2 };
-            coords[2] = new int[] { bnode.x1 + 1, bnode.y1, bnode.z1 };
-            coords[3] = new int[] { bnode.x2 + 1, bnode.y2, bnode.z2 };
-            coords[4] = new int[] { bnode.x1 - 1, bnode.y1, bnode.z1 };
-            coords[5] = new int[] { bnode.x2 - 1, bnode.y2, bnode.z2 };
-
-            boolean shouldPlaceBlock = false;
-            for (int i = 0; i < 6; i += 2) {
-                shouldPlaceBlock = shouldPlaceBlock
-                    || this.checkBlockLine(coords[i], coords[i + 1], this.standardAllowedBlocks);
-            }
-
-            if (shouldPlaceBlock) {
-                for (int i = 0; i < 6; i += 2) {
-                    this.placeBlockLine(coords[i], coords[i + 1], this.woodID, 1);
-                }
-
+        for (int x = 0; x < this.branchList.size(); ++x) {
+            final BranchNode bnode = this.branchList.get(x);
+            final int lSize = 3;
+            if (this.checkBlockLine(
+                new int[] { bnode.x1, bnode.y1, bnode.z1 },
+                new int[] { bnode.x2, bnode.y2, bnode.z2 },
+                this.standardAllowedBlocks)
+                || this.checkBlockLine(
+                    new int[] { bnode.x1 + 1, bnode.y1, bnode.z1 },
+                    new int[] { bnode.x2 + 1, bnode.y2, bnode.z2 },
+                    this.standardAllowedBlocks)
+                || this.checkBlockLine(
+                    new int[] { bnode.x1 - 1, bnode.y1, bnode.z1 },
+                    new int[] { bnode.x2 - 1, bnode.y2, bnode.z2 },
+                    this.standardAllowedBlocks)
+                || this.checkBlockLine(
+                    new int[] { bnode.x1, bnode.y1, bnode.z1 + 1 },
+                    new int[] { bnode.x2, bnode.y2, bnode.z2 + 1 },
+                    this.standardAllowedBlocks)
+                || this.checkBlockLine(
+                    new int[] { bnode.x1, bnode.y1, bnode.z1 - 1 },
+                    new int[] { bnode.x2, bnode.y2, bnode.z2 - 1 },
+                    this.standardAllowedBlocks)
+                || this.checkBlockLine(
+                    new int[] { bnode.x1, bnode.y1 - 1, bnode.z1 },
+                    new int[] { bnode.x2, bnode.y2 - 1, bnode.z2 },
+                    this.standardAllowedBlocks)) {
+                this.placeBlockLine(
+                    new int[] { bnode.x1, bnode.y1, bnode.z1 },
+                    new int[] { bnode.x2, bnode.y2, bnode.z2 },
+                    this.woodID,
+                    1);
+                this.placeBlockLine(
+                    new int[] { bnode.x1 + 1, bnode.y1, bnode.z1 },
+                    new int[] { bnode.x2 + 1, bnode.y2, bnode.z2 },
+                    this.woodID,
+                    1);
+                this.placeBlockLine(
+                    new int[] { bnode.x1 - 1, bnode.y1, bnode.z1 },
+                    new int[] { bnode.x2 - 1, bnode.y2, bnode.z2 },
+                    this.woodID,
+                    1);
+                this.placeBlockLine(
+                    new int[] { bnode.x1, bnode.y1, bnode.z1 + 1 },
+                    new int[] { bnode.x2, bnode.y2, bnode.z2 + 1 },
+                    this.woodID,
+                    1);
+                this.placeBlockLine(
+                    new int[] { bnode.x1, bnode.y1, bnode.z1 - 1 },
+                    new int[] { bnode.x2, bnode.y2, bnode.z2 - 1 },
+                    this.woodID,
+                    1);
+                this.placeBlockLine(
+                    new int[] { bnode.x1, bnode.y1 - 1, bnode.z1 },
+                    new int[] { bnode.x2, bnode.y2 - 1, bnode.z2 },
+                    this.woodID,
+                    1);
                 if (bnode.y2 + 1 <= height) {
                     this.placeBlockLine(
                         new int[] { bnode.x1, bnode.y1 + 1, bnode.z1 },
@@ -161,14 +191,12 @@ public class WorldGenHomeTree extends TCGenBase {
                         this.woodID,
                         1);
                 }
-
                 this.genLeafCircle(bnode.x2, bnode.y2 - 1, bnode.z2, lSize + 5, lSize + 3, this.leafID, 0, true);
                 this.genLeafCircle(bnode.x2, bnode.y2, bnode.z2, lSize + 6, 0, this.leafID, 0, true);
                 this.genLeafCircle(bnode.x2, bnode.y2 + 1, bnode.z2, lSize + 10, 0, this.leafID, 0, true);
                 this.genLeafCircle(bnode.x2, bnode.y2 + 2, bnode.z2, lSize + 9, 0, this.leafID, 0, true);
             }
         }
-
         final int topBranches = this.rand.nextInt(6) + 6;
     }
 
@@ -211,7 +239,6 @@ public class WorldGenHomeTree extends TCGenBase {
         final Block leafID2, final int meta, final boolean vines) {
         final int outerRadiusSquared = outerRadius * outerRadius;
         final int innerRadiusSquared = innerRadius * innerRadius;
-
         for (int i = -outerRadius + x; i < outerRadius + x; ++i) {
             for (int k = -outerRadius + z; k < outerRadius + z; ++k) {
                 final double d = (x - i) * (x - i) + (z - k) * (z - k);
@@ -238,17 +265,16 @@ public class WorldGenHomeTree extends TCGenBase {
     public boolean placeBlock(final int i, final int j, final int k, final Block woodID2, final int meta,
         final boolean force) {
         final Block bID = this.worldObj.getBlock(i, j, k);
-        if (!force && !canReplaceBlock(bID)) {
+        if (!force && bID != Blocks.water
+            && bID != Blocks.flowing_water
+            && bID != TCBlockRegistry.tropicsWater
+            && bID != Blocks.air) {
             return false;
         }
-
-        return this.worldObj.setBlock(i, j, k, woodID2, meta, TCGenBase.blockGenNotifyFlag);
-    }
-
-    private boolean canReplaceBlock(Block block) {
-        return block == Blocks.water || block == Blocks.flowing_water
-            || block == TCBlockRegistry.tropicsWater
-            || block == Blocks.air;
+        if (meta == 0) {
+            return this.worldObj.setBlock(i, j, k, woodID2, 0, 0);
+        }
+        return this.worldObj.setBlock(i, j, k, woodID2, meta, 0);
     }
 
     public List<ChunkCoordinates> genCircle(final int i, final int j, final int k, final double outerRadius,
@@ -273,7 +299,7 @@ public class WorldGenHomeTree extends TCGenBase {
         return generatedCoordinates;
     }
 
-    public void placeBlockLine(final int[] ai, final int[] ai1, final Block i, final int meta) {
+    public ArrayList<int[]> placeBlockLine(final int[] ai, final int[] ai1, final Block i, final int meta) {
         final ArrayList<int[]> places = new ArrayList<int[]>();
         final int[] ai2 = { 0, 0, 0 };
         byte byte0 = 0;
@@ -286,7 +312,7 @@ public class WorldGenHomeTree extends TCGenBase {
             ++byte0;
         }
         if (ai2[j] == 0) {
-            return;
+            return null;
         }
         final byte byte2 = WorldGenHomeTree.otherCoordPairs[j];
         final byte byte3 = WorldGenHomeTree.otherCoordPairs[j + 3];
@@ -306,6 +332,7 @@ public class WorldGenHomeTree extends TCGenBase {
             this.placeBlock(ai3[0], ai3[1], ai3[2], i, meta, true);
             places.add(new int[] { ai3[0], ai3[1], ai3[2] });
         }
+        return places;
     }
 
     public ArrayList<int[]> checkAndPlaceBlockLine(final int[] ai, final int[] ai1, final Block i, final int meta,
