@@ -22,17 +22,24 @@ public class BiomeGenTropicsBeach extends BiomeGenTropicraft {
             final int k = this.randCoord(rand, z, 16);
             new WorldGenTropicsTreasure(world, rand).generate(i, this.getTerrainHeightAt(world, i, k), k);
         }
-        if (rand.nextInt(10) == 0) {
+        if (rand.nextInt(VILLAGE_CHANCE) == 0) {
             boolean success = false;
-            int j;
-            int l;
-            for (int ii = 0; ii < 3 && !success; success = TownKoaVillageGenHelper
-                .hookTryGenVillage(new ChunkCoordinates(j, this.getTerrainHeightAt(world, j, l), l), world), ++ii) {
+            int j = 0;
+            int l = 0;
+            for (int ii = 0; ii < 3 && !success; ++ii) {
                 j = this.randCoord(rand, x, 16);
                 l = this.randCoord(rand, z, 16);
                 int y = world.getTopSolidOrLiquidBlock(j, l);
                 if (y < 63) {
                     y = 64;
+                }
+                try {
+                    success = TownKoaVillageGenHelper
+                        .hookTryGenVillage(new ChunkCoordinates(j, this.getTerrainHeightAt(world, j, l), l), world);
+                } catch (final Throwable t) {
+                    // Never let village generation failure break chunk population,
+                    // or the affected chunks will crash on every subsequent load
+                    System.err.println("Failed to generate Koa village at " + j + ", " + l + ": " + t);
                 }
             }
         }

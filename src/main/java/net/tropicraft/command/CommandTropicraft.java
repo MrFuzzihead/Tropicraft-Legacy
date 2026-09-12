@@ -1,7 +1,5 @@
 package net.tropicraft.command;
 
-import java.util.Map;
-
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -12,6 +10,7 @@ import net.tropicraft.world.location.TownKoaVillageGenHelper;
 
 import CoroUtil.world.WorldDirector;
 import CoroUtil.world.WorldDirectorManager;
+import CoroUtil.world.location.ISimulationTickable;
 import CoroUtil.world.location.ManagedLocation;
 
 public class CommandTropicraft extends CommandBase {
@@ -55,25 +54,25 @@ public class CommandTropicraft extends CommandBase {
                 case "village_clear" -> {
                     final WorldDirector wd2 = WorldDirectorManager.instance()
                         .getCoroUtilWorldDirector(player.worldObj);
-                    for (final Map.Entry<Integer, ManagedLocation> entry : wd2.lookupTickingManagedLocations
-                        .entrySet()) {
-                        entry.getValue()
-                            .cleanup();
-                        wd2.removeTickingLocation(entry.getValue());
+                    for (final ISimulationTickable location : wd2.lookupTickingManagedLocations.values()) {
+                        location.cleanup();
+                        wd2.removeTickingLocation(location);
                     }
                 }
                 case "village_regen" -> {
                     final WorldDirector wd2 = WorldDirectorManager.instance()
                         .getCoroUtilWorldDirector(player.worldObj);
-                    for (final ManagedLocation ml : wd2.lookupTickingManagedLocations.values()) {
-                        ml.initFirstTime();
+                    for (final ISimulationTickable location : wd2.lookupTickingManagedLocations.values()) {
+                        if (location instanceof ManagedLocation) {
+                            ((ManagedLocation) location).initFirstTime();
+                        }
                     }
                 }
                 case "village_repopulate" -> {
                     final WorldDirector wd2 = WorldDirectorManager.instance()
                         .getCoroUtilWorldDirector(player.worldObj);
-                    for (final ManagedLocation ml : wd2.lookupTickingManagedLocations.values()) {
-                        if (ml instanceof TownKoaVillage) {}
+                    for (final ISimulationTickable location : wd2.lookupTickingManagedLocations.values()) {
+                        if (location instanceof TownKoaVillage) {}
                     }
                 }
             }
