@@ -37,7 +37,11 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import modconfig.ConfigMod;
 import modconfig.IConfigCategory;
 
-@Mod(modid = Tropicraft.MODID, name = Tropicraft.MODNAME, version = Tags.VERSION)
+@Mod(
+    modid = Tropicraft.MODID,
+    name = Tropicraft.MODNAME,
+    version = Tags.VERSION,
+    dependencies = "required-after:CoroAI")
 public class Tropicraft {
 
     public static final String MODNAME = "Tropicraft";

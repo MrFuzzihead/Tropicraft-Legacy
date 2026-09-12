@@ -7,6 +7,7 @@ import net.minecraft.world.World;
 
 import CoroUtil.world.WorldDirector;
 import CoroUtil.world.WorldDirectorManager;
+import CoroUtil.world.location.ISimulationTickable;
 import CoroUtil.world.location.ManagedLocation;
 import build.world.BuildDirectionHelper;
 
@@ -26,8 +27,10 @@ public class TownKoaVillageGenHelper {
             final WorldDirector wd = WorldDirectorManager.instance()
                 .getCoroUtilWorldDirector(parWorld);
             final int minDistBetweenVillages = 128;
-            for (final ManagedLocation town : wd.lookupTickingManagedLocations.values()) {
-                if (Math.sqrt(town.spawn.getDistanceSquaredToChunkCoordinates(parCoords)) < minDistBetweenVillages) {
+            for (final ISimulationTickable town : wd.lookupTickingManagedLocations.values()) {
+                if (town instanceof ManagedLocation
+                    && Math.sqrt(((ManagedLocation) town).spawn.getDistanceSquaredToChunkCoordinates(parCoords))
+                        < minDistBetweenVillages) {
                     return false;
                 }
             }
@@ -35,7 +38,7 @@ public class TownKoaVillageGenHelper {
             village.initData(newID, parWorld.provider.dimensionId, centerCoords);
             village.direction = directionTry;
             village.initFirstTime();
-            wd.addTickingLocation((ManagedLocation) village);
+            wd.addTickingLocation(village);
             return true;
         }
         return false;
