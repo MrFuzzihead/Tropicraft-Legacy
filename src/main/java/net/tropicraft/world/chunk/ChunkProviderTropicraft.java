@@ -16,7 +16,6 @@ import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.SpawnerAnimals;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
@@ -58,13 +57,17 @@ public class ChunkProviderTropicraft implements IChunkProvider {
      * This guarantees that every block read/write performed by decoration (trees, villages, etc.) lands in an
      * already-generated chunk, eliminating cascading chunk generation while keeping worldgen fully accurate.
      */
-    private static final int DECOR_RADIUS = 3;
+    private static final int DECOR_RADIUS = 4;
     /** Chunks whose terrain is generated but whose decorations are deferred until their neighborhood is loaded. */
     private final Set<ChunkCoordIntPair> pendingDecoration = new HashSet<>();
     /** Debug: depth of nesting while decorations are being applied (detects cascading chunk generation). */
     private int decoratingDepth;
+    /** Debug: the chunk currently being decorated (for cascade diagnostics). */
+    private ChunkCoordIntPair decoratingChunk;
     /** Debug: number of chunk generations triggered from inside decoration code (must be 0). */
     private long cascadesDetected;
+    /** All live providers, so pending decorations can be flushed when the server stops (before the final save). */
+    private static final Set<ChunkProviderTropicraft> activeProviders = new HashSet<>();
 
     public ChunkProviderTropicraft(final World worldObj, final long seed, final boolean par4) {
         this.worldObj = worldObj;
@@ -84,6 +87,18 @@ public class ChunkProviderTropicraft implements IChunkProvider {
         this.zirconGen = new WorldGenMinable(TCBlockRegistry.zirconOre, 4);
         this.azuriteGen = new WorldGenMinable(TCBlockRegistry.azuriteOre, 2);
         this.seed = seed;
+        ChunkProviderTropicraft.activeProviders.add(this);
+    }
+
+    /**
+     * Flushes all pending decorations on every live provider. Called from {@code FMLServerStoppingEvent},
+     * which fires before the final world save, so no chunk is ever saved with terrain but without its
+     * decorations.
+     */
+    public static void flushAllProvidersForSave() {
+        for (final ChunkProviderTropicraft provider : ChunkProviderTropicraft.activeProviders) {
+            provider.flushAllPendingForSave();
+        }
     }
 
     public Chunk provideChunk(final int x, final int z) {
@@ -98,7 +113,9 @@ public class ChunkProviderTropicraft implements IChunkProvider {
                         + " at chunk "
                         + x
                         + ","
-                        + z);
+                        + z
+                        + " while decorating "
+                        + this.decoratingChunk);
                 new Throwable("cascade trace").printStackTrace();
             }
         }
@@ -387,6 +404,7 @@ public class ChunkProviderTropicraft implements IChunkProvider {
 
     private void doPopulate(final int i, final int j) {
         ++this.decoratingDepth;
+        this.decoratingChunk = new ChunkCoordIntPair(i, j);
         try {
             BlockSand.fallInstantly = true;
             final int x = i * 16;
@@ -405,6 +423,7 @@ public class ChunkProviderTropicraft implements IChunkProvider {
                 .setChunkModified();
         } finally {
             --this.decoratingDepth;
+            this.decoratingChunk = null;
         }
     }
 
@@ -496,14 +515,8 @@ public class ChunkProviderTropicraft implements IChunkProvider {
                     + " chunks, cascades detected: "
                     + this.cascadesDetected);
         }
-        if (this.worldObj instanceof WorldServer && ((WorldServer) this.worldObj).levelSaving) {
-            // World is saving/unloading: decorate everything still pending so no chunk is ever saved
-            // with terrain but without its decorations.
-            this.flushAllPendingForSave();
-        } else {
-            // Normal tick: decorate any pending chunk whose neighborhood has finished generating.
-            this.flushPending();
-        }
+        // Normal tick: decorate any pending chunk whose neighborhood has finished generating.
+        this.flushPending();
         return false;
     }
 

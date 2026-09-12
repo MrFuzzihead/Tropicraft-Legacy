@@ -13,6 +13,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.tropicraft.entity.placeable.EntityChair;
 import net.tropicraft.util.EffectHelper;
 import net.tropicraft.util.TropicraftWorldUtils;
+import net.tropicraft.world.chunk.ChunkProviderTropicraft;
 
 import CoroUtil.forge.CoroAI;
 import CoroUtil.world.WorldDirector;
@@ -25,6 +26,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 import extendedrenderer.ExtendedRenderer;
 
 public class TCMiscEvents {
+
+    @SubscribeEvent
+    public void serverStopping(final cpw.mods.fml.common.event.FMLServerStoppingEvent event) {
+        // Fires before the final world save, so pending decorations are applied before chunks hit disk.
+        ChunkProviderTropicraft.flushAllProvidersForSave();
+    }
 
     @SubscribeEvent
     public void worldLoad(final WorldEvent.Load event) {
