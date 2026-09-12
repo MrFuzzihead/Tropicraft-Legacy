@@ -272,9 +272,9 @@ public class WorldGenHomeTree extends TCGenBase {
             return false;
         }
         if (meta == 0) {
-            return this.worldObj.setBlock(i, j, k, woodID2, 0, 0);
+            return this.worldObj.setBlock(i, j, k, woodID2, 0, TCGenBase.blockGenNotifyFlag);
         }
-        return this.worldObj.setBlock(i, j, k, woodID2, meta, 0);
+        return this.worldObj.setBlock(i, j, k, woodID2, meta, TCGenBase.blockGenNotifyFlag);
     }
 
     public List<ChunkCoordinates> genCircle(final int i, final int j, final int k, final double outerRadius,

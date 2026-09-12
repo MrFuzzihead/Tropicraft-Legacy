@@ -61,6 +61,10 @@ public class ChunkProviderTropicraft implements IChunkProvider {
     private static final int DECOR_RADIUS = 3;
     /** Chunks whose terrain is generated but whose decorations are deferred until their neighborhood is loaded. */
     private final Set<ChunkCoordIntPair> pendingDecoration = new HashSet<>();
+    /** Debug: depth of nesting while decorations are being applied (detects cascading chunk generation). */
+    private int decoratingDepth;
+    /** Debug: number of chunk generations triggered from inside decoration code (must be 0). */
+    private long cascadesDetected;
 
     public ChunkProviderTropicraft(final World worldObj, final long seed, final boolean par4) {
         this.worldObj = worldObj;
@@ -83,6 +87,21 @@ public class ChunkProviderTropicraft implements IChunkProvider {
     }
 
     public Chunk provideChunk(final int x, final int z) {
+        if (this.decoratingDepth > 0) {
+            // A chunk was generated from inside decoration code: that means some block read/write
+            // touched an unloaded chunk (cascading worldgen). With the deferred-decoration gate this
+            // should never happen; log it loudly so it can be fixed.
+            ++this.cascadesDetected;
+            if (this.cascadesDetected == 1L || this.cascadesDetected % 100L == 0L) {
+                System.err.println(
+                    "[Tropicraft] CASCADING CHUNK GENERATION DETECTED during decoration! count=" + this.cascadesDetected
+                        + " at chunk "
+                        + x
+                        + ","
+                        + z);
+                new Throwable("cascade trace").printStackTrace();
+            }
+        }
         this.rand.setSeed(x * 341873128712L + z * 132897987541L);
         final Block[] blocks = new Block[65536];
         final byte[] metas = new byte[65536];
@@ -367,21 +386,26 @@ public class ChunkProviderTropicraft implements IChunkProvider {
     }
 
     private void doPopulate(final int i, final int j) {
-        BlockSand.fallInstantly = true;
-        final int x = i * 16;
-        final int z = j * 16;
-        final BiomeGenTropicraft biome = (BiomeGenTropicraft) this.worldObj.getWorldChunkManager()
-            .getBiomeGenAt(x, z);
-        this.rand.setSeed(this.worldObj.getSeed());
-        final long l1 = this.rand.nextLong() / 2L * 2L + 1L;
-        final long l2 = this.rand.nextLong() / 2L * 2L + 1L;
-        this.rand.setSeed(i * l1 + j * l2 ^ this.worldObj.getSeed());
-        biome.decorate(this.worldObj, this.rand, x, z);
-        this.generateOres(x, z);
-        SpawnerAnimals.performWorldGenSpawning(this.worldObj, biome, x + 8, z + 8, 16, 16, this.rand);
-        BlockSand.fallInstantly = false;
-        this.worldObj.getChunkFromChunkCoords(i, j)
-            .setChunkModified();
+        ++this.decoratingDepth;
+        try {
+            BlockSand.fallInstantly = true;
+            final int x = i * 16;
+            final int z = j * 16;
+            final BiomeGenTropicraft biome = (BiomeGenTropicraft) this.worldObj.getWorldChunkManager()
+                .getBiomeGenAt(x, z);
+            this.rand.setSeed(this.worldObj.getSeed());
+            final long l1 = this.rand.nextLong() / 2L * 2L + 1L;
+            final long l2 = this.rand.nextLong() / 2L * 2L + 1L;
+            this.rand.setSeed(i * l1 + j * l2 ^ this.worldObj.getSeed());
+            biome.decorate(this.worldObj, this.rand, x, z);
+            this.generateOres(x, z);
+            SpawnerAnimals.performWorldGenSpawning(this.worldObj, biome, x + 8, z + 8, 16, 16, this.rand);
+            BlockSand.fallInstantly = false;
+            this.worldObj.getChunkFromChunkCoords(i, j)
+                .setChunkModified();
+        } finally {
+            --this.decoratingDepth;
+        }
     }
 
     private boolean isAreaLoaded(final int cx, final int cz, final int radius) {
@@ -466,6 +490,12 @@ public class ChunkProviderTropicraft implements IChunkProvider {
     }
 
     public boolean unloadQueuedChunks() {
+        if (!this.pendingDecoration.isEmpty() && this.worldObj.getTotalWorldTime() % 200L == 0L) {
+            System.out.println(
+                "[Tropicraft] deferred decoration pending: " + this.pendingDecoration.size()
+                    + " chunks, cascades detected: "
+                    + this.cascadesDetected);
+        }
         if (this.worldObj instanceof WorldServer && ((WorldServer) this.worldObj).levelSaving) {
             // World is saving/unloading: decorate everything still pending so no chunk is ever saved
             // with terrain but without its decorations.
