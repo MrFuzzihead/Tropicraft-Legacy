@@ -1,18 +1,44 @@
 package net.tropicraft.world.biomes;
 
-import java.util.*;
+import java.util.Random;
 
-import net.minecraft.block.*;
-import net.minecraft.init.*;
-import net.minecraft.world.*;
-import net.minecraft.world.biome.*;
-import net.minecraft.world.gen.feature.*;
-import net.tropicraft.config.*;
-import net.tropicraft.entity.hostile.*;
-import net.tropicraft.entity.passive.*;
-import net.tropicraft.entity.underdasea.*;
-import net.tropicraft.registry.*;
-import net.tropicraft.world.worldgen.*;
+import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
+import net.minecraft.world.World;
+import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.gen.feature.WorldGenTallGrass;
+import net.tropicraft.config.ConfigBiomes;
+import net.tropicraft.entity.hostile.EntityAshenHunter;
+import net.tropicraft.entity.hostile.EntityEIH;
+import net.tropicraft.entity.hostile.EntityTreeFrogBlue;
+import net.tropicraft.entity.hostile.EntityTreeFrogRed;
+import net.tropicraft.entity.hostile.EntityTreeFrogYellow;
+import net.tropicraft.entity.hostile.EntityTropiCreeper;
+import net.tropicraft.entity.hostile.EntityTropiSkeleton;
+import net.tropicraft.entity.hostile.SpiderAdult;
+import net.tropicraft.entity.passive.EntityIguana;
+import net.tropicraft.entity.passive.EntityTreeFrogGreen;
+import net.tropicraft.entity.passive.Failgull;
+import net.tropicraft.entity.passive.VMonkey;
+import net.tropicraft.entity.underdasea.EntityEagleRay;
+import net.tropicraft.entity.underdasea.EntityManOWar;
+import net.tropicraft.entity.underdasea.EntityMarlin;
+import net.tropicraft.entity.underdasea.EntitySeaTurtle;
+import net.tropicraft.entity.underdasea.EntitySeaUrchin;
+import net.tropicraft.entity.underdasea.EntitySeahorse;
+import net.tropicraft.entity.underdasea.EntityStarfish;
+import net.tropicraft.entity.underdasea.EntityTropicalFish;
+import net.tropicraft.registry.TCBlockRegistry;
+import net.tropicraft.world.worldgen.WorldGenBamboo;
+import net.tropicraft.world.worldgen.WorldGenCoral;
+import net.tropicraft.world.worldgen.WorldGenEIH;
+import net.tropicraft.world.worldgen.WorldGenSunkenShip;
+import net.tropicraft.world.worldgen.WorldGenTallFlower;
+import net.tropicraft.world.worldgen.WorldGenTropicraftCurvedPalm;
+import net.tropicraft.world.worldgen.WorldGenTropicraftFlowers;
+import net.tropicraft.world.worldgen.WorldGenTropicraftLargePalmTrees;
+import net.tropicraft.world.worldgen.WorldGenTropicraftNormalPalms;
+import net.tropicraft.world.worldgen.WorldGenWaterfall;
 
 public class BiomeGenTropicraft extends BiomeGenBase {
 
