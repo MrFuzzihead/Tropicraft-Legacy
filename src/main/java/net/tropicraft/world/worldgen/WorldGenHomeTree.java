@@ -105,7 +105,7 @@ public class WorldGenHomeTree extends TCGenBase {
                     ++bn;
                 }
             }
-            if (this.rand.nextInt(6) + 4 <= chanceToDisplace && chanceToDisplace * 9 > y) {
+            if (this.rand.nextInt(6) + 4 <= chanceToDisplace && chanceToDisplace * 9 > (y - j)) {
                 if (this.rand.nextBoolean()) {
                     trunkX += xDisplace;
                     if (this.rand.nextBoolean()) {
@@ -114,12 +114,15 @@ public class WorldGenHomeTree extends TCGenBase {
                 } else if (this.rand.nextBoolean()) {
                     trunkZ += zDisplace;
                     if (this.rand.nextBoolean()) {
-                        trunkZ += xDisplace;
+                        trunkX += xDisplace;
                     }
                 }
                 chanceToDisplace = 0;
             }
-            this.placeBlock(trunkX, y, trunkZ, Blocks.log, 0, false);
+            // The core of the trunk follows the displaced center. This used to place a vanilla oak log
+            // (Blocks.log, meta 0), so every layer where the trunk curved showed up as a single block of
+            // oak stuck in the middle of the mahogany trunk - see issue #32.
+            this.placeBlock(trunkX, y, trunkZ, this.woodID, this.woodMeta, false);
         }
         this.worldObj.setBlock(trunkX - 1, height + j, trunkZ - 1, (Block) TCBlockRegistry.bambooChest);
         final TileEntityChest chest = (TileEntityChest) this.worldObj.getTileEntity(trunkX - 1, height + j, trunkZ - 1);
