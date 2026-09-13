@@ -6,6 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.gen.feature.WorldGenTallGrass;
 import net.tropicraft.config.ConfigBiomes;
 import net.tropicraft.entity.hostile.EntityAshenHunter;
 import net.tropicraft.entity.hostile.EntityEIH;
@@ -145,12 +146,8 @@ public class BiomeGenTropicraft extends BiomeGenBase {
         }
 
         if (rand.nextInt(4) == 0) {
-            terrainHeight = this.getTerrainHeightAt(world, i, k);
-            if (terrainHeight > 0 && world.isAirBlock(i, terrainHeight, k)) {
-                if (world.getBlock(i, terrainHeight - 1, k) == Blocks.grass) {
-                    world.setBlock(i, terrainHeight, k, Blocks.tallgrass, 1, 2);
-                }
-            }
+            new WorldGenTallGrass(Blocks.tallgrass, 1)
+                .generate(world, rand, i, this.getTerrainHeightAt(world, i, k), k);
         }
 
         for (int a = 0; a < 25; ++a) {

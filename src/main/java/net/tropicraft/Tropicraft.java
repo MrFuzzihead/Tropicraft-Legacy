@@ -22,6 +22,7 @@ import net.tropicraft.registry.TCTileEntityRegistry;
 import net.tropicraft.util.ColorHelper;
 import net.tropicraft.util.TropicraftWorldUtils;
 import net.tropicraft.world.TCWorldGenerator;
+import net.tropicraft.world.chunk.ChunkProviderTropicraft;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -31,6 +32,7 @@ import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.FMLEventChannel;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -92,6 +94,13 @@ public class Tropicraft {
             .register(misc);
         GameRegistry.registerWorldGenerator(new TCWorldGenerator(), 10);
         TropicraftWorldUtils.initializeDimension();
+    }
+
+    @Mod.EventHandler
+    public void serverStopping(final FMLServerStoppingEvent event) {
+        // Fires before the final world save: flush deferred decorations so no chunk is saved
+        // with terrain but without its decorations.
+        ChunkProviderTropicraft.flushAllProvidersForSave();
     }
 
     @Mod.EventHandler

@@ -75,6 +75,12 @@ public class TeleporterTropics extends Teleporter {
             for (int x = entityX - searchArea; x <= entityX + searchArea; ++x) {
                 final double distX = x + 0.5 - entity.posX;
                 for (int z = entityZ - searchArea; z <= entityZ + searchArea; ++z) {
+                    // Only scan already-generated chunks. Probing an ungenerated chunk would synchronously
+                    // generate it (cascading worldgen) - the cause of the multi-second freeze on dimension entry.
+                    if (!this.world.getChunkProvider()
+                        .chunkExists(x >> 4, z >> 4)) {
+                        continue;
+                    }
                     final double distZ = z + 0.5 - entity.posZ;
                     for (int y = this.world.getActualHeight() - 1; y >= 0; --y) {
                         if (this.world.getBlock(x, y, z) == TeleporterTropics.PORTAL_BLOCK) {
@@ -184,6 +190,10 @@ public class TeleporterTropics extends Teleporter {
         for (int x = entityX - searchArea; x <= entityX + searchArea; ++x) {
             final double distX = x + 0.5 - entity.posX;
             Label_0418: for (int z = entityZ - searchArea; z <= entityZ + searchArea; ++z) {
+                if (!this.world.getChunkProvider()
+                    .chunkExists(x >> 4, z >> 4)) {
+                    continue;
+                }
                 final double distZ = z + 0.5 - entity.posZ;
                 int y;
                 for (y = this.world.getHeight() - 1; y >= 62
@@ -234,6 +244,12 @@ public class TeleporterTropics extends Teleporter {
     }
 
     public int getTerrainHeightAt(final int x, final int z) {
+        if (!this.world.getChunkProvider()
+            .chunkExists(x >> 4, z >> 4)) {
+            // Column not generated yet; fall back to sea level so portal placement never triggers
+            // cascading chunk generation on first entry to the dimension.
+            return 64;
+        }
         for (int y = 100; y > 0; --y) {
             final Block block = this.world.getBlock(x, y, z);
             if (block == Blocks.dirt || block == Blocks.grass

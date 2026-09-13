@@ -4,7 +4,6 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
 import net.tropicraft.registry.TCBlockRegistry;
 
 public class WorldGenTropicraftFlowers extends TCGenBase {
@@ -25,12 +24,6 @@ public class WorldGenTropicraftFlowers extends TCGenBase {
             final int x = i + this.rand.nextInt(8) - this.rand.nextInt(8);
             final int y = j + this.rand.nextInt(4) - this.rand.nextInt(4);
             final int z = k + this.rand.nextInt(8) - this.rand.nextInt(8);
-
-            Chunk chunk = worldObj.getChunkFromChunkCoords(x >> 4, z >> 4);
-            if (!chunk.isChunkLoaded) {
-                return false;
-            }
-
             Block blockAtPos = this.worldObj.getBlock(x, y, z);
             if (blockAtPos.isAir(worldObj, x, y, z) && TCBlockRegistry.flowers.canBlockStay(this.worldObj, x, y, z)
                 && this.rand.nextInt(3) == 0) {

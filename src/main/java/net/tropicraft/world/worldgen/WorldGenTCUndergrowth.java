@@ -5,7 +5,6 @@ import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
 import net.tropicraft.registry.TCBlockRegistry;
 
 public class WorldGenTCUndergrowth extends TCGenBase {
@@ -21,42 +20,24 @@ public class WorldGenTCUndergrowth extends TCGenBase {
     }
 
     public boolean generate(final int i, final int j, final int k) {
-        int chunkX = i >> 4;
-        int chunkZ = k >> 4;
-
-        Chunk chunk = worldObj.getChunkFromChunkCoords(chunkX >> 4, chunkZ >> 4);
-        if (!chunk.isChunkLoaded) {
+        final Block blockUnder = this.worldObj.getBlock(i, j - 1, k);
+        if (blockUnder != Blocks.dirt && blockUnder != Blocks.grass) {
             return false;
         }
-
-        if (!isValidUnderBlock(i, j, k)) {
-            return false;
+        this.worldObj.setBlock(i, j, k, WorldGenTCUndergrowth.WOOD_BLOCK, 1, WorldGenTCUndergrowth.blockGenNotifyFlag);
+        int size = 2;
+        if (this.rand.nextInt(10) == 0) {
+            size = 3;
         }
-
-        placeWoodBlock(i, j, k);
-
-        int size = (this.rand.nextInt(10) == 0) ? 3 : 2;
-
-        int chunkStartX = (i - size) >> 4;
-        int chunkStartZ = (k - size) >> 4;
-        int chunkEndX = (i + size) >> 4;
-        int chunkEndZ = (k + size) >> 4;
         for (int y = j; y < j + size; ++y) {
-            for (int x = i - size; x <= i + size; ++x) {
+            for (int bushWidth = size - (y - j), x = i - bushWidth; x < i + bushWidth; ++x) {
                 final int xVariance = x - i;
-                for (int z = k - size; z <= k + size; ++z) {
+                for (int z = k - bushWidth; z < k + bushWidth; ++z) {
                     final int zVariance = z - k;
-                    int blockChunkX = x >> 4;
-                    int blockChunkZ = z >> 4;
-                    if (shouldPlaceLeafBlock(
-                        xVariance,
-                        zVariance,
-                        blockChunkX,
-                        blockChunkZ,
-                        chunkStartX,
-                        chunkStartZ,
-                        chunkEndX,
-                        chunkEndZ)) {
+                    if ((Math.abs(xVariance) != bushWidth || Math.abs(zVariance) != bushWidth
+                        || this.rand.nextInt(2) != 0)
+                        && !this.worldObj.getBlock(x, y, z)
+                            .isOpaqueCube()) {
                         this.worldObj.setBlock(
                             x,
                             y,
@@ -68,29 +49,11 @@ public class WorldGenTCUndergrowth extends TCGenBase {
                 }
             }
         }
-
         return true;
     }
 
-    private boolean isValidUnderBlock(int i, int j, int k) {
-        final Block blockUnder = this.worldObj.getBlock(i, j - 1, k);
-        return blockUnder == Blocks.dirt || blockUnder == Blocks.grass;
-    }
-
-    private void placeWoodBlock(int i, int j, int k) {
-        this.worldObj.setBlock(i, j, k, WorldGenTCUndergrowth.WOOD_BLOCK, 1, WorldGenTCUndergrowth.blockGenNotifyFlag);
-    }
-
-    private boolean shouldPlaceLeafBlock(int xVariance, int zVariance, int blockChunkX, int blockChunkZ,
-        int chunkStartX, int chunkStartZ, int chunkEndX, int chunkEndZ) {
-        return (Math.abs(xVariance) != 2 || Math.abs(zVariance) != 2 || this.rand.nextInt(2) != 0)
-            && (blockChunkX >= chunkStartX && blockChunkX <= chunkEndX
-                && blockChunkZ >= chunkStartZ
-                && blockChunkZ <= chunkEndZ);
-    }
-
     static {
-        WOOD_BLOCK = TCBlockRegistry.logs;
-        LEAF_BLOCK = TCBlockRegistry.rainforestLeaves;
+        WOOD_BLOCK = (Block) TCBlockRegistry.logs;
+        LEAF_BLOCK = (Block) TCBlockRegistry.rainforestLeaves;
     }
 }

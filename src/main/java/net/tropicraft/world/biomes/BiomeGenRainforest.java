@@ -38,8 +38,12 @@ public class BiomeGenRainforest extends BiomeGenTropicraft {
             new WorldGenHomeTree(world, rand).generate(xx, 0, zz);
         }
         if (rand.nextInt(70) == 0) {
+            // Note: the original (pre-REUP) code passed randCoord(rand, x, 16) for the Z coordinate too,
+            // which placed the altar at a location derived from the chunk's X - potentially 20+ chunks
+            // away from the chunk being decorated, where it could reach ungenerated chunks (cascading
+            // worldgen). Use z here so the altar generates inside the chunk it was rolled for.
             new WorldGenForestAltarRuin(world, rand)
-                .generate(this.randCoord(rand, x, 16), 0, this.randCoord(rand, x, 16));
+                .generate(this.randCoord(rand, x, 16), 0, this.randCoord(rand, z, 16));
         }
         if (rand.nextInt(2) == 0) {
             final int i = this.randCoord(rand, x, 16);

@@ -29,11 +29,10 @@ public class WorldGenTropicraftLargePalmTrees extends WorldGenerator {
     public boolean generate(final World world, final Random random, final int i, int j, final int k) {
         final int b = random.nextInt(2);
         final byte height = (byte) (random.nextInt(4) + 7);
-
+        boolean flag = true;
         if (j < 1 || j + height + 1 > 128) {
             return false;
         }
-
         for (int l = j; l <= j + 1 + height; ++l) {
             byte byte1 = 1;
             if (l == j) {
@@ -42,19 +41,21 @@ public class WorldGenTropicraftLargePalmTrees extends WorldGenerator {
             if (l >= j + 1 + height - 2) {
                 byte1 = 2;
             }
-
-            for (int j2 = i - byte1; j2 <= i + byte1; ++j2) {
-                for (int k2 = k - byte1; k2 <= k + byte1; ++k2) {
-                    if (l >= 0 && l < 128 && world.blockExists(j2, l, k2)) {
-                        Block block = world.getBlock(j2, l, k2);
-                        if (block != Blocks.air && block != TCBlockRegistry.palmLeaves) {
-                            return false;
+            for (int j2 = i - byte1; j2 <= i + byte1 && flag; ++j2) {
+                for (int k2 = k - byte1; k2 <= k + byte1 && flag; ++k2) {
+                    if (l >= 0 && l < 128) {
+                        final Block l2 = world.getBlock(j2, l, k2);
+                        if (l2 != Blocks.air && l2 != TCBlockRegistry.palmLeaves) {
+                            flag = false;
                         }
                     } else {
-                        return false;
+                        flag = false;
                     }
                 }
             }
+        }
+        if (!flag) {
+            return false;
         }
         Block i2 = world.getBlock(i, j - 1, k);
         if (i2 != Blocks.sand || j >= 128 - height - 1) {

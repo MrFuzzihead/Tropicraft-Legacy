@@ -1,7 +1,10 @@
 package net.tropicraft.world.chunk;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockSand;
@@ -9,12 +12,14 @@ import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.IProgressUpdate;
 import net.minecraft.util.MathHelper;
+import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.SpawnerAnimals;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraft.world.gen.ChunkProviderServer;
 import net.minecraft.world.gen.NoiseGeneratorOctaves;
 import net.minecraft.world.gen.feature.WorldGenMinable;
 import net.minecraft.world.gen.feature.WorldGenerator;
@@ -47,6 +52,22 @@ public class ChunkProviderTropicraft implements IChunkProvider {
     private WorldGenerator coalGen;
     private WorldGenerator lapisGen;
     private float[] parabolicField;
+    /**
+     * Radius (in chunks) of the neighborhood that must be fully loaded before a chunk's decorations are applied.
+     * This guarantees that every block read/write performed by decoration (trees, villages, etc.) lands in an
+     * already-generated chunk, eliminating cascading chunk generation while keeping worldgen fully accurate.
+     */
+    private static final int DECOR_RADIUS = 4;
+    /** Chunks whose terrain is generated but whose decorations are deferred until their neighborhood is loaded. */
+    private final Set<ChunkCoordIntPair> pendingDecoration = new HashSet<>();
+    /** Debug: depth of nesting while decorations are being applied (detects cascading chunk generation). */
+    private int decoratingDepth;
+    /** Debug: the chunk currently being decorated (for cascade diagnostics). */
+    private ChunkCoordIntPair decoratingChunk;
+    /** Debug: number of chunk generations triggered from inside decoration code (must be 0). */
+    private long cascadesDetected;
+    /** All live providers, so pending decorations can be flushed when the server stops (before the final save). */
+    private static final Set<ChunkProviderTropicraft> activeProviders = new HashSet<>();
 
     public ChunkProviderTropicraft(final World worldObj, final long seed, final boolean par4) {
         this.worldObj = worldObj;
@@ -66,9 +87,38 @@ public class ChunkProviderTropicraft implements IChunkProvider {
         this.zirconGen = new WorldGenMinable(TCBlockRegistry.zirconOre, 4);
         this.azuriteGen = new WorldGenMinable(TCBlockRegistry.azuriteOre, 2);
         this.seed = seed;
+        ChunkProviderTropicraft.activeProviders.add(this);
+    }
+
+    /**
+     * Flushes all pending decorations on every live provider. Called from {@code FMLServerStoppingEvent},
+     * which fires before the final world save, so no chunk is ever saved with terrain but without its
+     * decorations.
+     */
+    public static void flushAllProvidersForSave() {
+        for (final ChunkProviderTropicraft provider : ChunkProviderTropicraft.activeProviders) {
+            provider.flushAllPendingForSave();
+        }
     }
 
     public Chunk provideChunk(final int x, final int z) {
+        if (this.decoratingDepth > 0) {
+            // A chunk was generated from inside decoration code: that means some block read/write
+            // touched an unloaded chunk (cascading worldgen). With the deferred-decoration gate this
+            // should never happen; log it loudly so it can be fixed.
+            ++this.cascadesDetected;
+            if (this.cascadesDetected == 1L || this.cascadesDetected % 100L == 0L) {
+                System.err.println(
+                    "[Tropicraft] CASCADING CHUNK GENERATION DETECTED during decoration! count=" + this.cascadesDetected
+                        + " at chunk "
+                        + x
+                        + ","
+                        + z
+                        + " while decorating "
+                        + this.decoratingChunk);
+                new Throwable("cascade trace").printStackTrace();
+            }
+        }
         this.rand.setSeed(x * 341873128712L + z * 132897987541L);
         final Block[] blocks = new Block[65536];
         final byte[] metas = new byte[65536];
@@ -340,19 +390,67 @@ public class ChunkProviderTropicraft implements IChunkProvider {
     }
 
     public void populate(final IChunkProvider par1IChunkProvider, final int i, final int j) {
-        BlockSand.fallInstantly = true;
-        final int x = i * 16;
-        final int z = j * 16;
-        final BiomeGenTropicraft biome = (BiomeGenTropicraft) this.worldObj.getWorldChunkManager()
-            .getBiomeGenAt(x, z);
-        this.rand.setSeed(this.worldObj.getSeed());
-        final long l1 = this.rand.nextLong() / 2L * 2L + 1L;
-        final long l2 = this.rand.nextLong() / 2L * 2L + 1L;
-        this.rand.setSeed(i * l1 + j * l2 ^ this.worldObj.getSeed());
-        biome.decorate(this.worldObj, this.rand, x, z);
-        this.generateOres(x, z);
-        SpawnerAnimals.performWorldGenSpawning(this.worldObj, biome, x + 8, z + 8, 16, 16, this.rand);
-        BlockSand.fallInstantly = false;
+        final ChunkCoordIntPair key = new ChunkCoordIntPair(i, j);
+        if (!this.isAreaLoaded(i, j, DECOR_RADIUS)) {
+            // Defer decoration until the whole neighborhood this chunk's features can touch is generated.
+            // This is what prevents cascading chunk generation without clipping any worldgen.
+            this.pendingDecoration.add(key);
+            return;
+        }
+        this.pendingDecoration.remove(key);
+        this.doPopulate(i, j);
+        this.flushPending();
+    }
+
+    private void doPopulate(final int i, final int j) {
+        ++this.decoratingDepth;
+        this.decoratingChunk = new ChunkCoordIntPair(i, j);
+        try {
+            BlockSand.fallInstantly = true;
+            final int x = i * 16;
+            final int z = j * 16;
+            final BiomeGenTropicraft biome = (BiomeGenTropicraft) this.worldObj.getWorldChunkManager()
+                .getBiomeGenAt(x, z);
+            this.rand.setSeed(this.worldObj.getSeed());
+            final long l1 = this.rand.nextLong() / 2L * 2L + 1L;
+            final long l2 = this.rand.nextLong() / 2L * 2L + 1L;
+            this.rand.setSeed(i * l1 + j * l2 ^ this.worldObj.getSeed());
+            biome.decorate(this.worldObj, this.rand, x, z);
+            this.generateOres(x, z);
+            SpawnerAnimals.performWorldGenSpawning(this.worldObj, biome, x + 8, z + 8, 16, 16, this.rand);
+            BlockSand.fallInstantly = false;
+            this.worldObj.getChunkFromChunkCoords(i, j)
+                .setChunkModified();
+        } finally {
+            --this.decoratingDepth;
+            this.decoratingChunk = null;
+        }
+    }
+
+    private boolean isAreaLoaded(final int cx, final int cz, final int radius) {
+        final IChunkProvider provider = this.worldObj.getChunkProvider();
+        for (int dx = -radius; dx <= radius; ++dx) {
+            for (int dz = -radius; dz <= radius; ++dz) {
+                if (!provider.chunkExists(cx + dx, cz + dz)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private void flushPending() {
+        boolean progress;
+        do {
+            progress = false;
+            for (final ChunkCoordIntPair key : new ArrayList<>(this.pendingDecoration)) {
+                if (this.isAreaLoaded(key.chunkXPos, key.chunkZPos, DECOR_RADIUS)) {
+                    this.pendingDecoration.remove(key);
+                    this.doPopulate(key.chunkXPos, key.chunkZPos);
+                    progress = true;
+                }
+            }
+        } while (progress);
     }
 
     public void generateOres(final int x, final int z) {
@@ -411,7 +509,39 @@ public class ChunkProviderTropicraft implements IChunkProvider {
     }
 
     public boolean unloadQueuedChunks() {
+        // Normal tick: decorate any pending chunk whose neighborhood has finished generating.
+        this.flushPending();
         return false;
+    }
+
+    private void flushAllPendingForSave() {
+        if (this.pendingDecoration.isEmpty()) {
+            return;
+        }
+        final IChunkProvider provider = this.worldObj.getChunkProvider();
+        if (!(provider instanceof ChunkProviderServer)) {
+            this.flushPending();
+            return;
+        }
+        final ChunkProviderServer serverProvider = (ChunkProviderServer) provider;
+        for (final ChunkCoordIntPair key : new ArrayList<>(this.pendingDecoration)) {
+            this.pendingDecoration.remove(key);
+            // Force-generate the decoration neighborhood as terrain-only chunks (no populate), then decorate.
+            // The terrain-only ring chunks are saved unpopulated and will be decorated normally on next load.
+            for (int dx = -DECOR_RADIUS; dx <= DECOR_RADIUS; ++dx) {
+                for (int dz = -DECOR_RADIUS; dz <= DECOR_RADIUS; ++dz) {
+                    final int nx = key.chunkXPos + dx;
+                    final int nz = key.chunkZPos + dz;
+                    if (!serverProvider.chunkExists(nx, nz)) {
+                        final Chunk chunk = this.provideChunk(nx, nz);
+                        serverProvider.loadedChunkHashMap.add(ChunkCoordIntPair.chunkXZ2Int(nx, nz), chunk);
+                        serverProvider.loadedChunks.add(chunk);
+                        chunk.onChunkLoad();
+                    }
+                }
+            }
+            this.doPopulate(key.chunkXPos, key.chunkZPos);
+        }
     }
 
     public boolean canSave() {
