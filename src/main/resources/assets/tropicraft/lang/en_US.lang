@@ -91,6 +91,11 @@ tile.tropicraft:bambooChute.name=Bamboo Chute
 tile.tropicraft:koaChest.name=Koa Chest
 tile.tropicraft:purchasePlate.name=Koa Trader Purchase Plate
 tile.tropicraft:eihMixer.name=Drink Mixer
+tile.tropicraft:rainStopper.name=Rain Stopper
+
+# Unprefixed block localizations (blocks extending vanilla classes)
+tile.bambooDoor.name=Bamboo Door
+tile.bambooMug.name=Bamboo Mug
 
 # Item localizations
 item.tropicraft:frogLeg.name=Frog Leg
@@ -116,6 +121,9 @@ item.tropicraft:ore_Zirconium.name=Zirconium Crystal
 item.tropicraft:ore_SmeltedZircon.name=Smelted Zircon Crystal
 item.tropicraft:waterWand.name=Water Wand
 item.tropicraft:fishingNet.name=Fishing Net
+
+# Unprefixed item localizations (items extending non-Tropicraft classes)
+item.fishingRodTropical.name=Tropical Fishing Rod
 item.tropicraft:coffeeBean_Berry.name=Coffee Berry
 item.tropicraft:coffeeBean_Raw.name=Raw Coffee Bean
 item.tropicraft:coffeeBean_Roasted.name=Roasted Coffee Bean
