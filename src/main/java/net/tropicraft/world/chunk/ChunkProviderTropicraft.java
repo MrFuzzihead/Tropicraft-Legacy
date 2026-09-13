@@ -509,12 +509,6 @@ public class ChunkProviderTropicraft implements IChunkProvider {
     }
 
     public boolean unloadQueuedChunks() {
-        if (!this.pendingDecoration.isEmpty() && this.worldObj.getTotalWorldTime() % 200L == 0L) {
-            System.out.println(
-                "[Tropicraft] deferred decoration pending: " + this.pendingDecoration.size()
-                    + " chunks, cascades detected: "
-                    + this.cascadesDetected);
-        }
         // Normal tick: decorate any pending chunk whose neighborhood has finished generating.
         this.flushPending();
         return false;
