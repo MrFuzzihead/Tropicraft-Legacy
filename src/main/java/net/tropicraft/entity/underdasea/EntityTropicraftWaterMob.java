@@ -116,6 +116,12 @@ public abstract class EntityTropicraftWaterMob extends EntityWaterMob {
         }
         if (this.surfaceTick != 0) {
             --this.surfaceTick;
+        } else if (this.isSurfacing) {
+            // Recover from a jump as soon as the surface window expires, even if we re-entered
+            // the water before the counter hit zero. Otherwise isSurfacing locks true while
+            // submerged and every AI path (swimming, diving, re-jumping) stays disabled
+            // forever, leaving the marlin frozen in the water.
+            this.isSurfacing = false;
         }
         if (!this.isSurfacing) {
             if (this.important1 < 3.141593f) {
@@ -126,7 +132,7 @@ public abstract class EntityTropicraftWaterMob extends EntityWaterMob {
             } else {
                 this.randomMotionSpeed *= 0.95f;
             }
-            if (!this.worldObj.isRemote && this.targetEntity == null) {
+            if (!this.worldObj.isRemote && this.targetEntity == null && this.isInWater()) {
                 this.motionX = this.randomMotionVecX * this.randomMotionSpeed;
                 this.motionY = this.randomMotionVecY * this.randomMotionSpeed;
                 this.motionZ = this.randomMotionVecZ * this.randomMotionSpeed;
@@ -142,9 +148,6 @@ public abstract class EntityTropicraftWaterMob extends EntityWaterMob {
                 this.motionX = 0.0;
                 this.motionY *= 0.9800000190734863;
                 this.motionZ = 0.0;
-            }
-            if (this.surfaceTick == 0) {
-                this.isSurfacing = false;
             }
             this.setAir(400);
             if (this.isInWater() || this.deathTime == 0) {}

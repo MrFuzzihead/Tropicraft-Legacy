@@ -101,7 +101,9 @@ public class EntityMarlin extends EntityTropicraftWaterMob {
             this.motionX *= 1.5;
             this.motionZ *= 1.5;
             this.addVelocity(0.0, 0.75, 0.0);
-            this.surfaceTick = 20;
+            // Surface window is generous (25 ticks) vs the ~18-20 tick air time so that the
+            // jump is always allowed to finish its arc before the mob resumes normal AI.
+            this.surfaceTick = 25;
             this.reachedTarget = false;
         }
     }
