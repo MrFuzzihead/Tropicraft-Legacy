@@ -105,7 +105,7 @@ public class WorldGenHomeTree extends TCGenBase {
                     ++bn;
                 }
             }
-            if (this.rand.nextInt(6) + 4 <= chanceToDisplace && chanceToDisplace * 9 > y) {
+            if (this.rand.nextInt(6) + 4 <= chanceToDisplace && chanceToDisplace * 9 > (y - j)) {
                 if (this.rand.nextBoolean()) {
                     trunkX += xDisplace;
                     if (this.rand.nextBoolean()) {
@@ -114,7 +114,7 @@ public class WorldGenHomeTree extends TCGenBase {
                 } else if (this.rand.nextBoolean()) {
                     trunkZ += zDisplace;
                     if (this.rand.nextBoolean()) {
-                        trunkZ += xDisplace;
+                        trunkX += xDisplace;
                     }
                 }
                 chanceToDisplace = 0;
