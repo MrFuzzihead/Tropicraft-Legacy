@@ -41,7 +41,6 @@ public class WorldGenHomeTree extends TCGenBase {
         if (height + j + 12 > 255) {
             return false;
         }
-        System.err.println("HOME TREE INCOMING! " + i + " " + j + " " + k);
         final int[] top = this.generateTrunk(i, j, k, height);
         this.generateBranches(top[0], top[1], height + j);
         return true;
