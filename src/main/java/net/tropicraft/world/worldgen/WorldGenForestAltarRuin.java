@@ -44,7 +44,7 @@ public class WorldGenForestAltarRuin extends TCDirectionalGen {
             while (x < width) {
                 for (int y2 = 0; y2 < 4; ++y2) {
                     terrainHeight = j + y2;
-                    if (this.worldObj.getBlock(x, terrainHeight, z) == TCBlockRegistry.logs) {
+                    if (this.getBlockWithDir(x, terrainHeight, z) == TCBlockRegistry.logs) {
                         ++x;
                     } else if (this.rand.nextInt(4) != 0) {
                         this.placeBlockWithDir(x, terrainHeight, z, Blocks.air, 0);
