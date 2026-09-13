@@ -33,7 +33,6 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.FMLEventChannel;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -93,19 +92,15 @@ public class Tropicraft {
         FMLCommonHandler.instance()
             .bus()
             .register(misc);
-        // FMLServerStoppingEvent is an FMLEvent, not a Forge Event, so it can only live on the FML bus.
-        // It fires before the final world save, letting us flush deferred decorations to disk.
-        FMLCommonHandler.instance()
-            .bus()
-            .register(new Object() {
-
-                @SubscribeEvent
-                public void onServerStopping(final FMLServerStoppingEvent event) {
-                    ChunkProviderTropicraft.flushAllProvidersForSave();
-                }
-            });
         GameRegistry.registerWorldGenerator(new TCWorldGenerator(), 10);
         TropicraftWorldUtils.initializeDimension();
+    }
+
+    @Mod.EventHandler
+    public void serverStopping(final FMLServerStoppingEvent event) {
+        // Fires before the final world save: flush deferred decorations so no chunk is saved
+        // with terrain but without its decorations.
+        ChunkProviderTropicraft.flushAllProvidersForSave();
     }
 
     @Mod.EventHandler
