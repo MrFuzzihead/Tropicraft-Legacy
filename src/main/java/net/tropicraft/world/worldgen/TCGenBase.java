@@ -327,8 +327,16 @@ public abstract class TCGenBase extends WorldGenerator {
     }
 
     public int getTerrainHeightAt(final int x, final int z) {
-        for (int y = this.worldObj.getHeightValue(x, z) + 1; y > 0; --y) {
-            final Block block = this.worldObj.getBlock(x, y, z);
+        return terrainHeightAt(this.worldObj, x, z);
+    }
+
+    /**
+     * Static variant of {@link #getTerrainHeightAt(int, int)} so callers outside the worldgen package can snap a
+     * column to its surface without needing a generator instance.
+     */
+    public static int terrainHeightAt(final World world, final int x, final int z) {
+        for (int y = world.getHeightValue(x, z) + 1; y > 0; --y) {
+            final Block block = world.getBlock(x, y, z);
             if (block == Blocks.dirt || block == Blocks.grass || block == Blocks.sand || block == Blocks.stone) {
                 return y + 1;
             }
