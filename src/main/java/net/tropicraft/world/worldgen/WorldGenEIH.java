@@ -10,6 +10,9 @@ import net.tropicraft.registry.TCBlockRegistry;
 public class WorldGenEIH extends TCGenBase {
 
     private static final int CHUNK_SIZE_Y = 256;
+    /** generate() raises the origin by one block, the head then reaches this far above / below that raised origin. */
+    private static final int HEAD_ABOVE_ORIGIN = 6;
+    private static final int HEAD_BELOW_ORIGIN = 3;
     private static final Block EIH_BLOCK;
 
     public WorldGenEIH(final World worldObj, final Random rand) {
@@ -17,13 +20,14 @@ public class WorldGenEIH extends TCGenBase {
     }
 
     public boolean generate(final int i, int j, final int k) {
-        final byte height = 5;
-        if (j < 1 || j + height + 1 > 256) {
-            return false;
-        }
-        if ((this.worldObj.getBlock(i, j - 1, k) == Blocks.dirt || this.worldObj.getBlock(i, j - 1, k) == Blocks.grass)
-            && this.worldObj.getBlock(i, j, k) == Blocks.air) {
+        final Block ground = this.worldObj.getBlock(i, j - 1, k);
+        if ((ground == Blocks.dirt || ground == Blocks.grass) && this.worldObj.getBlock(i, j, k) == Blocks.air) {
             ++j;
+            // Keep the whole head inside the vertical world bounds, it is built from j - HEAD_BELOW_ORIGIN to
+            // j + HEAD_ABOVE_ORIGIN.
+            if (j - HEAD_BELOW_ORIGIN < 0 || j + HEAD_ABOVE_ORIGIN >= CHUNK_SIZE_Y) {
+                return false;
+            }
             this.worldObj.setBlock(i + 0, j + 0, k + 2, WorldGenEIH.EIH_BLOCK);
             this.worldObj.setBlock(i + 0, j + 0, k + 3, WorldGenEIH.EIH_BLOCK);
             this.worldObj.setBlock(i + 0, j + 0, k + 4, WorldGenEIH.EIH_BLOCK);
@@ -197,8 +201,9 @@ public class WorldGenEIH extends TCGenBase {
             final int eyeTwoZ = k + 1;
             this.placeEye(this.worldObj, eyeOneX, eyeOneY, eyeOneZ, k2, this.rand);
             this.placeEye(this.worldObj, eyeTwoX, eyeTwoY, eyeTwoZ, k2, this.rand);
+            return true;
         }
-        return true;
+        return false;
     }
 
     private void placeEye(final World worldObj, final int x, final int y, final int z, final int eye_rand,

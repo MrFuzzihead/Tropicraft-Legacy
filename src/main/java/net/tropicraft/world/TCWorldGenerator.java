@@ -48,9 +48,9 @@ public class TCWorldGenerator implements IWorldGenerator {
                                 BiomeGenTropicraft.DEFAULT_FLOWER_META).generate(world, random, k, l, i1);
                         }
                     }
-                    if (ConfigGenRates.genTropicraftEIHInOverworld && random.nextInt(27) == 0) {
-                        l = random.nextInt(62) + 64;
-                        new WorldGenEIH(world, random).generate(world, random, k, l, i1);
+                    if (ConfigGenRates.genTropicraftEIHInOverworld && ConfigGenRates.eihChanceInOverworld > 0
+                        && random.nextInt(ConfigGenRates.eihChanceInOverworld) == 0) {
+                        generateOverworldEIH(world, random, chunkX, chunkZ);
                     }
                     if (ConfigGenRates.genPalmsInOverworld && random.nextInt(12) == 0) {
                         final BiomeGenBase biome = world.getWorldChunkManager()
@@ -81,6 +81,30 @@ public class TCWorldGenerator implements IWorldGenerator {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Places an Eastern Island Head on solid overworld ground.
+     * <p>
+     * This used to hand the generator a random Y between 64 and 125, but {@link WorldGenEIH} only builds when the
+     * block directly below the origin is dirt or grass and the origin itself is air. Only the single Y sitting on
+     * top of the surface of that exact column satisfies that, so the head spawned about once in every few thousand
+     * chunks and nobody ever saw one. Snapping to the terrain height, the way
+     * {@link net.tropicraft.world.biomes.BiomeGenTropicraft} does for the tropics, is what makes it work again.
+     * See <a href="https://github.com/MrFuzzihead/Tropicraft-Legacy/issues/41">issue #41</a>.
+     */
+    private static void generateOverworldEIH(final World world, final Random random, final int chunkMinX,
+        final int chunkMinZ) {
+        final WorldGenEIH generator = new WorldGenEIH(world, random);
+        // The head occupies originX - 4 .. originX + 1 and originZ - 1 .. originZ + 4. Keeping the origin inside
+        // those margins means every block lands in the chunk that is currently being populated instead of dragging
+        // a neighbouring chunk into existence (the cascading worldgen lag from issue #36).
+        final int originX = chunkMinX + 4 + random.nextInt(11);
+        final int originZ = chunkMinZ + 1 + random.nextInt(11);
+        final int originY = generator.getTerrainHeightAt(originX, originZ);
+        if (originY > 0) {
+            generator.generate(world, random, originX, originY, originZ);
         }
     }
 }

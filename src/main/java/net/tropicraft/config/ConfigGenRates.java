@@ -1,5 +1,6 @@
 package net.tropicraft.config;
 
+import modconfig.ConfigComment;
 import modconfig.IConfigCategory;
 
 public class ConfigGenRates implements IConfigCategory {
@@ -17,7 +18,13 @@ public class ConfigGenRates implements IConfigCategory {
     public static boolean genOverworldPalmsInBeachOnly;
     public static int palmChanceOfGenInOverworld;
     public static int palmPopulationFactorInOverworld;
+    @ConfigComment({ "Spawns Eastern Island Head structures in the overworld (dimension 0).",
+        "Requires genTropicraftInOverworld to be enabled as well." })
     public static boolean genTropicraftEIHInOverworld;
+    @ConfigComment({
+        "How rare overworld Eastern Island Head structures are: an attempt is made once every N chunks on average.",
+        "Higher numbers are rarer, 0 disables attempts regardless of genTropicraftEIHInOverworld." })
+    public static int eihChanceInOverworld;
     public static boolean genTropicraftFlowersInOverworld;
     public static boolean genTropicraftInOverworld;
     public static boolean genPineapplesInOverworld;
@@ -39,6 +46,7 @@ public class ConfigGenRates implements IConfigCategory {
         ConfigGenRates.palmChanceOfGenInOverworld = -1;
         ConfigGenRates.palmPopulationFactorInOverworld = 3;
         ConfigGenRates.genTropicraftEIHInOverworld = true;
+        ConfigGenRates.eihChanceInOverworld = 100;
         ConfigGenRates.genTropicraftFlowersInOverworld = true;
         ConfigGenRates.genTropicraftInOverworld = true;
         ConfigGenRates.genPineapplesInOverworld = true;
