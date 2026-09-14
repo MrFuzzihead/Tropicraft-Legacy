@@ -2,6 +2,7 @@ package net.tropicraft.world;
 
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.chunk.IChunkProvider;
+import net.tropicraft.config.ConfigMisc;
 import net.tropicraft.world.biomes.WorldChunkManagerTropicraft;
 import net.tropicraft.world.chunk.ChunkProviderTropicraft;
 
@@ -39,5 +40,18 @@ public class WorldProviderTropicraft extends WorldProvider {
 
     public String getSaveFolder() {
         return "TROPICS";
+    }
+
+    /**
+     * Vanilla calls this once every player in the dimension has woken up, to clear rain and thunder.
+     * Since the Tropics run on their own weather now (see the separateTimeAndWeather config), whether
+     * a night's rain is over when the islanders get up is up to the config too.
+     */
+    @Override
+    public void resetRainAndThunder() {
+        if (!ConfigMisc.sleepResetsWeather) {
+            return;
+        }
+        super.resetRainAndThunder();
     }
 }
