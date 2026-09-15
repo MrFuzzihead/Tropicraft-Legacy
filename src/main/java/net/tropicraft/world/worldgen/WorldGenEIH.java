@@ -13,6 +13,10 @@ public class WorldGenEIH extends TCGenBase {
     /** generate() raises the origin by one block, the head then reaches this far above / below that raised origin. */
     private static final int HEAD_ABOVE_ORIGIN = 6;
     private static final int HEAD_BELOW_ORIGIN = 3;
+    /** Ore eye variants that can be rolled, see placeEye. Zirconium (meta 3) has never been reachable. */
+    private static final int ORE_META_COUNT = 3;
+    /** One in this many heads gets two different ore eyes (heterochromia) instead of a matched pair. */
+    private static final int HETEROCHROMIA_CHANCE = 8;
     private static final Block EIH_BLOCK;
 
     public WorldGenEIH(final World worldObj, final Random rand) {
@@ -192,22 +196,31 @@ public class WorldGenEIH extends TCGenBase {
             this.worldObj.setBlock(i - 2, j - 3, k + 0, WorldGenEIH.EIH_BLOCK);
             this.worldObj.setBlock(i - 1, j - 3, k + 0, WorldGenEIH.EIH_BLOCK);
             this.worldObj.setBlock(i + 0, j - 3, k + 0, WorldGenEIH.EIH_BLOCK);
+            // Both eyes share one roll so a head always gets a matched pair. The ore eye is the only kind that has
+            // a meaningful meta, and this used to roll it per eye, which is how heads ended up with one dark red
+            // Zircon eye and one pink Eudialyte eye. Every one in HETEROCHROMIA_CHANCE heads asks for that on
+            // purpose now, and for a guaranteed colour clash rather than by luck.
             final int k2 = this.rand.nextInt(7);
+            final int eyeMetaOne = this.rand.nextInt(ORE_META_COUNT);
+            int eyeMetaTwo = eyeMetaOne;
+            if (this.rand.nextInt(HETEROCHROMIA_CHANCE) == 0) {
+                eyeMetaTwo = (eyeMetaOne + 1 + this.rand.nextInt(ORE_META_COUNT - 1)) % ORE_META_COUNT;
+            }
             final int eyeOneX = i;
             final int eyeOneY = j + 5;
             final int eyeOneZ = k + 1;
             final int eyeTwoX = i - 3;
             final int eyeTwoY = j + 5;
             final int eyeTwoZ = k + 1;
-            this.placeEye(this.worldObj, eyeOneX, eyeOneY, eyeOneZ, k2, this.rand);
-            this.placeEye(this.worldObj, eyeTwoX, eyeTwoY, eyeTwoZ, k2, this.rand);
+            this.placeEye(this.worldObj, eyeOneX, eyeOneY, eyeOneZ, k2, eyeMetaOne);
+            this.placeEye(this.worldObj, eyeTwoX, eyeTwoY, eyeTwoZ, k2, eyeMetaTwo);
             return true;
         }
         return false;
     }
 
     private void placeEye(final World worldObj, final int x, final int y, final int z, final int eye_rand,
-        final Random rand) {
+        final int oreMeta) {
         int meta = 0;
         Block block = null;
         switch (eye_rand) {
@@ -234,7 +247,7 @@ public class WorldGenEIH extends TCGenBase {
             }
             case 6: {
                 block = (Block) TCBlockRegistry.oreBlocks;
-                meta = rand.nextInt(3);
+                meta = oreMeta;
                 break;
             }
             default: {
