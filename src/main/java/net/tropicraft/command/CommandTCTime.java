@@ -1,5 +1,7 @@
 package net.tropicraft.command;
 
+import java.util.List;
+
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -10,23 +12,28 @@ import net.minecraft.world.storage.WorldInfo;
 import net.tropicraft.world.TCTimeAndWeatherData;
 
 /**
- * The time and weather of every loaded dimension side by side, which is the quickest way to see
- * whether a dimension is running on its own clock or still reading the overworld's (issue #35).
+ * {@code /tc time} - the time and weather of every loaded dimension side by side, which is the
+ * quickest way to see whether a dimension is running on its own clock or still reading the
+ * overworld's (issue #35).
  * <p>
- * {@code /tctime set <time>} changes the time in the sender's own dimension only. Vanilla's /time is
- * no use for testing this: {@code CommandTime} loops over every loaded dimension and sets them all,
- * which makes separate clocks look like one shared clock. Two independent clocks also tick at the
- * same rate, so they only visibly come apart when something per-dimension changes one of them -
+ * {@code /tc time set <time>} changes the time in the sender's own dimension only. Vanilla's /time
+ * is no use for testing this: {@code CommandTime} loops over every loaded dimension and sets them
+ * all, which makes separate clocks look like one shared clock. Two independent clocks also tick at
+ * the same rate, so they only visibly come apart when something per-dimension changes one of them -
  * this command, or sleeping.
  */
-public class CommandTCClock extends CommandBase {
+public class CommandTCTime extends CommandBase {
 
     public String getCommandName() {
-        return "tctime";
+        return "time";
     }
 
     public String getCommandUsage(final ICommandSender commandSender) {
-        return "/tctime [set <time>]";
+        return "/tc time [set <time>]";
+    }
+
+    public List<String> addTabCompletionOptions(final ICommandSender commandSender, final String[] args) {
+        return args.length == 1 ? getListOfStringsMatchingLastWord(args, new String[] { "set" }) : null;
     }
 
     public void processCommand(final ICommandSender commandSender, final String[] args) {
@@ -35,7 +42,7 @@ public class CommandTCClock extends CommandBase {
             final World world = commandSender.getEntityWorld();
             if (world == null) {
                 commandSender.addChatMessage(
-                    new ChatComponentText("/tctime set needs to be run by something standing in a dimension."));
+                    new ChatComponentText("This needs to be run by something standing in a dimension."));
                 return;
             }
             world.setWorldTime(time);

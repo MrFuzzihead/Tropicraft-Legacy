@@ -1,5 +1,7 @@
 package net.tropicraft.command;
 
+import java.util.List;
+
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
@@ -8,8 +10,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldInfo;
 
 /**
- * Starts or stops rain and thunder in the dimension the sender is stood in, the way modern
- * {@code /weather} does.
+ * {@code /tc weather} - starts or stops rain and thunder in the dimension the sender is stood in,
+ * the way modern {@code /weather} does.
  * <p>
  * Vanilla 1.7.10 has no way of doing this outside the overworld: {@code CommandToggleDownfall} works
  * on {@code MinecraftServer.getServer().worldServers[0]} and nothing else, so it could never touch
@@ -26,11 +28,16 @@ public class CommandTCWeather extends CommandBase {
     private static final int DEFAULT_DURATION = 12000;
 
     public String getCommandName() {
-        return "tcweather";
+        return "weather";
     }
 
     public String getCommandUsage(final ICommandSender commandSender) {
-        return "/tcweather <clear|rain|thunder> [ticks]";
+        return "/tc weather <clear|rain|thunder> [ticks]";
+    }
+
+    public List<String> addTabCompletionOptions(final ICommandSender commandSender, final String[] args) {
+        return args.length == 1 ? getListOfStringsMatchingLastWord(args, new String[] { "clear", "rain", "thunder" })
+            : null;
     }
 
     public void processCommand(final ICommandSender commandSender, final String[] args) {
