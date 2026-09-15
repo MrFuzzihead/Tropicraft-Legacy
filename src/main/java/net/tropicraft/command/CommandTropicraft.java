@@ -3,12 +3,8 @@ package net.tropicraft.command;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.MathHelper;
-import net.minecraft.world.WorldServer;
-import net.minecraft.world.storage.WorldInfo;
-import net.tropicraft.world.TCTimeAndWeatherData;
 import net.tropicraft.world.location.TownKoaVillage;
 import net.tropicraft.world.location.TownKoaVillageGenHelper;
 
@@ -70,37 +66,6 @@ public class CommandTropicraft extends CommandBase {
                         if (location instanceof ManagedLocation) {
                             ((ManagedLocation) location).initFirstTime();
                         }
-                    }
-                }
-                case "clock" -> {
-                    // The time and weather of every loaded dimension side by side, which is the
-                    // quickest way to see whether a dimension is running on its own clock or still
-                    // reading the overworld's (issue #35).
-                    //
-                    // "/tc clock set <time>" changes it in the dimension the player is stood in only.
-                    // Vanilla's /time is no use for testing this: it sets every loaded dimension at
-                    // once, which makes separate clocks look like one shared clock.
-                    if (args.length > 2 && args[1].equals("set")) {
-                        player.worldObj.setWorldTime(parseIntWithMin(commandSender, args[2], 0));
-                    }
-                    for (final WorldServer world : player.mcServer.worldServers) {
-                        if (world == null) {
-                            continue;
-                        }
-                        final WorldInfo info = world.getWorldInfo();
-                        player.addChatMessage(
-                            new ChatComponentText(
-                                String.format(
-                                    "Dim %d (%s): time %d, day %d, raining %s (%d), thundering %s (%d), own clock %s",
-                                    world.provider.dimensionId,
-                                    world.provider.getDimensionName(),
-                                    info.getWorldTime() % 24000L,
-                                    info.getWorldTime() / 24000L + 1,
-                                    info.isRaining(),
-                                    info.getRainTime(),
-                                    info.isThundering(),
-                                    info.getThunderTime(),
-                                    TCTimeAndWeatherData.isDetached(info))));
                     }
                 }
                 case "village_repopulate" -> {
