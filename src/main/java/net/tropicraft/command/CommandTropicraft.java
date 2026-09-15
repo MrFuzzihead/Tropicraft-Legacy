@@ -76,6 +76,13 @@ public class CommandTropicraft extends CommandBase {
                     // The time and weather of every loaded dimension side by side, which is the
                     // quickest way to see whether a dimension is running on its own clock or still
                     // reading the overworld's (issue #35).
+                    //
+                    // "/tc clock set <time>" changes it in the dimension the player is stood in only.
+                    // Vanilla's /time is no use for testing this: it sets every loaded dimension at
+                    // once, which makes separate clocks look like one shared clock.
+                    if (args.length > 2 && args[1].equals("set")) {
+                        player.worldObj.setWorldTime(parseIntWithMin(commandSender, args[2], 0));
+                    }
                     for (final WorldServer world : player.mcServer.worldServers) {
                         if (world == null) {
                             continue;
