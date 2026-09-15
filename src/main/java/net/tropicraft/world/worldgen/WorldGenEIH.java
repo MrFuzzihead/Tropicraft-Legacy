@@ -13,8 +13,12 @@ public class WorldGenEIH extends TCGenBase {
     /** generate() raises the origin by one block, the head then reaches this far above / below that raised origin. */
     private static final int HEAD_ABOVE_ORIGIN = 6;
     private static final int HEAD_BELOW_ORIGIN = 3;
-    /** Ore eye variants that can be rolled, see placeEye. Zirconium (meta 3) has never been reachable. */
-    private static final int ORE_META_COUNT = 3;
+    /**
+     * Number of ore eye variants that can be rolled, see placeEye. {@code oreBlocks} is a four way multi block -
+     * Eudialyte, Zircon, Azurite and Zirconium - but the roll upstream used nextInt(3) on, so Zirconium eyes were
+     * unobtainable. This covers all four.
+     */
+    private static final int ORE_META_COUNT = 4;
     /** One in this many heads gets two different ore eyes (heterochromia) instead of a matched pair. */
     private static final int HETEROCHROMIA_CHANCE = 8;
     private static final Block EIH_BLOCK;
