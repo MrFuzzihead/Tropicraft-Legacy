@@ -16,7 +16,7 @@ import net.tropicraft.config.ConfigMisc;
 import net.tropicraft.entity.placeable.EntityChair;
 import net.tropicraft.util.EffectHelper;
 import net.tropicraft.util.TropicraftWorldUtils;
-import net.tropicraft.world.WorldInfoTropicraft;
+import net.tropicraft.world.TCTimeAndWeatherData;
 
 import CoroUtil.forge.CoroAI;
 import CoroUtil.world.WorldDirector;
@@ -41,7 +41,7 @@ public class TCMiscEvents {
             WorldDirectorManager.instance()
                 .registerWorldDirector(new WorldDirector(), CoroAI.modID, event.world);
         }
-        if (ConfigMisc.separateTimeAndWeather && !(event.world.getWorldInfo() instanceof WorldInfoTropicraft)) {
+        if (ConfigMisc.separateTimeAndWeather && !TCTimeAndWeatherData.isDetached(event.world.getWorldInfo())) {
             Tropicraft.dbg(
                 "[Tropicraft] Could not give the Tropics their own time and weather - the WorldServerMulti mixin did not apply. Is a mixin loader such as UniMixins installed? The Tropics will keep mirroring the overworld.");
         }

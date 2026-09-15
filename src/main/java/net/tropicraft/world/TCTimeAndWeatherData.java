@@ -9,15 +9,22 @@ import net.tropicraft.Tropicraft;
 import net.tropicraft.config.ConfigMisc;
 
 /**
- * The Tropics' own clock and weather state.
+ * The Tropics' own clock and weather, and the one thing that knows which
+ * {@link net.minecraft.world.storage.WorldInfo} they belong to (issue #35).
  * <p>
- * A custom dimension is a {@link net.minecraft.world.WorldServerMulti}, and a
- * WorldServerMulti gets a {@link net.minecraft.world.storage.DerivedWorldInfo} that reads time and
- * weather straight out of the overworld's WorldInfo while making every setter a no-op. That is why
- * the Tropics always matched the overworld (see issue #35). Vanilla never saves a WorldServerMulti's
- * WorldInfo anywhere, so this {@link WorldSavedData} is what persists the detached state - it lands
- * in the dimension's own folder ({@code TROPICS/data/tropicraft_clock.dat}) because it lives in
- * {@code World.perWorldStorage}.
+ * A custom dimension is a {@link net.minecraft.world.WorldServerMulti}, and a WorldServerMulti gets
+ * a {@link net.minecraft.world.storage.DerivedWorldInfo} that reads time and weather straight out of
+ * the overworld's WorldInfo while making every setter a no-op. That is why the Tropics always matched
+ * the overworld. Vanilla never saves a WorldServerMulti's WorldInfo anywhere, so this
+ * {@link WorldSavedData} is what persists the detached state - it lands in the dimension's own folder
+ * ({@code TROPICS/data/tropicraft_clock.dat}) because it lives in {@code World.perWorldStorage}.
+ * <p>
+ * {@link net.tropicraft.mixins.early.MixinDerivedWorldInfo} asks {@link #clockFor(WorldInfo)} whether
+ * the WorldInfo it is being called on is the one registered here, and reads and writes this object
+ * instead of the overworld when it is. Registering the WorldInfo rather than replacing it means no
+ * field of Minecraft has to be written, and everything that is not time or weather - seed, spawn
+ * point, difficulty, game rules, the NBT that goes to the root level.dat - keeps delegating to the
+ * overworld exactly as vanilla intends.
  */
 public class TCTimeAndWeatherData extends WorldSavedData {
 
@@ -34,6 +41,12 @@ public class TCTimeAndWeatherData extends WorldSavedData {
     /** Ten minutes of dry weather, used whenever a countdown is missing from a clock file. */
     private static final int CLEAR_SKY_DELAY = 12000;
 
+    /**
+     * The registered WorldInfo and the clock behind it. There is one Tropics per server, so one
+     * immutable pair is all that is needed, and it is published in a single write.
+     */
+    private static volatile Attachment attachment;
+
     /** Ticks of day, 0 - 23999. Same meaning as {@link WorldInfo#getWorldTime()}. */
     public long worldTime;
     /** Ticks since the Tropics were created. Same meaning as {@link WorldInfo#getWorldTotalTime()}. */
@@ -47,6 +60,61 @@ public class TCTimeAndWeatherData extends WorldSavedData {
 
     public TCTimeAndWeatherData(final String name) {
         super(name);
+    }
+
+    private static final class Attachment {
+
+        final WorldInfo info;
+        final TCTimeAndWeatherData clock;
+
+        Attachment(final WorldInfo info, final TCTimeAndWeatherData clock) {
+            this.info = info;
+            this.clock = clock;
+        }
+    }
+
+    /**
+     * The clock behind this WorldInfo, or {@code null} when it is an ordinary
+     * {@link net.minecraft.world.storage.DerivedWorldInfo} belonging to some other dimension.
+     */
+    public static TCTimeAndWeatherData clockFor(final WorldInfo info) {
+        final Attachment current = attachment;
+        return current != null && current.info == info ? current.clock : null;
+    }
+
+    /** Whether the Tropics currently run on their own time and weather. */
+    public static boolean isDetached(final WorldInfo info) {
+        return clockFor(info) != null;
+    }
+
+    /**
+     * Hands the Tropics' WorldInfo over to the Tropics' own clock and weather, and re-derives the
+     * sky brightness and the rain strengths from them - up to this point the world was still reading
+     * the overworld, whose weather and time have nothing to do with the island's.
+     * <p>
+     * Does nothing when {@code separateTimeAndWeather} is off, so switching it off leaves the vanilla
+     * DerivedWorldInfo in place.
+     */
+    public static void attach(final WorldServer world) {
+        final WorldInfo info = world.getWorldInfo();
+        if (!ConfigMisc.separateTimeAndWeather || isDetached(info)) {
+            return;
+        }
+        final TCTimeAndWeatherData clock = loadOrCreate(world, info);
+        attachment = new Attachment(info, clock);
+        Tropicraft.dbg(
+            "[Tropicraft] The Tropics are on their own clock: time " + clock.worldTime
+                + ", raining "
+                + clock.raining
+                + ", thundering "
+                + clock.thundering
+                + ".");
+
+        world.calculateInitialSkylight();
+        world.rainingStrength = clock.raining ? 1.0f : 0.0f;
+        world.prevRainingStrength = world.rainingStrength;
+        world.thunderingStrength = clock.thundering ? 1.0f : 0.0f;
+        world.prevThunderingStrength = world.thunderingStrength;
     }
 
     /**
