@@ -8,6 +8,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.gen.feature.WorldGenTallGrass;
 import net.tropicraft.config.ConfigBiomes;
+import net.tropicraft.config.ConfigGenRates;
 import net.tropicraft.entity.hostile.EntityAshenHunter;
 import net.tropicraft.entity.hostile.EntityEIH;
 import net.tropicraft.entity.hostile.EntityTreeFrogBlue;
@@ -105,7 +106,7 @@ public class BiomeGenTropicraft extends BiomeGenBase {
             new WorldGenBamboo(world, rand).generate(i, this.getTerrainHeightAt(world, i, k), k);
         }
 
-        if (rand.nextInt(50) == 0) {
+        if (ConfigGenRates.eihChanceInTropics > 0 && rand.nextInt(ConfigGenRates.eihChanceInTropics) == 0) {
             new WorldGenEIH(world, rand).generate(i, this.getTerrainHeightAt(world, i, k), k);
         }
 
