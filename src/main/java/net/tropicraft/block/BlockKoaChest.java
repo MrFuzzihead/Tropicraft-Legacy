@@ -7,6 +7,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.tropicraft.block.tileentity.TileEntityKoaChest;
+import net.tropicraft.info.TCRenderIDs;
 import net.tropicraft.registry.TCCreativeTabRegistry;
 
 import cpw.mods.fml.relauncher.Side;
@@ -21,8 +22,9 @@ public class BlockKoaChest extends BlockChest {
         this.setCreativeTab(TCCreativeTabRegistry.tabBlock);
     }
 
+    @Override
     public int getRenderType() {
-        return -1;
+        return TCRenderIDs.koaChest;
     }
 
     public TileEntity createNewTileEntity(final World world, final int meta) {
@@ -54,8 +56,9 @@ public class BlockKoaChest extends BlockChest {
         return unlocalizedName.substring(unlocalizedName.indexOf(46) + 1);
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
-    public void registerIcons(final IIconRegister par1IconRegister) {
-        this.blockIcon = par1IconRegister.registerIcon("tropicraft:bamboochest");
+    public void registerBlockIcons(final IIconRegister iconRegister) {
+        this.blockIcon = iconRegister.registerIcon("tropicraft:bambooChest");
     }
 }
