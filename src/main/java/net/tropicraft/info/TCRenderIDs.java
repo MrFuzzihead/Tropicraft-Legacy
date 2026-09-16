@@ -4,6 +4,7 @@ public class TCRenderIDs {
 
     public static int airCompressor;
     public static int bambooChest;
+    public static int koaChest;
     public static int coffeePlant;
     public static int tikiTorch;
     public static int flowerPot;
