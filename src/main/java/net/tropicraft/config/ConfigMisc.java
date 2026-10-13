@@ -25,9 +25,8 @@ public class ConfigMisc implements IConfigCategory {
     public static boolean separateTimeAndWeather;
 
     @ConfigComment({ "Time of day the Tropics start at when their clock first starts.",
-        "The dimension is created along with the world, but the island's clock only starts once somebody has travelled",
-        "there, so the first visit lands on day 1 at this time of day in clear weather. From then on the island keeps",
-        "its own time and runs on while nobody is there, so later visits land at whatever hour it has reached.",
+        "The island's clock is pinned to this time of day on day 1, in clear weather, the first time a player actually",
+        "travels there. From then on the island keeps its own time, so later visits land at whatever hour it has reached.",
         "0 = sunrise, 1000 = morning, 6000 = noon, 12000 = sunset, 13000 = night, 18000 = midnight." })
     public static int tropicsInitialTime;
 

@@ -164,14 +164,17 @@ public class TCTimeAndWeatherData extends WorldSavedData {
     /**
      * Starts the island's clock the first time somebody is actually standing on it.
      * <p>
-     * This exists because of when the dimension comes into being: Forge creates every statically
-     * registered dimension as the world loads, not on first use, so the Tropics are built along with
-     * the overworld and their clock starts ticking there and then. Ten minutes of play in the
-     * overworld is enough for the island to reach nightfall, so without this a first visit would land
-     * at whatever hour the island happened to have reached - which is not what
-     * {@code tropicsInitialTime} promises. The first visit therefore restarts the clock on day 1 at
-     * that time of day, in clear weather, and marks the island as visited; from then on it keeps its
-     * own time, running on while nobody is there, and later visits land wherever it has got to.
+     * The island's clock is not tied to anybody arriving: Forge creates every statically registered
+     * dimension as the world loads, so the Tropics and their clock exist from world load, and the
+     * clock can be moved before anyone has ever been there - a vanilla {@code /time set} moves every
+     * loaded dimension, and an admin can point {@code /tc time set} at the island from anywhere.
+     * Pinning the clock on the first visit means the island always opens on the clear morning that
+     * {@code tropicsInitialTime} promises, whatever happened to it beforehand. From then on it keeps
+     * its own time, and later visits land wherever it has got to.
+     * <p>
+     * (An empty dimension does not tick: once nobody is there the server unloads it again, so the
+     * clock only runs while the island is loaded. The pin is about deliberate changes and about worlds
+     * whose clock was created by an earlier version, not about time passing in the background.)
      * <p>
      * Cheap enough to call every tick for every world: it does nothing at all unless the world is the
      * Tropics and somebody has just arrived there for the first time.
