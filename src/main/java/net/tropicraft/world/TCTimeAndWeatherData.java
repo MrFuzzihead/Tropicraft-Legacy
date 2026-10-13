@@ -1,12 +1,15 @@
 package net.tropicraft.world;
 
+import java.lang.ref.WeakReference;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.WorldSavedData;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.storage.MapStorage;
 import net.minecraft.world.storage.WorldInfo;
-import net.tropicraft.Tropicraft;
 import net.tropicraft.config.ConfigMisc;
+
+import cpw.mods.fml.common.FMLLog;
 
 /**
  * The Tropics' own clock and weather, and the one thing that knows which
@@ -64,12 +67,20 @@ public class TCTimeAndWeatherData extends WorldSavedData {
 
     private static final class Attachment {
 
-        final WorldInfo info;
-        final TCTimeAndWeatherData clock;
+        /**
+         * Held weakly: as long as the dimension that owns this WorldInfo is loaded, the world holds
+         * it too, and once the world is gone there is nothing left to answer for.
+         */
+        private final WeakReference<WorldInfo> info;
+        private final TCTimeAndWeatherData clock;
 
         Attachment(final WorldInfo info, final TCTimeAndWeatherData clock) {
-            this.info = info;
+            this.info = new WeakReference<WorldInfo>(info);
             this.clock = clock;
+        }
+
+        boolean belongsTo(final WorldInfo candidate) {
+            return this.info.get() == candidate;
         }
     }
 
@@ -79,7 +90,7 @@ public class TCTimeAndWeatherData extends WorldSavedData {
      */
     public static TCTimeAndWeatherData clockFor(final WorldInfo info) {
         final Attachment current = attachment;
-        return current != null && current.info == info ? current.clock : null;
+        return current != null && current.belongsTo(info) ? current.clock : null;
     }
 
     /** Whether the Tropics currently run on their own time and weather. */
@@ -102,13 +113,11 @@ public class TCTimeAndWeatherData extends WorldSavedData {
         }
         final TCTimeAndWeatherData clock = loadOrCreate(world, info);
         attachment = new Attachment(info, clock);
-        Tropicraft.dbg(
-            "[Tropicraft] The Tropics are on their own clock: time " + clock.worldTime
-                + ", raining "
-                + clock.raining
-                + ", thundering "
-                + clock.thundering
-                + ".");
+        FMLLog.info(
+            "[Tropicraft] The Tropics are on their own clock: time %d, raining %s, thundering %s.",
+            clock.worldTime,
+            clock.raining,
+            clock.thundering);
 
         world.calculateInitialSkylight();
         world.rainingStrength = clock.raining ? 1.0f : 0.0f;
@@ -132,17 +141,24 @@ public class TCTimeAndWeatherData extends WorldSavedData {
             data.seed(world, inherited);
             storage.setData(DATA_NAME, data);
             data.markDirty();
-            Tropicraft.dbg(
-                "[Tropicraft] The Tropics now run on their own clock and weather, starting at time " + data.worldTime
-                    + " with clear skies (see the tropicsInitialTime config).");
+            FMLLog.info(
+                "[Tropicraft] The Tropics now run on their own clock and weather, starting at time %d with clear skies (see the tropicsInitialTime config).",
+                data.worldTime);
         }
         return data;
     }
 
     /**
-     * First run: a clear tropical morning. The countdowns are seeded with the same ranges vanilla
-     * uses when the weather clears up - leaving them at zero would toggle rain on the very next
-     * weather tick.
+     * First run: a clear tropical morning on day 1. The countdowns are seeded with the same ranges
+     * vanilla uses when the weather clears up - leaving them at zero would toggle rain on the very
+     * next weather tick.
+     * <p>
+     * The clock starts fresh even in a world that has been played for a long time, so a Tropics that
+     * has just been detached always begins on day 1 at {@code tropicsInitialTime} and its day counter
+     * and moon phase stay out of step with the overworld's from then on. That is deliberate: the
+     * island is meant to start on a clear tropical morning rather than at whatever hour the overworld
+     * happened to be at. The total time is taken from the overworld instead, so anything that measures
+     * how long this dimension has been running keeps its meaning.
      */
     private void seed(final WorldServer world, final WorldInfo inherited) {
         this.worldTime = Math.max(0, ConfigMisc.tropicsInitialTime);

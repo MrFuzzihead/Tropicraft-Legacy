@@ -24,10 +24,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  * Each handler is a cancellable injection at the head of the method that only takes over for the one
  * WorldInfo registered in {@link TCTimeAndWeatherData} - every other dimension's DerivedWorldInfo
  * falls through to vanilla's own code. Nothing here shadows anything, and the checks are an identity
- * comparison against a single static field, which matters as these are called for every world every
- * tick.
+ * comparison against a single static reference, which matters as these are called for every world
+ * every tick.
+ * <p>
+ * The raised priority is for the day another mod takes over the same methods: Tropicraft's answers
+ * for its own dimension should be in place first, and a mod that means to override them can still
+ * say so with a higher priority. Both mixin configs are {@code required: false} so that a conflict or
+ * a changed target degrades into vanilla behaviour with a warning from
+ * {@link net.tropicraft.event.TCMiscEvents} rather than into a crash at startup.
  */
-@Mixin(DerivedWorldInfo.class)
+@Mixin(value = DerivedWorldInfo.class, priority = 1500)
 public abstract class MixinDerivedWorldInfo {
 
     private TCTimeAndWeatherData tropicraft$clock() {

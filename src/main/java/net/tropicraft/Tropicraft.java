@@ -43,7 +43,9 @@ import modconfig.IConfigCategory;
     modid = Tropicraft.MODID,
     name = Tropicraft.MODNAME,
     version = Tags.VERSION,
-    dependencies = "required-after:CoroAI")
+    // UniMixins carries both the Mixin runtime and the GTNHMixins API that EarlyMixinsLoader
+    // implements, so it has to be present before this mod's classes can load at all.
+    dependencies = "required-after:CoroAI;required-after:unimixins")
 public class Tropicraft {
 
     public static final String MODNAME = "Tropicraft";

@@ -28,6 +28,14 @@ public class CommandTropicraft extends CommandBase {
         return "/tc <" + String.join("|", names()) + ">";
     }
 
+    /**
+     * Level 2, the same as vanilla gives /time, /toggledownfall and /tp, so a server operator does not
+     * need to be a full level 4 admin to look at the clocks or change the island's weather.
+     */
+    public int getRequiredPermissionLevel() {
+        return 2;
+    }
+
     public List<String> addTabCompletionOptions(final ICommandSender commandSender, final String[] args) {
         if (args.length <= 1) {
             return getListOfStringsMatchingLastWord(args, names());
@@ -62,64 +70,4 @@ public class CommandTropicraft extends CommandBase {
         }
         return names;
     }
-
-    /*
-     * Dead code, and unreachable: this command was never registered, so the village tools that used
-     * to be its whole body have never been callable. They are unfinished rather than broken -
-     * village_repopulate walks the villages and does nothing at all - and village_clear would remove
-     * every ticking managed location in the dimension, which is not something to hand out until
-     * somebody decides what these are meant to do.
-     * To bring one back, add a case for it below processCommand's switch and restore the imports it
-     * needs: net.minecraft.entity.player.EntityPlayerMP, net.minecraft.util.ChunkCoordinates,
-     * net.minecraft.util.MathHelper, net.tropicraft.world.location.TownKoaVillage,
-     * net.tropicraft.world.location.TownKoaVillageGenHelper, CoroUtil.world.WorldDirector,
-     * CoroUtil.world.WorldDirectorManager, CoroUtil.world.location.ISimulationTickable and
-     * CoroUtil.world.location.ManagedLocation. Note that they all work on a player, so they need
-     * CommandTropicraft.getCommandSenderAsPlayer(commandSender) - which is what they started with,
-     * and which meant the command could not be run from the server console.
-     * case "village_new" -> {
-     * final int x = MathHelper.floor_double(player.posX);
-     * final int z = MathHelper.floor_double(player.posZ);
-     * int y = player.worldObj.getHeightValue(x, z);
-     * if (y < 63) {
-     * y = 64;
-     * }
-     * final TownKoaVillage village = new TownKoaVillage();
-     * final WorldDirector wd = WorldDirectorManager.instance().getCoroUtilWorldDirector(player.worldObj);
-     * final int newID = wd.lookupTickingManagedLocations.size();
-     * village.initData(newID, player.worldObj.provider.dimensionId, new ChunkCoordinates(x, y, z));
-     * village.initFirstTime();
-     * wd.addTickingLocation(village);
-     * }
-     * case "village_try" -> {
-     * final int x = MathHelper.floor_double(player.posX);
-     * final int z = MathHelper.floor_double(player.posZ);
-     * int y = player.worldObj.getTopSolidOrLiquidBlock(x, z);
-     * if (y < 63) {
-     * y = 64;
-     * }
-     * TownKoaVillageGenHelper.hookTryGenVillage(new ChunkCoordinates(x, y, z), player.worldObj);
-     * }
-     * case "village_clear" -> {
-     * final WorldDirector wd2 = WorldDirectorManager.instance().getCoroUtilWorldDirector(player.worldObj);
-     * for (final ISimulationTickable location : wd2.lookupTickingManagedLocations.values()) {
-     * location.cleanup();
-     * wd2.removeTickingLocation(location);
-     * }
-     * }
-     * case "village_regen" -> {
-     * final WorldDirector wd2 = WorldDirectorManager.instance().getCoroUtilWorldDirector(player.worldObj);
-     * for (final ISimulationTickable location : wd2.lookupTickingManagedLocations.values()) {
-     * if (location instanceof ManagedLocation) {
-     * ((ManagedLocation) location).initFirstTime();
-     * }
-     * }
-     * }
-     * case "village_repopulate" -> {
-     * final WorldDirector wd2 = WorldDirectorManager.instance().getCoroUtilWorldDirector(player.worldObj);
-     * for (final ISimulationTickable location : wd2.lookupTickingManagedLocations.values()) {
-     * if (location instanceof TownKoaVillage) {}
-     * }
-     * }
-     */
 }

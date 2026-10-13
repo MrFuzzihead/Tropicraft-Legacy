@@ -4,11 +4,12 @@ import java.util.List;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.storage.WorldInfo;
+import net.tropicraft.util.TropicraftWorldUtils;
 import net.tropicraft.world.TCTimeAndWeatherData;
 
 /**
@@ -16,11 +17,13 @@ import net.tropicraft.world.TCTimeAndWeatherData;
  * quickest way to see whether a dimension is running on its own clock or still reading the
  * overworld's (issue #35).
  * <p>
- * {@code /tc time set <time>} changes the time in the sender's own dimension only. Vanilla's /time
- * is no use for testing this: {@code CommandTime} loops over every loaded dimension and sets them
- * all, which makes separate clocks look like one shared clock. Two independent clocks also tick at
- * the same rate, so they only visibly come apart when something per-dimension changes one of them -
- * this command, or sleeping.
+ * {@code /tc time set <time>} sets the Tropicraft clock and nothing else - the rest of the listing is
+ * there to compare against. Vanilla's /time is no use for moving one dimension on its own: it loops
+ * over every loaded dimension and sets them all, which is what makes separate clocks look like a
+ * single shared one. The overworld keeps its own /time.
+ * <p>
+ * Two independent clocks also tick at the same rate, so they only visibly come apart once something
+ * moves one of them: this command, sleeping, or vanilla /time moving all of them at once.
  */
 public class CommandTCTime extends CommandBase {
 
@@ -37,15 +40,20 @@ public class CommandTCTime extends CommandBase {
     }
 
     public void processCommand(final ICommandSender commandSender, final String[] args) {
-        if (args.length > 1 && args[0].equals("set")) {
+        if (args.length > 0 && args[0].equalsIgnoreCase("set")) {
+            if (args.length < 2) {
+                throw new WrongUsageException(getCommandUsage(commandSender), new Object[0]);
+            }
             final long time = parseIntWithMin(commandSender, args[1], 0);
-            final World world = commandSender.getEntityWorld();
-            if (world == null) {
+            final WorldServer tropics = TropicraftWorldUtils.tropics();
+            final WorldInfo info = tropics.getWorldInfo();
+            if (!TCTimeAndWeatherData.isDetached(info)) {
                 commandSender.addChatMessage(
-                    new ChatComponentText("This needs to be run by something standing in a dimension."));
+                    new ChatComponentText(
+                        "The Tropics are not keeping their own clock (separateTimeAndWeather is off, or the mixins did not apply), so there is nothing to set."));
                 return;
             }
-            world.setWorldTime(time);
+            info.setWorldTime(time);
         }
 
         for (final WorldServer world : MinecraftServer.getServer().worldServers) {

@@ -12,7 +12,7 @@ public class CommandTropicsTeleport extends CommandBase {
     }
 
     public String getCommandUsage(final ICommandSender commandSender) {
-        return "";
+        return "/tc tropics";
     }
 
     public void processCommand(final ICommandSender commandSender, final String[] args) {

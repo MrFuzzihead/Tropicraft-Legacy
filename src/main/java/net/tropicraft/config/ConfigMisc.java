@@ -18,19 +18,21 @@ public class ConfigMisc implements IConfigCategory {
         "When true, the Tropics keep their own time of day and their own weather instead of mirroring the overworld.",
         "Players can then sleep through the Tropics' night on their own, and rain in the Tropics no longer starts and",
         "stops with the overworld's.",
-        "Needs the Tropicraft mixins to apply, so a mixin loader (UniMixins) has to be installed - if the swap could not",
-        "be made a warning is printed to the log at world load.",
+        "UniMixins provides the mixins this needs and is declared as a dependency; if the swap could not be made for some",
+        "reason a warning is printed to the log at world load and the Tropics keep mirroring the overworld.",
         "Set to false to restore the old behaviour, where the Tropics always matched the overworld.",
         "Changing this takes effect the next time the Tropics dimension loads." })
     public static boolean separateTimeAndWeather;
 
-    @ConfigComment({
-        "Time of day the Tropics start at the first time their clock is created (has no effect on existing worlds).",
+    @ConfigComment({ "Time of day the Tropics start at when their clock is first created.",
+        "Existing worlds get their clock the first time the Tropics load after updating, so the island starts on day 1",
+        "at this time of day, and its day counter and moon phase stay out of step with the overworld's from then on.",
         "0 = sunrise, 1000 = morning, 6000 = noon, 12000 = sunset, 13000 = night, 18000 = midnight." })
     public static int tropicsInitialTime;
 
     @ConfigComment({ "When every player in the Tropics wakes up, vanilla clears the rain and thunder there.",
-        "True keeps that vanilla behaviour, false lets a tropical downpour survive the vacationers." })
+        "True keeps that vanilla behaviour, false lets a tropical downpour survive the vacationers.",
+        "Only means anything while separateTimeAndWeather is on; without it the Tropics share the overworld's weather." })
     public static boolean sleepResetsWeather;
 
     public String getConfigFileName() {
