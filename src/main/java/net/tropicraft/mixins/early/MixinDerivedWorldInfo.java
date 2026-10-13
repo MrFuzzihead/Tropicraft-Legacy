@@ -30,8 +30,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  * The raised priority is for the day another mod takes over the same methods: Tropicraft's answers
  * for its own dimension should be in place first, and a mod that means to override them can still
  * say so with a higher priority. Both mixin configs are {@code required: false} so that a conflict or
- * a changed target degrades into vanilla behaviour with a warning from
- * {@link net.tropicraft.event.TCMiscEvents} rather than into a crash at startup.
+ * a changed target degrades into vanilla behaviour with a warning in the log rather than into a crash
+ * at startup - {@link net.tropicraft.event.TCMiscEvents} watches for the mixins not loading at all,
+ * and the clock itself checks whether this one is really answering.
  */
 @Mixin(value = DerivedWorldInfo.class, priority = 1500)
 public abstract class MixinDerivedWorldInfo {

@@ -43,7 +43,7 @@ public class TCMiscEvents {
         }
         if (ConfigMisc.separateTimeAndWeather && !TCTimeAndWeatherData.isDetached(event.world.getWorldInfo())) {
             FMLLog.warning(
-                "[Tropicraft] Could not give the Tropics their own time and weather - the WorldServerMulti and DerivedWorldInfo mixins did not apply. The Tropics will keep mirroring the overworld until this is sorted out.");
+                "[Tropicraft] Could not give the Tropics their own time and weather - the mixins that detach them did not load at all. The Tropics will keep mirroring the overworld until this is sorted out.");
         }
     }
 
@@ -75,7 +75,13 @@ public class TCMiscEvents {
         // the time of the dimension the player is actually in, so now that every dimension can be on
         // its own clock it also keeps working from the Tropics and from other mod's dimensions.
         for (final WorldServer world : server.worldServers) {
-            if (world == null || !this.isSunset(world)) {
+            if (world == null) {
+                continue;
+            }
+            // The island's clock starts when somebody actually arrives there, not when the dimension
+            // is created along with the world; see TCTimeAndWeatherData.startOnFirstVisit.
+            TCTimeAndWeatherData.startOnFirstVisit(world);
+            if (!this.isSunset(world)) {
                 continue;
             }
             for (int ii = 0; ii < world.playerEntities.size(); ++ii) {
