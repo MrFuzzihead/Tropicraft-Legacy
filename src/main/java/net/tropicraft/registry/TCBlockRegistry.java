@@ -159,6 +159,9 @@ public class TCBlockRegistry {
         registerBlock((Block) TCBlockRegistry.tikiTorch, "tikiTorch");
         registerBlock((Block) TCBlockRegistry.bambooDoor, "bambooDoor");
         Blocks.fire.setFireInfo((Block) TCBlockRegistry.bambooDoor, 5, 20);
+        // NOTE: Slabs are intentionally not registered as flammable here. The Forest Altar Ruin uses
+        // the "Chunk" (metadata 2) slab as a non-flammable buffer around its eternal netherrack
+        // fire; if flammable slab metadata is ever added, that variant must stay non-flammable.
         registerMultiBlock(
             (Block) TCBlockRegistry.singleSlabs,
             "singleSlabs",

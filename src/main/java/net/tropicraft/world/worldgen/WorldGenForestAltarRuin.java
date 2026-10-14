@@ -60,8 +60,18 @@ public class WorldGenForestAltarRuin extends TCDirectionalGen {
                         this.placeBlockWithDir(x, j + 2, z, TCBlockRegistry.palmFence, 0);
                     } else {
                         this.placeBlockWithDir(x, j + 1, z, TCBlockRegistry.singleSlabs, 2);
-                        this.placeBlockWithDir(x, j + 2, z, TCBlockRegistry.palmFence, 0);
-
+                        // The netherrack braziers at z == 1 sit one block behind and one block above
+                        // this rail, so a flammable fence here is within BlockFire's spread volume
+                        // (one block horizontally, four above). Left alone, the eternal flame would
+                        // eventually consume the ruin and the surrounding forest. Keep the railing
+                        // next to the braziers non-flammable; see issue #12 / PR #17.
+                        final boolean nearBrazier = x >= halfWidth - 2 && x <= halfWidth + 1;
+                        this.placeBlockWithDir(
+                            x,
+                            j + 2,
+                            z,
+                            nearBrazier ? TCBlockRegistry.chunkOHead : TCBlockRegistry.palmFence,
+                            0);
                     }
                 } else if (z == 1) {
                     if (x == 0 || x == width - 1) {
@@ -76,6 +86,9 @@ public class WorldGenForestAltarRuin extends TCDirectionalGen {
                         }
                     } else if (x == halfWidth - 1 || x == halfWidth) {
                         this.placeBlockWithDir(x, j, z, Blocks.netherrack, 0);
+                        // Force the space above the flame to air: the clearing loop above is
+                        // probabilistic, and a surviving leaf here would be ignited directly.
+                        this.placeBlockWithDir(x, j + 2, z, Blocks.air, 0);
                         this.placeBlockWithDir(x, j + 1, z, Blocks.fire, 0);
                     } else {
                         this.placeBlockWithDir(x, j + 1, z, TCBlockRegistry.singleSlabs, 2);
