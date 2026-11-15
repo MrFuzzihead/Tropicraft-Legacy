@@ -51,7 +51,7 @@ public class TCMiscEvents {
     @SubscribeEvent
     public void tickClient(final TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
-            EffectHelper.tick();
+            EffectHelper.tick(Side.CLIENT);
         }
         if (Minecraft.getMinecraft().currentScreen instanceof GuiMainMenu) {
             for (int ii = 0; ii < ExtendedRenderer.rotEffRenderer.fxLayers.length; ++ii) {
@@ -64,7 +64,9 @@ public class TCMiscEvents {
     @SubscribeEvent
     public void tickServer(final TickEvent.ServerTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
-            EffectHelper.tick();
+            // Only the entries in server-side worlds: see EffectHelper.tick(Side) for why this matters in single
+            // player.
+            EffectHelper.tick(Side.SERVER);
         }
         final MinecraftServer server = FMLCommonHandler.instance()
             .getMinecraftServerInstance();

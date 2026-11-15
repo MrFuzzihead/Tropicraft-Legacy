@@ -9,7 +9,12 @@ import modconfig.IConfigCategory;
 
 public class ConfigMisc implements IConfigCategory {
 
-    @ConfigComment({ "List of users who can use coconut bombs." })
+    @ConfigComment({ "When true, only the players named in coconutBombWhitelist may throw coconut bombs.",
+        "When false (the default) everybody can, and coconutBombWhitelist is ignored.",
+        "The whitelist accepts names separated by commas or spaces." })
+    public static boolean coconutBombWhitelistEnabled;
+
+    @ConfigComment({ "Names allowed to throw coconut bombs while coconutBombWhitelistEnabled is true." })
     public static String coconutBombWhitelist;
     public static String[] COCONUT_BOMB_WHITELIST;
     public static List<String> coconutBombWhitelistedUsers;
@@ -44,10 +49,9 @@ public class ConfigMisc implements IConfigCategory {
     }
 
     public void hookUpdatedValues() {
-        ConfigMisc.COCONUT_BOMB_WHITELIST = (ConfigMisc.coconutBombWhitelist.contains(",")
-            ? ConfigMisc.coconutBombWhitelist.replace(" ", "")
-                .split(",")
-            : ConfigMisc.coconutBombWhitelist.split(" "));
+        // An empty string used to split into [""], i.e. one nameless entry; accept both "a, b" and "a b" instead.
+        final String raw = ConfigMisc.coconutBombWhitelist == null ? "" : ConfigMisc.coconutBombWhitelist.trim();
+        ConfigMisc.COCONUT_BOMB_WHITELIST = raw.isEmpty() ? new String[0] : raw.split("[,\s]+");
         ConfigMisc.coconutBombWhitelistedUsers = Arrays.asList(ConfigMisc.COCONUT_BOMB_WHITELIST);
     }
 
@@ -55,6 +59,7 @@ public class ConfigMisc implements IConfigCategory {
         ConfigMisc.separateTimeAndWeather = true;
         ConfigMisc.tropicsInitialTime = 1000;
         ConfigMisc.sleepResetsWeather = true;
+        ConfigMisc.coconutBombWhitelistEnabled = false;
         ConfigMisc.coconutBombWhitelist = "";
         ConfigMisc.COCONUT_BOMB_WHITELIST = null;
         ConfigMisc.coconutBombWhitelistedUsers = new ArrayList<String>();

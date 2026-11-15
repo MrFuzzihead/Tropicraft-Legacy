@@ -3,10 +3,13 @@ package net.tropicraft.gametest;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -19,6 +22,7 @@ import net.tropicraft.economy.ItemValues;
 import net.tropicraft.entity.projectile.EntityDart;
 import net.tropicraft.info.TCNames;
 import net.tropicraft.registry.TCBlockRegistry;
+import net.tropicraft.registry.TCEntityRegistry;
 import net.tropicraft.registry.TCItemRegistry;
 import net.tropicraft.registry.TCKoaCurrencyRegistry;
 import net.tropicraft.util.TCSchematics;
@@ -28,6 +32,7 @@ import net.tropicraft.world.chunk.ChunkProviderTropicraft;
 import net.tropicraft.world.location.TownKoaVillage;
 
 import build.world.Build;
+import cpw.mods.fml.common.registry.EntityRegistry;
 
 /**
  * The in-game assertions. Everything here needs the real game: registered blocks and items, a live
@@ -63,6 +68,7 @@ public final class ServerGameTests {
         dartPotionIdsAreBoundsChecked();
         mineralSandDoesNotLeakFromAnOceanColumn();
         tropicraftBlocksKeepTheirRegistryPrefix();
+        entityIdsAreUniqueAndRoundTrip();
         tropicsChunksGenerate();
         return failures;
     }
@@ -306,6 +312,56 @@ public final class ServerGameTests {
             "every Tropicraft block is registered as tropicraft:tile.<name>",
             total > 0 && unstyled.isEmpty(),
             counted + "/" + total + " kept the prefix, non-conforming: " + unstyled);
+    }
+
+    // ---------------------------------------------------------------------------------------------------------
+    // Entity registration
+    // ---------------------------------------------------------------------------------------------------------
+
+    /**
+     * The numeric mod entity id travels in {@code FMLMessage.EntitySpawnMessage} and is what the client resolves
+     * through {@code EntityRegistry.lookupModSpawn}, so ids have to be unique and stable across both sides. They used
+     * to be assigned by call order, which silently re-pointed every following id whenever a registration line was
+     * inserted, removed or reordered - and a duplicated line burned one.
+     */
+    private static void entityIdsAreUniqueAndRoundTrip() {
+        try {
+            final Map<Class<? extends Entity>, Integer> registered = TCEntityRegistry.getRegistered();
+            if (registered.isEmpty()) {
+                fail("entity ids are unique", "no entities were registered at all");
+                return;
+            }
+            final Set<Integer> ids = new HashSet<Integer>(registered.values());
+            assertTrue(
+                "every Tropicraft entity has a unique network id",
+                ids.size() == registered.size(),
+                registered.size() + " entities but only " + ids.size() + " distinct ids");
+
+            int roundTripped = 0;
+            final List<String> mismatched = new ArrayList<String>();
+            for (final Map.Entry<Class<? extends Entity>, Integer> entry : registered.entrySet()) {
+                final EntityRegistry.EntityRegistration registration = EntityRegistry.instance()
+                    .lookupModSpawn(entry.getKey(), false);
+                if (registration != null && registration.getModEntityId() == entry.getValue()
+                    && registration.getEntityClass() == entry.getKey()) {
+                    ++roundTripped;
+                } else {
+                    mismatched.add(
+                        entry.getKey()
+                            .getSimpleName() + "="
+                            + entry.getValue()
+                            + (registration == null ? " (not registered)"
+                                : " (registry says " + registration.getModEntityId() + ")"));
+                }
+            }
+            assertTrue(
+                "every entity id round-trips through the FML registry",
+                roundTripped == registered.size(),
+                roundTripped + "/" + registered.size() + " ok, mismatched: " + mismatched);
+        } catch (final Throwable t) {
+            t.printStackTrace();
+            fail("every Tropicraft entity has a unique network id", t.toString());
+        }
     }
 
     // ---------------------------------------------------------------------------------------------------------

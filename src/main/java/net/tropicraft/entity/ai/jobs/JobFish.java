@@ -31,6 +31,8 @@ public class JobFish extends JobBase {
     public int dryCastZ;
     public int pfRangeHome;
     public float castingStrength;
+    /** 1 in N chance per attempt to head home with a partial catch once at least two fish are aboard. */
+    private static final int EARLY_RETURN_CHANCE = 10;
 
     public JobFish(final JobManager jm) {
         super(jm);
@@ -84,7 +86,8 @@ public class JobFish extends JobBase {
                 .catchFish();
             this.setFishEntity(null);
         }
-        final Random rand = new Random();
+        // Was `new Random()` on every tick; the world's generator is already seeded and shared.
+        final Random rand = this.ent.worldObj.rand;
         this.ai.maxDistanceFromHome = 16.0;
         if (this.state == EnumJobState.IDLE) {
             if (this.findWater()) {
@@ -150,11 +153,11 @@ public class JobFish extends JobBase {
             if (this.getFishEntity() != null && this.getFishEntity().bobber instanceof EntityTropicraftWaterMob) {
                 final EntityTropicraftWaterMob fish = (EntityTropicraftWaterMob) this.getFishEntity().bobber;
                 if (fish.outOfWaterTick > 10) {
-                    final AIInventory entInv = this.ai.entInv;
-                    final AIInventory entInv2 = this.ai.entInv;
-                    entInv.setSlotActive(AIInventory.slot_Melee);
+                    this.ai.entInv.setSlotActive(AIInventory.slot_Melee);
                     this.ai.entInv.performLeftClick((Entity) fish, 0.0f);
-                    if (fish.getHealth() < 0.0f) {
+                    // Health is never negative, so `< 0.0f` could never be true and the catch - the only path that
+                    // leads to depositing early - never happened.
+                    if (fish.getHealth() <= 0.0f || fish.isDead) {
                         this.catchFish();
                     }
                 }
@@ -165,7 +168,7 @@ public class JobFish extends JobBase {
                 if (this.getFishEntity() != null) {
                     this.catchFish();
                 }
-                if (this.getFishCount() > 4 || (rand.nextInt(1) == 0 && this.getFishCount() >= 2)) {
+                if (this.getFishCount() > 4 || (rand.nextInt(EARLY_RETURN_CHANCE) == 0 && this.getFishCount() >= 2)) {
                     this.ai.walkTo(
                         (Entity) this.ent,
                         this.ai.homeX,
@@ -292,9 +295,7 @@ public class JobFish extends JobBase {
         }
         final EntityLiving ent = this.ent;
         ent.rotationPitch -= 25.0f;
-        final AIInventory entInv = this.ai.entInv;
-        final AIInventory entInv2 = this.ai.entInv;
-        entInv.setSlotActive(AIInventory.slot_Tool);
+        this.ai.entInv.setSlotActive(AIInventory.slot_Tool);
         this.fishingTimeout = 400;
         if (this.getFishEntity() != null) {
             this.getFishEntity()
@@ -335,7 +336,6 @@ public class JobFish extends JobBase {
         if (CoroUtilInventory.isChest(this.ent.worldObj.getBlock(x, y - 1, z))) {
             --y;
         }
-        final boolean transferred = false;
         if (!CoroUtilInventory.chestTryTransfer(this.ent.worldObj, this.ai.entInt, x, y, z)) {
             this.tossItems();
         }

@@ -35,13 +35,7 @@
  */
 dependencies {
     runtimeOnlyNonPublishable("com.github.GTNewHorizons:NotEnoughItems:2.9.7-GTNH:dev")
-	api("curse.maven:coroutil-237749:2388794")
-
-    // The CurseForge artifact above is a production jar: it calls Minecraft through SRG names (MinecraftServer.
-    // func_71276_C, Minecraft.func_71410_x, ...), while the RFG dev runtime is MCP-named. Without this remap every
-    // dev run dies in preInit with NoSuchMethodError from CoroUtil's config subsystem, which takes CoroAI,
-    // BuildMod and Tropicraft down with it. `api` stays for the compile/publish surface; this only fixes dev runs.
-    devOnlyNonPublishable(rfg.deobf("curse.maven:coroutil-237749:2388794"))
+    api(rfg.deobf("curse.maven:coroutil-237749:2388794"))
 
     // Unit tests. JUnit 4.13.2 is the last 4.x line, and Mockito 4.11.0 is the last Mockito that supports Java 8
     // bytecode (the suite runs on a Java 8 toolchain, matching what the mod targets). mockito-inline is a separate

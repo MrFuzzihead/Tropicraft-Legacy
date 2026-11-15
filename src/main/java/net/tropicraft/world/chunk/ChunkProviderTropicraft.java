@@ -406,6 +406,10 @@ public class ChunkProviderTropicraft implements IChunkProvider {
     private void doPopulate(final int i, final int j) {
         ++this.decoratingDepth;
         this.decoratingChunk = new ChunkCoordIntPair(i, j);
+        // BlockSand.fallInstantly is a global switch that stops sand and gravel from falling in *every* world. It has
+        // to come back off even when decoration throws: populate() can also be driven from unloadQueuedChunks(), so
+        // one bad decoration would otherwise disable gravity blocks for the rest of the session.
+        final boolean previousFallInstantly = BlockSand.fallInstantly;
         try {
             BlockSand.fallInstantly = true;
             final int x = i * 16;
@@ -419,10 +423,10 @@ public class ChunkProviderTropicraft implements IChunkProvider {
             biome.decorate(this.worldObj, this.rand, x, z);
             this.generateOres(x, z);
             SpawnerAnimals.performWorldGenSpawning(this.worldObj, biome, x + 8, z + 8, 16, 16, this.rand);
-            BlockSand.fallInstantly = false;
             this.worldObj.getChunkFromChunkCoords(i, j)
                 .setChunkModified();
         } finally {
+            BlockSand.fallInstantly = previousFallInstantly;
             --this.decoratingDepth;
             this.decoratingChunk = null;
         }

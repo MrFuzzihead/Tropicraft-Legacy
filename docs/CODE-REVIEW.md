@@ -257,6 +257,8 @@ no null check, and `TileEntityPurchasePlate.onClicked` does
 
 ### B5. `TropicraftUtils.getTopWaterBlockY` — unbounded loop
 
+**Status: fixed.** Deleted (`§12`).
+
 ```java
 // util/TropicraftUtils.java:75
 for (y = world.getHeightValue(xCoord, zCoord);
@@ -269,6 +271,8 @@ or in the best case spins. Currently **unreferenced** (only definition), i.e. al
 or bound it to `y > 0` and return `-1`.
 
 ### B6. `BlockSand.fallInstantly` not restored on throw
+
+**Status: fixed.** Restored from a captured previous value in the `finally` (`§12`).
 
 ```java
 // ChunkProviderTropicraft.doPopulate:409-421
@@ -284,6 +288,8 @@ BlockSand.fallInstantly = false;
 for the rest of the session. Move the flag into the `finally` (and capture/restore the previous value).
 
 ### B7. `JobFish` — two conditions that can never fire
+
+**Status: fixed.** (`§12`)
 
 ```java
 // :193-196
@@ -324,6 +330,8 @@ allocation per iteration), and `checkForLeader()` is O(n²) over every fish in a
 
 ### B9. Entity registry — duplicate entry and positional IDs
 
+**Status: fixed.** Explicit ids, duplicate removed, fail-fast guard, and an in-game check (`§12`).
+
 ```java
 // TCEntityRegistry.java:70 and :72
 registerEntity(EntityTropiCreeper.class, "TropiCreeper", 80, 3, true);
@@ -353,6 +361,8 @@ means. For a project with multiple forks and PR branches (this one has several),
 comment forbidding reuse. This is a 40-line mechanical change with high long-term value.
 
 ### B10. `EffectHelper.tick()` runs twice in single-player
+
+**Status: fixed.** Ticked per side (`§12`).
 
 `TCMiscEvents` registers one instance on the Forge bus and the FML bus (`Tropicraft.init`) and ticks
 `EffectHelper` from both `ClientTickEvent.END` (:54) and `ServerTickEvent.END` (:67). In single-player the
@@ -908,6 +918,8 @@ Both issues assume generation works. It does not (B1), so:
 
 ### B23. `ItemCoconutBomb` spends the bomb before checking the whitelist (#45)
 
+**Status: fixed.** (`§12`)
+
 ```java
 // ItemCoconutBomb.java:20-21
 public ItemStack onItemRightClick(final ItemStack itemstack, final World world, final EntityPlayer player) {
@@ -923,6 +935,8 @@ bombs), move the decrement inside the allowed branch, and delete the unused priv
 works by accident; an explicit `isEmpty()` check is clearer.
 
 ### B24. Mahogany leaves use the Kapok texture (#9) — one-line fix
+
+**Status: fixed.** (`§12`)
 
 ```java
 // BlockRainforestLeaves.java:106
@@ -948,6 +962,8 @@ imageNames = new String[][] { { "leafKapok", "leafKapok" }, { "leafMahogany", "l
 ```
 
 ### B25. Two duplicated lang keys, one with conflicting values (#3)
+
+**Status: fixed.** (`§12`)
 
 `assets/tropicraft/lang/en_US.lang` has 294 keys, 2 of them duplicated:
 
@@ -1112,8 +1128,10 @@ Three more bugs surfaced the moment the code was exercised outside a released ja
 (`MinecraftServer.func_71276_C`, `Minecraft.func_71410_x`, ...) while the RFG dev runtime is MCP-named. The result is
 `NoSuchMethodError` from `modconfig.ConfigMod.getSaveFolderPath` during `CoroAI`/`BuildMod` preInit, which errored
 those mods and Tropicraft with them — the client crash report in `run/client/crash-reports/` from before this work
-is the same failure. Fixed by adding `devOnlyNonPublishable(rfg.deobf("curse.maven:coroutil-237749:2388794"))` for
-the dev runtime; `api` stays as the compile/publish surface.
+is the same failure. Fixed by declaring it as `api(rfg.deobf("curse.maven:coroutil-237749:2388794"))`, so the
+compile *and* dev-runtime classpaths get the remapped jar. Note the knock-on: compiling against the deobfuscated jar
+is what made the next bug visible, because it is the first time `EntityThrowableUsefull`'s real signatures were
+visible to javac.
 
 **Four projectile classes narrowed the visibility of a CoroUtil override.** `EntityFireBall`, `EntityIceBall`,
 `EntityTameBall` and `EntityTropicraftLeafballNew` declared `protected void readEntityFromNBT/writeEntityToNBT`
@@ -1129,6 +1147,77 @@ noticed - but they are the API the purchase plate and trade jobs are meant to us
 
 ---
 
+## 12. P1 fixes applied (batch 1)
+
+Eight of the smaller P1 items, each with the reasoning that decided the fix. Everything here is covered by
+`./gradlew check` (and the entity registry by the in-game suite, now 18 checks).
+
+**B5 — `TropicraftUtils.getTopWaterBlockY` deleted.** It was unreferenced, and its loop walked to `y < 0` (a
+negative `World.getBlock` index) whenever the column had no water. Nothing to fix, so it is gone.
+
+**B6 — `BlockSand.fallInstantly`.** `doPopulate` now captures the previous value and restores it in the `finally`.
+The comment in the code says why it matters here specifically: `populate()` can also be driven from
+`unloadQueuedChunks()`, so a single decoration exception used to disable gravity blocks for the rest of the session.
+
+**B7 — `JobFish`.**
+* `fish.getHealth() < 0.0f` → `<= 0.0f || isDead`: health is never negative, so the Koa fisherman never caught the
+  fish it had just hit, and never reached the deposit path early.
+* `rand.nextInt(1) == 0` → `rand.nextInt(EARLY_RETURN_CHANCE) == 0` with `EARLY_RETURN_CHANCE = 10`. `nextInt(1)`
+  meant "always", i.e. the fisherman went home after two fish instead of up to five. The 1-in-10 is a judgement
+  call - the original constant is unrecoverable - and it is named and commented so it can be tuned.
+* `new Random()` per tick → `this.ent.worldObj.rand`, and the unused `entInv2` (×2) and `transferred` locals are gone.
+
+**B9 — entity network ids.** The duplicate `EntityTropiCreeper` line is deleted and every entity now has a
+hand-written id as the first argument:
+
+```java
+registerEntity(EntityTropiCreeper.class, 16, "TropiCreeper", 80, 3, true);
+```
+
+The ids are **exactly the ones the counter produced**, including the hole at 18 that the duplicate burned - that
+keeps today's client/server id mapping intact while making it impossible to renumber by accident. `registerEntity`
+now throws if a class is registered twice or an id is reused, so the next duplicate fails at startup instead of
+silently burning an id, and `TCEntityRegistry.getRegistered()` exposes the map for the in-game test, which asserts
+uniqueness and that every id round-trips through `EntityRegistry.lookupModSpawn`.
+
+**B10 — `EffectHelper`.** `tick()` became `tick(Side)` and only advances entries whose `worldObj.isRemote` matches
+the side. In single player the integrated server and the client share the static list and both tick handlers drained
+all of it, so **every** effect (not just the player's paralysis) counted down twice per tick and lasted half as long
+as on a dedicated server.
+
+**B23 — coconut bomb (#45).** `ConfigMisc.coconutBombWhitelistEnabled` (default `false`, i.e. everybody can throw
+one) gates the whitelist, the whitelist is parsed correctly (`""` used to become `[""]`; `"a, b"` and `"a b"` both
+work now, covered by `ConfigMiscTest`), and the bomb is only spent on the server, only when the throw is allowed. The
+unused `getName(EntityPlayer)` is gone.
+
+**B24 — mahogany leaves (#9).** Kapok and Mahogany had their icon columns swapped; there is no `leafKapokFast`
+texture, so Kapok reuses its own icon:
+
+```java
+imageNames = new String[][] { { "leafKapok", "leafKapok" }, { "leafMahogany", "leafMahoganyFast" },
+    { "leafFruit", "leafFruitFast" } };
+```
+
+**B25 — duplicated lang keys (#3).** `item.tropicraft:tropiFrame.name` was defined twice, the second time as
+"Bamboo Item Frame", which won - the Tropics Item Frame was labelled wrong in game. `koaFrame` was duplicated with
+the same value. Both duplicates are gone and the file has zero duplicate keys.
+
+Note on #45 and #3: these are the two issue-tracker items that were cheapest to close, and both were user-visible
+(the bomb that ate itself, and a wrong item name). #9 was a two-character fix once the icon columns were read
+correctly.
+
+### 12.1 Still open in P1
+
+| Item | Why it is not in this batch |
+|---|---|
+| **B8** fish schools | The empty loop has to be *replaced* with real spawning, and the copy constructor it would call has an unbounded `do/while (!getCanSpawnHere())` with a `new Random()` per iteration. Enabling it without in-game tuning risks a spawn storm; it wants its own session. |
+| **B11** Koa chest quota | The dead locals are easy, but the real finding (quota counted from loaded members only, so unloaded members let a chest over-spawn) needs an in-game repro before changing behaviour. |
+| **B12** encyclopedia save file | Changes the on-disk format and the render-path write frequency; needs a decision on where per-world client data should live. |
+| **B13 / B14** pending-decoration sweep and save flush | Both touch chunk loading; they want the cascade detector and a chunk-loading mod in the loop to verify. |
+| **B15–B20** dead code & residue | Big mechanical diff (TCNames, `TCInfo`, `TCPacketEvents`, `TileEntityFactory`, 43 alias locals). Better as one dedicated, no-behaviour-change commit. |
+
+---
+
 ## Appendix A — quick-win checklist
 
 - [x] Ship `koavillage.schematic` + `TCSchematics` extractor; fail loudly on a bad build (B1) — §11.1
@@ -1136,23 +1225,23 @@ noticed - but they are the API the purchase plate and trade jobs are meant to us
 - [ ] `dependencies.gradle`: `implementation` → `api` for coroutil (§8) — already `api`; the remaining item is
       keeping it `api` if the deobf path is ever cleaned up
 - [ ] `mcmod.info`: add `CoroAI`, `unimixins` dependencies; drop stale keys
-- [ ] Delete `info/TCInfo.java`, `util/TropicraftUtils.getTopWaterBlockY`, `TileEntityFactory`
-- [ ] Delete duplicate `registerEntity(EntityTropiCreeper…)`; convert entity IDs to literals (B9)
+- [ ] Delete `info/TCInfo.java`, `TileEntityFactory` (`getTopWaterBlockY` is gone, §12)
+- [x] Delete duplicate `registerEntity(EntityTropiCreeper…)`; convert entity IDs to literals (B9, §12)
 - [x] `ItemEntry.matchesItem`: reference → `getItem()` comparison; delete the empty `else if` (§11.4)
 - [x] `EntityDart`: `static final int[] POTIONS`, bounds-check `dartType`, delete the empty `if` (§11.2)
 - [x] `ChunkProviderTropicraft`: reset `flag` per column, local `sandMetadata` (§11.3); `fallInstantly` in
       `finally` (B6) still open
-- [ ] `JobFish`: `< 0.0f` → `<= 0.0f`, delete `rand.nextInt(1)`, use `worldObj.rand`
-- [ ] `EffectHelper`: tick on one side only
+- [x] `JobFish`: `< 0.0f` → `<= 0.0f`, delete `rand.nextInt(1)`, use `worldObj.rand` (§12)
+- [x] `EffectHelper`: tick on one side only (§12)
 - [ ] `TropicalBook`: per-world save file, null-check the resource stream, try-with-resources
 - [ ] `Tropicraft.dbg`: delete or gate behind a config key
 - [ ] Replace the 42 `System.out/err` with `FMLLog` at appropriate levels
 - [ ] Replace `catch (Exception) { printStackTrace(); }` (20 sites) with scoped handling
 - [ ] Extract `RenderWaterMobBase` for the three duplicated `doRender`s (R1)
 - [ ] Extract `IUnlocalizedTropicraft` for the six duplicated `getUnlocalizedName`s (R2)
-- [ ] `BlockRainforestLeaves.imageNames[1][0]` → `"leafMahogany"` and `[0][1]` → `"leafKapok"` (B24, #9)
-- [ ] Delete the two duplicate `*Frame` lang lines (B25, #3)
-- [ ] `ItemCoconutBomb`: move `--stackSize` inside the whitelist branch; add an enabled toggle (B23, #45)
+- [x] `BlockRainforestLeaves.imageNames[1][0]` → `"leafMahogany"` and `[0][1]` → `"leafKapok"` (B24, #9, §12)
+- [x] Delete the two duplicate `*Frame` lang lines (B25, #3, §12)
+- [x] `ItemCoconutBomb`: move `--stackSize` inside the whitelist branch; add an enabled toggle (B23, #45, §12)
 
 ## Appendix B — things that are already good and should stay that way
 

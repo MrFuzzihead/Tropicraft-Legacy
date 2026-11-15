@@ -1,13 +1,11 @@
 package net.tropicraft.util;
 
-import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.network.Packet;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
-import net.minecraft.world.World;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -70,13 +68,6 @@ public class TropicraftUtils {
             .getTextureManager()
             .bindTexture(resource);
         return resource;
-    }
-
-    public static int getTopWaterBlockY(final World world, final int xCoord, final int zCoord) {
-        int y;
-        for (y = world.getHeightValue(xCoord, zCoord); world.getBlock(xCoord, y, zCoord)
-            .getMaterial() != Material.water; --y) {}
-        return y;
     }
 
     public static String translateGUI(final String word) {

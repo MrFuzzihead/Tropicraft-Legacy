@@ -6,6 +6,8 @@ import java.util.List;
 
 import net.minecraft.entity.EntityLivingBase;
 
+import cpw.mods.fml.relauncher.Side;
+
 public class EffectHelper {
 
     public static List<EffectEntry> listEntities;
@@ -27,14 +29,25 @@ public class EffectHelper {
         }
     }
 
-    public static void tick() {
+    /**
+     * Advances every effect that belongs to {@code side}.
+     * <p>
+     * The list is a process-wide static, and in single player the integrated server and the client live in the same
+     * JVM: both the client tick and the server tick used to drain the whole list, so every effect counted down twice
+     * per tick - a 5 second paralysis lasted 2.5 seconds in single player but the full 5 on a dedicated server.
+     * {@link EffectEntry#tick()} already decides what to do per side from {@code worldObj.isRemote}, so an entry is
+     * only advanced by the tick that owns its world.
+     * </p>
+     */
+    public static void tick(final Side side) {
         final Iterator<EffectEntry> it = EffectHelper.listEntities.iterator();
         while (it.hasNext()) {
             final EffectEntry entry = it.next();
-            if (entry.getEntity() == null || entry.getEntity().isDead || entry.isFinished()) {
+            final EntityLivingBase entity = entry.getEntity();
+            if (entity == null || entity.isDead || entry.isFinished()) {
                 entry.cleanup();
                 it.remove();
-            } else {
+            } else if (entity.worldObj.isRemote == side.isClient()) {
                 entry.tick();
             }
         }

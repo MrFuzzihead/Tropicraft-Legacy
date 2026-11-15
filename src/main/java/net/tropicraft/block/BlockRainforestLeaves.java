@@ -103,7 +103,10 @@ public class BlockRainforestLeaves extends BlockLeaves {
     }
 
     static {
-        imageNames = new String[][] { { "leafKapok", "leafMahogany" }, { "leafKapok", "leafMahoganyFast" },
+        // Column 0 is the fancy-graphics icon, column 1 the fast one (vanilla BlockLeaves). Kapok has no
+        // leafKapokFast texture, so it reuses leafKapok for both; Mahogany used to take leafKapok for both of its
+        // slots, which is why it looked like Kapok unless fast graphics was on.
+        imageNames = new String[][] { { "leafKapok", "leafKapok" }, { "leafMahogany", "leafMahoganyFast" },
             { "leafFruit", "leafFruitFast" } };
         treeNames = new String[] { "kapok", "mahogany", "fruit" };
     }

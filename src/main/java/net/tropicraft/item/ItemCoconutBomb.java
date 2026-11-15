@@ -4,7 +4,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IChatComponent;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.tropicraft.config.ConfigMisc;
@@ -18,27 +17,33 @@ public class ItemCoconutBomb extends ItemTropicraft {
     }
 
     public ItemStack onItemRightClick(final ItemStack itemstack, final World world, final EntityPlayer player) {
-        --itemstack.stackSize;
+        // The whitelist used to run *after* --itemstack.stackSize, so a player who was not allowed to throw a bomb
+        // still lost one, on the client as well as the server. Check first, and only let the server spend it.
+        if (!isAllowed(player)) {
+            if (!world.isRemote) {
+                player.addChatMessage(
+                    new ChatComponentText(StatCollector.translateToLocal("tropicraft.coconutBombWarning")));
+            }
+            return itemstack;
+        }
         world.playSoundAtEntity(
             (Entity) player,
             "random.bow",
             0.5f,
             0.4f / (ItemCoconutBomb.itemRand.nextFloat() * 0.4f + 0.8f));
-        if (!world.isRemote && ConfigMisc.coconutBombWhitelistedUsers.contains(
-            player.getGameProfile()
-                .getName())) {
+        if (!world.isRemote) {
             world.spawnEntityInWorld((Entity) new EntityCoconutGrenade(world, player));
-        } else if (!world.isRemote && !ConfigMisc.coconutBombWhitelistedUsers.contains(
-            player.getGameProfile()
-                .getName())) {
-                    player.addChatMessage(
-                        (IChatComponent) new ChatComponentText(
-                            StatCollector.translateToLocal("tropicraft.coconutBombWarning")));
-                }
+            --itemstack.stackSize;
+        }
         return itemstack;
     }
 
-    private String getName(final EntityPlayer player) {
-        return player.getCommandSenderName();
+    private static boolean isAllowed(final EntityPlayer player) {
+        if (!ConfigMisc.coconutBombWhitelistEnabled) {
+            return true;
+        }
+        return ConfigMisc.coconutBombWhitelistedUsers.contains(
+            player.getGameProfile()
+                .getName());
     }
 }
