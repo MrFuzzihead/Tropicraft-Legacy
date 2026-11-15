@@ -56,13 +56,14 @@ public class JobTrade extends JobBase {
 
     public int getOfferedItemsValue() {
         int value = 0;
-        try {
-            for (int i = 0; i < this.offeredItems.size(); ++i) {
-                value += ItemValues.getItemEntry((ItemStack) this.offeredItems.get(i))
-                    .getTotalValue((ItemStack) this.offeredItems.get(i));
+        for (int i = 0; i < this.offeredItems.size(); ++i) {
+            final ItemStack offered = (ItemStack) this.offeredItems.get(i);
+            final ItemEntry entry = ItemValues.getItemEntry(offered);
+            // Items that are not valued are worth nothing rather than fatal - this used to NPE and the catch that
+            // swallowed it made the trade UI show a nonsense credit.
+            if (entry != null) {
+                value += entry.getTotalValue(offered);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
         }
         return value;
     }
@@ -136,8 +137,16 @@ public class JobTrade extends JobBase {
     }
 
     public void tradeConfirmCallback() {
+        if (this.tradePlate == null || this.activeTrader == null) {
+            return;
+        }
+        final int buyableIndex = this.tradePlate.itemIndex;
+        if (buyableIndex < 0 || buyableIndex >= ItemValues.itemsBuyable.size()) {
+            this.tradeSuccess();
+            return;
+        }
         int credit = this.getOfferedItemsValue();
-        final ItemEntry ie = ItemValues.itemsBuyable.get(this.tradePlate.itemIndex);
+        final ItemEntry ie = ItemValues.itemsBuyable.get(buyableIndex);
         final int cost = ie.value;
         if (credit >= cost) {
             credit -= cost;

@@ -30,6 +30,7 @@
 
 # Archive files are binary
 *.7[zZ]                 binary
+*.[sS][cC][hH][eE][mM][aA][tT][iI][cC] binary
 *.[gG][zZ]              binary
 *.[tT][aA][rR]          binary
 *.[tT][gG][zZ]          binary

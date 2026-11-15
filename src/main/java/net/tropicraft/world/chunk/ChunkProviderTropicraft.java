@@ -310,8 +310,8 @@ public class ChunkProviderTropicraft implements IChunkProvider {
     public void replaceBlocksForBiome(final int x, final int z, final Block[] blocks, final byte[] metas,
         final BiomeGenBase[] biomes) {
         final int sandType = this.rand.nextInt(200);
-        Block sandBlock;
-        short sandMetadata;
+        final Block sandBlock;
+        final short sandMetadata;
         switch (sandType) {
             case 0: {
                 sandBlock = TCBlockRegistry.mineralSands;
@@ -339,19 +339,21 @@ public class ChunkProviderTropicraft implements IChunkProvider {
                 break;
             }
         }
-        int a = -1;
-        boolean flag = false;
-        final int k = 63;
-        final double d = 0.03125;
         for (int l = 0; l < 16; ++l) {
             for (int i1 = 0; i1 < 16; ++i1) {
                 final BiomeGenTropicraft biome = (BiomeGenTropicraft) biomes[i1 + l * 16];
                 final Block top = biome.topBlock;
                 final Block filler = biome.fillerBlock;
+                // Per-column state. Vanilla ChunkProviderGenerate declares both of these inside the column loop;
+                // hoisting them to the chunk loop made each column inherit the previous column's "below sea level"
+                // decision and permanently reset the mineral sand variant, so beach sand leaked inland and got saved.
                 Block btop = sandBlock;
+                short columnSandMetadata = sandMetadata;
+                int a = -1;
+                boolean flag = false;
                 if (biome == BiomeGenTropicraft.tropicsOcean) {
                     btop = biome.sandBlock;
-                    sandMetadata = 0;
+                    columnSandMetadata = 0;
                 }
                 for (int l2 = 127; l2 >= 0; --l2) {
                     final int i2 = i1 * 256 * 16 | l * 256 | l2;
@@ -366,25 +368,24 @@ public class ChunkProviderTropicraft implements IChunkProvider {
                             flag = true;
                         }
                         if (flag) {
-                            if (a < 5) {
-                                blockUsed = btop;
-                            }
+                            blockUsed = btop;
                         } else if (top != Blocks.sand) {
                             if (a == 0) {
                                 blockUsed = top;
-                            } else if (a < 5) {
+                            } else {
                                 blockUsed = filler;
                             }
                         }
                         blocks[i2] = blockUsed;
-                        metas[i2] = (byte) sandMetadata;
+                        // Metadata only means something for the sand variant; writing the mineral sand metadata onto
+                        // grass/dirt/stone put junk values into the saved chunk data.
+                        metas[i2] = (byte) (blockUsed == btop ? columnSandMetadata : 0);
                         ++a;
                     } else {
                         flag = false;
                         a = -1;
                     }
                 }
-                a = -1;
             }
         }
     }

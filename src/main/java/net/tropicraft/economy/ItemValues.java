@@ -48,15 +48,14 @@ public class ItemValues {
     }
 
     public static ItemEntry getItemEntry(final ItemStack parItem, final boolean parNeedsBuyable) {
-        try {
-            for (int i = 0; i < ItemValues.items.size(); ++i) {
-                final ItemEntry ie = ItemValues.items.get(i);
-                if (ie.matchesItem(parItem) && (!parNeedsBuyable || ie.buyable)) {
-                    return ie;
-                }
+        if (parItem == null) {
+            return null;
+        }
+        for (int i = 0; i < ItemValues.items.size(); ++i) {
+            final ItemEntry ie = ItemValues.items.get(i);
+            if (ie.matchesItem(parItem) && (!parNeedsBuyable || ie.buyable)) {
+                return ie;
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
         }
         return null;
     }

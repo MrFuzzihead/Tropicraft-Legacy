@@ -116,6 +116,10 @@ public class TileEntityPurchasePlate extends TileEntity {
         try {
             super.readFromNBT(par1NBTTagCompound);
             this.itemIndex = par1NBTTagCompound.getInteger("itemIndex");
+            if (this.itemIndex < 0 || this.itemIndex >= ItemValues.itemsBuyable.size()) {
+                // Stale or hand-edited save data: every consumer indexes itemsBuyable with this directly.
+                this.itemIndex = 0;
+            }
             this.tradeState = par1NBTTagCompound.getInteger("tradeState");
             this.credit = par1NBTTagCompound.getInteger("credit");
             this.showToolTip = par1NBTTagCompound.getBoolean("showToolTip");
