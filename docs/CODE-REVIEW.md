@@ -9,8 +9,10 @@ duplicate-method-body scan, and an audit of the CoroUtil dependency (including t
 Priority key: **P0** = broken feature / data loss / crash, **P1** = correctness or measurable perf,
 **P2** = dead code & maintenance debt, **P3** = polish / features.
 
-> **Status:** the four P0 items (B1, B2, B3, B4) have been fixed. See §11 for the change list, and §3 for the
-> revised diagnosis of B1 — the original write-up attributed the silent village failure to the wrong exception.
+> **Status:** the four P0 items (B1, B2, B3, B4) have been fixed, and a test harness (unit tests, an in-game test
+> mod, coverage) now guards them — see §11 and `docs/TESTING.md`. §3 has the revised diagnosis of B1; the original
+> write-up attributed the silent village failure to the wrong exception. Three further bugs were found while wiring
+> the harness (§11.6).
 
 ---
 
@@ -1101,12 +1103,38 @@ is identical except for the columns the leaks corrupted (#36/#38 accuracy is pre
 4. **Watch the log** on a fresh world for `missing a mapping in this schematic for:` — any id printed there is a
    block the running pack cannot resolve, and it will be built as air.
 
+### 11.6 Found while wiring the test harness
+
+Three more bugs surfaced the moment the code was exercised outside a released jar.
+
+**Dev runs have been dead since the CoroUtil dependency came from CurseForge.** `dependencies.gradle` declared
+`api("curse.maven:coroutil-237749:2388794")`, which is a *production* jar: it calls Minecraft through SRG names
+(`MinecraftServer.func_71276_C`, `Minecraft.func_71410_x`, ...) while the RFG dev runtime is MCP-named. The result is
+`NoSuchMethodError` from `modconfig.ConfigMod.getSaveFolderPath` during `CoroAI`/`BuildMod` preInit, which errored
+those mods and Tropicraft with them — the client crash report in `run/client/crash-reports/` from before this work
+is the same failure. Fixed by adding `devOnlyNonPublishable(rfg.deobf("curse.maven:coroutil-237749:2388794"))` for
+the dev runtime; `api` stays as the compile/publish surface.
+
+**Four projectile classes narrowed the visibility of a CoroUtil override.** `EntityFireBall`, `EntityIceBall`,
+`EntityTameBall` and `EntityTropicraftLeafballNew` declared `protected void readEntityFromNBT/writeEntityToNBT`
+while `EntityThrowableUsefull` declares both `public`. That is an illegal override (javac rejects it, and the JVM
+would throw at `invokevirtual` resolution time), it was simply invisible because the production jar hides it behind
+SRG names. Widened to `public`.
+
+**`ItemEntry.buyable` was never assigned.** `ItemValues.addEntry(...)` recorded buyability only by adding the entry
+to `itemsBuyable`, never by setting the flag the lookup actually reads, so `getItemEntry(stack, true)` and
+`getIsBuyableItem(stack)` always returned `false`/`null`. No production code calls them today - which is why nobody
+noticed - but they are the API the purchase plate and trade jobs are meant to use. Fixed, and covered by
+`ItemValuesTest`.
+
 ---
 
 ## Appendix A — quick-win checklist
 
 - [x] Ship `koavillage.schematic` + `TCSchematics` extractor; fail loudly on a bad build (B1) — §11.1
-- [ ] `dependencies.gradle`: `implementation` → `api` for coroutil (§8)
+- [x] Dev runtime: `devOnlyNonPublishable(rfg.deobf(...))` for coroutil, or no dev run works at all (§11.6)
+- [ ] `dependencies.gradle`: `implementation` → `api` for coroutil (§8) — already `api`; the remaining item is
+      keeping it `api` if the deobf path is ever cleaned up
 - [ ] `mcmod.info`: add `CoroAI`, `unimixins` dependencies; drop stale keys
 - [ ] Delete `info/TCInfo.java`, `util/TropicraftUtils.getTopWaterBlockY`, `TileEntityFactory`
 - [ ] Delete duplicate `registerEntity(EntityTropiCreeper…)`; convert entity IDs to literals (B9)
@@ -1119,7 +1147,7 @@ is identical except for the columns the leaks corrupted (#36/#38 accuracy is pre
 - [ ] `TropicalBook`: per-world save file, null-check the resource stream, try-with-resources
 - [ ] `Tropicraft.dbg`: delete or gate behind a config key
 - [ ] Replace the 42 `System.out/err` with `FMLLog` at appropriate levels
-- [ ] Replace `catch (Exception) { printStackTrace(); }` (21 sites) with scoped handling
+- [ ] Replace `catch (Exception) { printStackTrace(); }` (20 sites) with scoped handling
 - [ ] Extract `RenderWaterMobBase` for the three duplicated `doRender`s (R1)
 - [ ] Extract `IUnlocalizedTropicraft` for the six duplicated `getUnlocalizedName`s (R2)
 - [ ] `BlockRainforestLeaves.imageNames[1][0]` → `"leafMahogany"` and `[0][1]` → `"leafKapok"` (B24, #9)

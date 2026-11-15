@@ -28,6 +28,9 @@ public class ItemValues {
     public static void addEntry(final ItemStack parItem, final int value, final boolean buyable,
         final boolean compareDamage) {
         final ItemEntry ie = new ItemEntry(parItem, value);
+        // Setting this is what makes getItemEntry(stack, true) / getIsBuyableItem work at all: membership in
+        // itemsBuyable encodes nothing, the flag does.
+        ie.buyable = buyable;
         ie.compareDamage = compareDamage;
         ItemValues.items.add(ie);
         if (buyable) {

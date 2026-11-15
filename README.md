@@ -68,6 +68,18 @@ The built jars are placed in `build/libs/`. To launch a development client:
 ./gradlew runClient    # on Windows: gradlew.bat runClient
 ```
 
+Tests: `./gradlew test` runs the JUnit suite with coverage, and `./gradlew gameTestServer` boots a real dedicated
+server with a non-shipped test mod that asserts the game-facing behaviour (villages, registries, the Koa economy,
+worldgen). Coverage from both runs is reported separately and summarised by `./gradlew jacocoCoverageSummary`. See
+[docs/TESTING.md](docs/TESTING.md) for what is wired up and how to add a test.
+
+The game test needs a server directory with the EULA accepted once:
+
+```bash
+mkdir -p run/server && echo "eula=true" > run/server/eula.txt
+./gradlew gameTestServer
+```
+
 ## Contributing
 
 Bug reports and pull requests are welcome! Please open issues on the [issue tracker](https://github.com/MrFuzzihead/Tropicraft-Legacy/issues).

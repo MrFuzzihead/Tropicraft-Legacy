@@ -40,8 +40,9 @@ public final class TCSchematics {
     /** Directory CoroUtil's {@code Build} class reads schematics from, relative to the save folder. */
     public static final String FOLDER_NAME = "TCSchematics";
     public static final String EXTENSION = ".schematic";
+    /** Classpath prefix the bundled schematics live under; also asserted by {@code TCSchematicsAssetTest}. */
+    public static final String ASSET_PATH = "/assets/tropicraft/schematics/";
 
-    private static final String ASSET_PATH = "/assets/tropicraft/schematics/";
     private static final int BUFFER_SIZE = 8192;
 
     private static final Object LOCK = new Object();

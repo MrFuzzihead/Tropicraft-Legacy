@@ -73,13 +73,15 @@ public class EntityIceBall extends EntityThrowableUsefull {
         }
     }
 
+    // CoroUtil's EntityThrowableUsefull declares both of these public, so a protected override is a compile error
+    // as soon as that jar is deobfuscated (i.e. on any dev run); the wider modifier is a legal override either way.
     @Override
-    protected void readEntityFromNBT(NBTTagCompound tagCompund) {
+    public void readEntityFromNBT(NBTTagCompound tagCompund) {
 
     }
 
     @Override
-    protected void writeEntityToNBT(NBTTagCompound tagCompound) {
+    public void writeEntityToNBT(NBTTagCompound tagCompound) {
 
     }
 
