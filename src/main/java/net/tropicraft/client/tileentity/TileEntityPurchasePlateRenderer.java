@@ -41,21 +41,11 @@ public class TileEntityPurchasePlateRenderer extends TileEntitySpecialRenderer {
                 this.renderLivingLabel(
                     "Offer Items: right click koa with item",
                     par2 + 0.5,
-                    par4 + 0.8999999761581421,
+                    par4 + 0.9f,
                     par6 + 0.5,
                     0);
-                this.renderLivingLabel(
-                    "Cycle Items: right click plate",
-                    par2 + 0.5,
-                    par4 + 0.800000011920929,
-                    par6 + 0.5,
-                    0);
-                this.renderLivingLabel(
-                    "Buy Item: left click plate",
-                    par2 + 0.5,
-                    par4 + 0.699999988079071,
-                    par6 + 0.5,
-                    0);
+                this.renderLivingLabel("Cycle Items: right click plate", par2 + 0.5, par4 + 0.8f, par6 + 0.5, 0);
+                this.renderLivingLabel("Buy Item: left click plate", par2 + 0.5, par4 + 0.7f, par6 + 0.5, 0);
             }
             String name = "???";
             final ItemEntry ie = ItemValues.itemsBuyable.get(par1TileEntityMobSpawner.itemIndex);
@@ -68,10 +58,10 @@ public class TileEntityPurchasePlateRenderer extends TileEntitySpecialRenderer {
                 if (name.startsWith("item.")) {
                     name = name.substring(5);
                 }
-                this.renderLivingLabel("" + name, par2 + 0.5, par4 + 0.44999998807907104, par6 + 0.5, 0);
+                this.renderLivingLabel("" + name, par2 + 0.5, par4 + 0.45f, par6 + 0.5, 0);
             }
         } else if (par1TileEntityMobSpawner.tradeState == 2) {
-            this.renderLivingLabel("Confirm Trade", par2 + 0.5, par4 + 0.44999998807907104, par6 + 0.5, 0);
+            this.renderLivingLabel("Confirm Trade", par2 + 0.5, par4 + 0.45f, par6 + 0.5, 0);
         }
         if (par1TileEntityMobSpawner.tradeState > 0) {
             this.renderBanner(par1TileEntityMobSpawner, par2, par4, par6, par8);

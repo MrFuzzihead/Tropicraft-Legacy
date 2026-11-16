@@ -166,15 +166,15 @@ public abstract class EntityTreeFrog extends EntityTropicraftAnimal
             final EntityPoisonBlot entitypoisonblot = entityPoisonBlot = new EntityPoisonBlot(
                 this.worldObj,
                 (EntityLivingBase) this);
-            entityPoisonBlot.posY += 1.399999976158142;
-            final double d3 = entity.posY + entity.getEyeHeight() - 0.20000000298023224 - entitypoisonblot.posY;
+            entityPoisonBlot.posY += 1.4f;
+            final double d3 = entity.posY + entity.getEyeHeight() - 0.2f - entitypoisonblot.posY;
             final float f2 = MathHelper.sqrt_double(d * d + d2 * d2) * 0.2f;
             this.worldObj
                 .playSoundAtEntity((Entity) this, "frogspit", 1.0f, 1.0f / (this.rand.nextFloat() * 0.4f + 0.8f));
             this.worldObj.spawnEntityInWorld((Entity) entitypoisonblot);
             entitypoisonblot.setThrowableHeading(d, d3 + f2, d2, 0.6f, 12.0f);
             this.attackTime = 50;
-            this.rotationYaw = (float) (Math.atan2(d2, d) * 180.0 / 3.1415927410125732) - 90.0f;
+            this.rotationYaw = (float) (Math.atan2(d2, d) * 180.0 / 3.1415927f) - 90.0f;
             this.hasAttacked = true;
         }
     }

@@ -116,6 +116,10 @@ jacoco coverage (executed source lines)
   unit tests : 233 (1.5%)
   in-game    : 3046 (19.4%)
   combined   : 3223 (20.5%) of 15691 measurable
+
+Note: nothing in this harness renders anything. Renderer changes (`RenderWaterMobBase`) and model/animation changes
+(`ModelKoaMan`, `ModelTropiCreeper`, `ModelAshen`) are verified by hand in a client; the checklist for the last such
+change is in CODE-REVIEW.md §20.4.
 ```
 
 The in-game run is most of the coverage because a dedicated server loads and touches a large part of the mod while

@@ -61,8 +61,8 @@ public class SpiderBase extends EntityCoroAI implements IMob {
             && this.worldObj.rand.nextInt(3) == 0
             && this.agent.entityToAttack.getDistanceToEntity((Entity) this) < 5.0f) {
             this.jump();
-            this.motionX *= 2.4000000953674316;
-            this.motionZ *= 2.4000000953674316;
+            this.motionX *= 2.4f;
+            this.motionZ *= 2.4f;
         }
     }
 

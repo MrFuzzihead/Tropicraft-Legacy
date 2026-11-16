@@ -67,7 +67,7 @@ public class EntityTropicalFish extends EntityTropicraftWaterMob {
             entityliving.rotationYaw,
             entityliving.rotationPitch);
         this.posX -= MathHelper.cos(this.rotationYaw / 180.0f * 3.141593f) * 0.16f;
-        this.posY -= 0.10000000149011612;
+        this.posY -= 0.1f;
         this.posZ -= MathHelper.sin(this.rotationYaw / 180.0f * 3.141593f) * 0.16f;
         this.setPosition(this.posX, this.posY, this.posZ);
         this.yOffset = 0.0f;

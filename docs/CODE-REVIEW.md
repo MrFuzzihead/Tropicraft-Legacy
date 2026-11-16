@@ -530,7 +530,7 @@ a future refactor that hands the generator itself to `isAreaLoaded` silently dis
 
 ### R1. Collapse the three duplicated `doRender` implementations (−~400 LOC)
 
-**Status: open, deliberately.** See §17.4 — a renderer change cannot be verified by this harness.
+**Status: done** — see §20.1. `RenderWaterMobBase` now holds one copy of the body for all four water-mob renderers. Server-side suites are green; the render path itself is verified by hand (§20.4).
 
 `RenderMarlin`, `RenderSeaTurtle` and `RenderWaterMob` each extend `RenderLiving` and then copy vanilla's
 `RenderLiving.doRender` almost verbatim (glint pass, `hurtTime` pass, `inheritRenderPass` loop,
@@ -1702,6 +1702,99 @@ identical through the 510-cast change, which is what confirms none of those cast
 
 ---
 
+## 20. R1, and the last of the noise
+
+### 20.1 R1 — one render body instead of four
+
+The three copies were not identical, but the only part that differed was the orientation block. R1 as it turns out
+had a fourth copy hiding in plain sight: `RenderTropicalFish` extends `RenderWaterMob` and is the only thing that
+uses it, so every water mob in the mod was rendering through its own copy of vanilla's
+`RendererLivingEntity#doRender`.
+
+`RenderWaterMobBase` now owns that body once - glint pass, hurt/death overlay, the four render passes, the lighting
+texture juggling - and every entry point vanilla could use (`doRender(Entity)`, `doRender(EntityLivingBase)`,
+`doRender(EntityLiving)`, `func_110827_b`) routes straight to it, so the body cannot run twice or fall through to
+vanilla's version. Each subclass implements one method:
+
+```java
+protected abstract void orientWaterMob(EntityLivingBase entity, float rotation, float yawOffset, float pitch,
+    float partialTicks);
+```
+
+| Class | Before | After |
+|---|---|---|
+| `RenderWaterMobBase` | — | 253 (the shared body) |
+| `RenderWaterMob` | 174 | 38 |
+| `RenderMarlin` | 207 | 61 |
+| `RenderSeaTurtle` | 188 | 48 |
+| `RenderTropicalFish` | 59 | 59 |
+| **total** | **628** | **459** |
+
+Behaviour that was deliberately preserved, because a renderer is exactly where "looks the same" is the only test:
+
+* `RenderWaterMob` only calls `rotateCorpse` while the mob is in water or surfacing, and flips it 90° onto its side
+  when not - the two conditions are exact complements, so the `if`/`if` became `if`/`else`.
+* `RenderMarlin` calls `rotateCorpse` unconditionally, uses the **raw** `rotationPitch` in water (not the
+  interpolated one) and the `motionY * 45°` arc out of it, and rolls from `outOfWaterTick * 4°` up to 90° -
+  except while on a hook, where it snaps straight to 90°.
+* `RenderSeaTurtle` uses the **interpolated** pitch, and only in water.
+* The `inWater` flag each model uses for its animation is still set on every render path (moved from the removed
+  `renderXxx` methods into a `renderWaterMob` override).
+* The name tag pass is still not run - only `passSpecialRender` - which is what the copies did.
+* The render exception is still swallowed, but logged at debug rather than `printStackTrace()` per frame.
+
+### 20.2 Float literals written as doubles
+
+109 literals like `0.10000000149011612` became `0.1f`. This is the one noise item that can be made *provably*
+safe rather than merely "looks fine": a literal is rewritten only when
+`(double)(float)value == value` **exactly**, in which case the float literal promotes back to the identical double
+in every context - argument, field assignment, `Math` call, whatever.
+
+That test matters. My first pass compared the values *as floats* instead, which also accepts constants that are
+meant to be doubles: `3.141592653589793` (Math.PI) sneaked through as `3.1415927f`, which is a different double and
+would have changed every `Math.sin`/`Math.toRadians` result downstream. The strict round-trip predicate excludes
+those, so 80 literals were rewritten rather than 109, and Math.PI stayed.
+
+### 20.3 The alias locals
+
+64 `final ModelRenderer alias = this.field;` declarations were inlined in `ModelKoaMan` (55), `ModelAshen` (3) and
+`ModelTropiCreeper` (6). The rule was deliberately narrow: a declaration is removed only when *every* remaining use
+is `<alias>.<field> = ...`, i.e. the alias is a plain reference copy. That is exactly the case the review got wrong
+(§16.3) - and note the aliasing is not a rename: `final ModelRenderer leaf2 = this.leaf3;`. Inlining rewrites uses
+to the field in the initialiser, so `leaf2.rotateAngleX = ...` becomes `this.leaf3.rotateAngleX = ...`.
+
+The 29 remaining `final float rotateAngleX = this.head.rotateAngleX;` locals stay: those copy a *value*, and the
+model assigns it to several renderers afterwards. Removing them would re-read a value that may have been written in
+between - the exact trap that made the earlier sweep wrong.
+
+### 20.4 Manual verification checklist
+
+The unit and in-game suites say nothing about pixels, so this is the part that needs eyes. Nothing here should look
+different from 6.2.5:
+
+| What | Where | Looks right when |
+|---|---|---|
+| Tropical fish | spawn a few, net them out of water | upright in water; flips onto its side out of water; the mask renders on body **and** tail |
+| Marlin | in water, then let one jump/leave the water | nose follows its pitch in water; out of water it arcs by its fall and rolls onto its side; a **fished** marlin flops at 90° immediately |
+| Sea turtle | adult vs a young one | pitch follows the body only in water; scale grows with age |
+| Hurt flash | hit any of the three | red overlay, then gone again |
+| Koa | look at a Koa's leaf decoration and headband | leaves and headband tilt with the head in all three axes |
+| Creeper | look at the three hat layers | hats tilt with the head |
+| Ashen | watch its arms | arms swing with movement |
+| Any mob | walk around a bit | no visual errors in the log; nothing frozen or double-drawn |
+
+If something is wrong, the two halves can be undone independently without touching each other:
+
+```sh
+# renderers only (the first four rows of the table above)
+git checkout cb73bf6 -- src/main/java/net/tropicraft/client/entity/render/
+
+# models only (the Koa / creeper / Ashen rows)
+git checkout cb73bf6 -- src/main/java/net/tropicraft/client/entity/model/
+```
+
+---
+
 ## Appendix A — quick-win checklist
 
 - [x] Ship `koavillage.schematic` + `TCSchematics` extractor; fail loudly on a bad build (B1) — §11.1
@@ -1721,7 +1814,7 @@ identical through the 510-cast change, which is what confirms none of those cast
 - [x] `Tropicraft.dbg`: delete or gate behind a config key (§13)
 - [x] Replace the remaining `System.out/err` with `FMLLog` at appropriate levels (42 → 0 in `src/main/java`, §16.2)
 - [x] Replace the remaining `catch (Exception) { printStackTrace(); }` (21 → 0 in `src/main/java`, §16.2)
-- [ ] Extract `RenderWaterMobBase` for the three duplicated `doRender`s (R1) — deferred, needs a client (§17.4)
+- [x] Extract `RenderWaterMobBase` for the three duplicated `doRender`s (R1) — §20.1, hand-verified per §20.4
 - [x] Extract the duplicated `getUnlocalizedName` logic (R2 shipped as `TropicraftNames`, §17.1)
 - [x] `BlockRainforestLeaves.imageNames[1][0]` → `"leafMahogany"` and `[0][1]` → `"leafKapok"` (B24, #9, §12)
 - [x] Delete the two duplicate `*Frame` lang lines (B25, #3, §12)

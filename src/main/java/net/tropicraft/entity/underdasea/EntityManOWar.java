@@ -113,7 +113,7 @@ public class EntityManOWar extends EntityWaterMob {
         } else {
             if (!this.worldObj.isRemote) {
                 this.motionX = 0.0;
-                this.motionY *= 0.9800000190734863;
+                this.motionY *= 0.98f;
                 this.motionZ = 0.0;
             }
             if (this.onGround && this.deathTime == 0) {

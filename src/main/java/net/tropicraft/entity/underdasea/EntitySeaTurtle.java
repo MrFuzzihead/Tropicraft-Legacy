@@ -68,7 +68,7 @@ public class EntitySeaTurtle extends EntityAmphibian {
     }
 
     public double getMountedYOffset() {
-        return this.height * 0.75 - 1.0 + 0.699999988079071;
+        return this.height * 0.75 - 1.0 + 0.7f;
     }
 
     public boolean isUserRiding() {

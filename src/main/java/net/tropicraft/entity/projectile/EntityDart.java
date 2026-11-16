@@ -72,7 +72,7 @@ public class EntityDart extends Entity implements IProjectile {
             shooter.rotationYaw,
             shooter.rotationPitch);
         this.posX -= MathHelper.cos(this.rotationYaw / 180.0f * 3.1415927f) * 0.16f;
-        this.posY -= 0.10000000149011612;
+        this.posY -= 0.1f;
         this.posZ -= MathHelper.sin(this.rotationYaw / 180.0f * 3.1415927f) * 0.16f;
         this.setPosition(this.posX, this.posY, this.posZ);
         this.yOffset = 0.0f;
@@ -89,9 +89,9 @@ public class EntityDart extends Entity implements IProjectile {
         x /= f2;
         y /= f2;
         z /= f2;
-        x += this.rand.nextGaussian() * (this.rand.nextBoolean() ? -1 : 1) * 0.007499999832361937 * rotation2;
-        y += this.rand.nextGaussian() * (this.rand.nextBoolean() ? -1 : 1) * 0.007499999832361937 * rotation2;
-        z += this.rand.nextGaussian() * (this.rand.nextBoolean() ? -1 : 1) * 0.007499999832361937 * rotation2;
+        x += this.rand.nextGaussian() * (this.rand.nextBoolean() ? -1 : 1) * 0.0075f * rotation2;
+        y += this.rand.nextGaussian() * (this.rand.nextBoolean() ? -1 : 1) * 0.0075f * rotation2;
+        z += this.rand.nextGaussian() * (this.rand.nextBoolean() ? -1 : 1) * 0.0075f * rotation2;
         x *= rotation1;
         y *= rotation1;
         z *= rotation1;
@@ -213,9 +213,9 @@ public class EntityDart extends Entity implements IProjectile {
                         }
                         this.playSound("random.bowhit", 1.0f, 1.2f / (this.rand.nextFloat() * 0.2f + 0.9f));
                     } else {
-                        this.motionX *= -0.10000000149011612;
-                        this.motionY *= -0.10000000149011612;
-                        this.motionZ *= -0.10000000149011612;
+                        this.motionX *= -0.1f;
+                        this.motionY *= -0.1f;
+                        this.motionZ *= -0.1f;
                         this.rotationYaw += 180.0f;
                         this.prevRotationYaw += 180.0f;
                         this.ticksInAir = 0;

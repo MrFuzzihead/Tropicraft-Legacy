@@ -71,19 +71,19 @@ public class ModelSpiderEgg extends ModelBase {
         final float f4, final float f5) {
         super.render(entity, f, f1, f2, f3, f4, f5);
         this.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
-        float scale = 1.0f - (float) (Math.sin(entity.worldObj.getWorldTime() / 2.0f) * 0.05000000074505806);
+        float scale = 1.0f - (float) (Math.sin(entity.worldObj.getWorldTime() / 2.0f) * 0.05f);
         GL11.glPushMatrix();
         GL11.glScalef(scale, 1.0f, scale);
         this.body3.render(f5);
         GL11.glPopMatrix();
         GL11.glPushMatrix();
-        scale = 1.0f - (float) (Math.sin((entity.worldObj.getWorldTime() + 2.0f) / 2.0f) * 0.05000000074505806);
+        scale = 1.0f - (float) (Math.sin((entity.worldObj.getWorldTime() + 2.0f) / 2.0f) * 0.05f);
         GL11.glScalef(scale, 1.0f, scale);
         this.body2.render(f5);
         this.body4.render(f5);
         GL11.glPopMatrix();
         GL11.glPushMatrix();
-        scale = 1.0f - (float) (Math.sin((entity.worldObj.getWorldTime() + 4.0f) / 2.0f) * 0.05000000074505806);
+        scale = 1.0f - (float) (Math.sin((entity.worldObj.getWorldTime() + 4.0f) / 2.0f) * 0.05f);
         GL11.glScalef(scale, 1.0f, scale);
         this.body1.render(f5);
         GL11.glPopMatrix();

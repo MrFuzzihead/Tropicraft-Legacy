@@ -117,7 +117,7 @@ public class ItemDiveComputerRenderer implements IItemRenderer {
 
     private boolean isFullyUnderwater(final EntityPlayer player) {
         final int x = MathHelper.ceiling_double_int(player.posX);
-        final int y = MathHelper.ceiling_double_int(player.posY + player.height - 2.299999952316284);
+        final int y = MathHelper.ceiling_double_int(player.posY + player.height - 2.3f);
         final int z = MathHelper.ceiling_double_int(player.posZ);
         return player.worldObj.getBlock(x, y, z)
             .getMaterial()

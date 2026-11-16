@@ -105,15 +105,15 @@ public class EntityKoaBase extends EntityCoroAI {
             ++this.outWaterTick;
         }
         if (!this.isInWater() && this.wasInWater && this.isCollidedHorizontally) {
-            this.motionY = 0.5400000214576721;
+            this.motionY = 0.54f;
         }
         this.wasInWater = this.isInWater();
         if (this.isInWater() && this.motionY < -0.001) {
             this.motionY = -0.001;
         }
         if (this.isInWater() && this.isCollidedHorizontally) {
-            this.motionX *= 1.2000000476837158;
-            this.motionZ *= 1.2000000476837158;
+            this.motionX *= 1.2f;
+            this.motionZ *= 1.2f;
         }
     }
 }

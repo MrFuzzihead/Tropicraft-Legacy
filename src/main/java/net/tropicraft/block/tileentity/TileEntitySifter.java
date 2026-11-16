@@ -38,7 +38,7 @@ public class TileEntitySifter extends TileEntity {
         }
         if (this.worldObj.isRemote) {
             this.yaw2 = this.yaw % 360.0;
-            this.yaw += 4.545454502105713;
+            this.yaw += 4.5454545f;
         }
         if (!this.worldObj.isRemote && this.isSifting && this.currentSiftTime <= 0) {
             final double x = this.xCoord + this.worldObj.rand.nextDouble() * 1.4;

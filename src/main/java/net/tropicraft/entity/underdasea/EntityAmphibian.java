@@ -89,15 +89,15 @@ public class EntityAmphibian extends EntityCreature {
             this.important1 += this.important2;
             if (this.prevRotationPitch == 0.0f && this.prevRotationYaw == 0.0f) {
                 final float f = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
-                final float n = (float) (Math.atan2(this.motionX, this.motionZ) * 180.0 / 3.1415927410125732);
+                final float n = (float) (Math.atan2(this.motionX, this.motionZ) * 180.0 / 3.1415927f);
                 this.renderYawOffset = n;
                 this.prevRenderYawOffset = n;
-                final float n2 = (float) (Math.atan2(this.motionY, f) * 180.0 / 3.1415927410125732);
+                final float n2 = (float) (Math.atan2(this.motionY, f) * 180.0 / 3.1415927f);
                 this.rotationPitch = n2;
                 this.prevRotationPitch = n2;
             }
             final float f2 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
-            this.rotationPitch = (float) (Math.atan2(this.motionY, f2) * 180.0 / 3.1415927410125732);
+            this.rotationPitch = (float) (Math.atan2(this.motionY, f2) * 180.0 / 3.1415927f);
             while (this.rotationPitch - this.prevRotationPitch < -180.0f) {
                 this.prevRotationPitch -= 360.0f;
             }
