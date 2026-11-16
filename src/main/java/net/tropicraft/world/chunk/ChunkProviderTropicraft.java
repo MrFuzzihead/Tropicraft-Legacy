@@ -194,7 +194,7 @@ public class ChunkProviderTropicraft implements IChunkProvider {
                                 if ((d17 += d16) > 0.0) {
                                     blocks[index] = Blocks.stone;
                                 } else if (k2 * 8 + l2 < midHeight) {
-                                    blocks[index] = (Block) TCBlockRegistry.tropicsWater;
+                                    blocks[index] = TCBlockRegistry.tropicsWater;
                                 } else {
                                     blocks[index] = Blocks.air;
                                 }

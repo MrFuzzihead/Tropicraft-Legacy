@@ -28,13 +28,10 @@ public class RenderSnareTrap extends Render {
     private void doRenderTrap(final EntitySnareTrap trap, final double x, final double y, final double z,
         final float yaw, final float ticks) {
         final double n = trap.trapPosX;
-        final RenderManager renderManager = this.renderManager;
         final double xPos = n - RenderManager.renderPosX;
         final double n2 = trap.trapPosY;
-        final RenderManager renderManager2 = this.renderManager;
         final double yPos = n2 - RenderManager.renderPosY;
         final double n3 = trap.trapPosZ;
-        final RenderManager renderManager3 = this.renderManager;
         final double zPos = n3 - RenderManager.renderPosZ;
         final int height = trap.trapHeight;
         final ForgeDirection dir = trap.trapDirection;

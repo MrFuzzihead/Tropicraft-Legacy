@@ -2,7 +2,6 @@ package net.tropicraft.block;
 
 import java.util.Random;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.Item;
@@ -45,7 +44,7 @@ public class BlockPalmLeaves extends BlockLeaves {
     }
 
     public Item getItemDropped(final int metadata, final Random random, final int j) {
-        return Item.getItemFromBlock((Block) TCBlockRegistry.saplings);
+        return Item.getItemFromBlock(TCBlockRegistry.saplings);
     }
 
     @SideOnly(Side.CLIENT)

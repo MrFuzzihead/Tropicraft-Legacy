@@ -6,6 +6,8 @@ import net.minecraft.item.Item;
 import net.minecraft.network.Packet;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
+import net.minecraft.world.EnumDifficulty;
+import net.minecraft.world.World;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -68,6 +70,14 @@ public class TropicraftUtils {
             .getTextureManager()
             .bindTexture(resource);
         return resource;
+    }
+
+    /**
+     * @return true when a server-side world is on peaceful, i.e. when hostile mobs should remove themselves.
+     *         {@code EntityCoroAI} checks this inline; the mobs that do not inherit it use this.
+     */
+    public static boolean isPeaceful(final World world) {
+        return world != null && !world.isRemote && world.difficultySetting == EnumDifficulty.PEACEFUL;
     }
 
     public static String translateGUI(final String word) {

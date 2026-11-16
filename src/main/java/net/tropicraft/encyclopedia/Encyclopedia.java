@@ -107,6 +107,8 @@ public class Encyclopedia extends TropicalBook {
             final Character itemChar = (Character) aobj[i];
             ItemStack itemStack = null;
             if (aobj[i + 1] instanceof Item) {
+                // The casts are required: the recipe array is Object[], and ItemStack has separate Item and Block
+                // constructors for exactly this vanilla format.
                 itemStack = new ItemStack((Item) aobj[i + 1]);
             } else if (aobj[i + 1] instanceof Block) {
                 itemStack = new ItemStack((Block) aobj[i + 1], 1, -1);

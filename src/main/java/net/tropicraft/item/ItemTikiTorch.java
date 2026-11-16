@@ -59,7 +59,7 @@ public class ItemTikiTorch extends ItemTropicraft {
         }
         final Block blockBelow = world.getBlock(x, y - 1, z);
         if (blockBelow instanceof BlockFence) {
-            world.setBlock(x, y, z, (Block) TCBlockRegistry.tikiTorch, 0, 3);
+            world.setBlock(x, y, z, TCBlockRegistry.tikiTorch, 0, 3);
             world.playSoundEffect(
                 (double) (x + 0.5f),
                 (double) (y + 0.5f),
@@ -75,9 +75,9 @@ public class ItemTikiTorch extends ItemTropicraft {
             TCBlockRegistry.tikiTorch.onBlockPlaced(world, x, y, z, side, hitX, hitY, hitZ, 0);
             TCBlockRegistry.tikiTorch.onBlockPlaced(world, x, y, z, side, hitX, hitY, hitZ, 0);
             TCBlockRegistry.tikiTorch.onBlockPlaced(world, x, y, z, side, hitX, hitY, hitZ, 0);
-            world.setBlock(x, y, z, (Block) TCBlockRegistry.tikiTorch, 1, 3);
-            world.setBlock(x, y + 1, z, (Block) TCBlockRegistry.tikiTorch, 1, 3);
-            world.setBlock(x, y + 2, z, (Block) TCBlockRegistry.tikiTorch, 0, 3);
+            world.setBlock(x, y, z, TCBlockRegistry.tikiTorch, 1, 3);
+            world.setBlock(x, y + 1, z, TCBlockRegistry.tikiTorch, 1, 3);
+            world.setBlock(x, y + 2, z, TCBlockRegistry.tikiTorch, 0, 3);
             TCBlockRegistry.tikiTorch.onBlockPlaced(world, x, y, z, side, hitX, hitY, hitZ, 0);
             TCBlockRegistry.tikiTorch.onBlockPlaced(world, x, y, z, side, hitX, hitY, hitZ, 0);
             TCBlockRegistry.tikiTorch.onBlockPlaced(world, x, y, z, side, hitX, hitY, hitZ, 0);

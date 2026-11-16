@@ -79,7 +79,7 @@ public class BlockTropicraftSlab extends BlockSlab {
     }
 
     protected ItemStack createStackedBlock(final int meta) {
-        return new ItemStack((Block) TCBlockRegistry.singleSlabs, 2, meta & 0x7);
+        return new ItemStack(TCBlockRegistry.singleSlabs, 2, meta & 0x7);
     }
 
     @SideOnly(Side.CLIENT)
@@ -93,12 +93,12 @@ public class BlockTropicraftSlab extends BlockSlab {
     }
 
     public Item getItemDropped(final int p_149650_1_, final Random p_149650_2_, final int p_149650_3_) {
-        return Item.getItemFromBlock((Block) TCBlockRegistry.singleSlabs);
+        return Item.getItemFromBlock(TCBlockRegistry.singleSlabs);
     }
 
     @SideOnly(Side.CLIENT)
     public void getSubBlocks(final Item item, final CreativeTabs tab, final List list) {
-        if (item != Item.getItemFromBlock((Block) TCBlockRegistry.doubleSlabs)) {
+        if (item != Item.getItemFromBlock(TCBlockRegistry.doubleSlabs)) {
             for (int i = 0; i < TCNames.slabTypes.length; ++i) {
                 list.add(new ItemStack(item, 1, i));
             }
@@ -107,7 +107,7 @@ public class BlockTropicraftSlab extends BlockSlab {
 
     @SideOnly(Side.CLIENT)
     public Item getItem(final World p_149694_1_, final int p_149694_2_, final int p_149694_3_, final int p_149694_4_) {
-        return Item.getItemFromBlock((Block) TCBlockRegistry.singleSlabs);
+        return Item.getItemFromBlock(TCBlockRegistry.singleSlabs);
     }
 
     public String getUnlocalizedName() {
@@ -115,8 +115,7 @@ public class BlockTropicraftSlab extends BlockSlab {
     }
 
     static {
-        BlockTropicraftSlab.modelBlocks = new Block[] { (Block) TCBlockRegistry.bambooBundle,
-            (Block) TCBlockRegistry.thatchBundle, (Block) TCBlockRegistry.chunkOHead,
-            (Block) TCBlockRegistry.palmStairs };
+        BlockTropicraftSlab.modelBlocks = new Block[] { TCBlockRegistry.bambooBundle, TCBlockRegistry.thatchBundle,
+            TCBlockRegistry.chunkOHead, TCBlockRegistry.palmStairs };
     }
 }

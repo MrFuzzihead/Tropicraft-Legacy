@@ -68,7 +68,7 @@ public class WorldGenTropicraftNormalPalms extends WorldGenerator {
             }
             j = ground;
         }
-        this.setBlockAndMetadata(world, i, j - 1, k, (Block) Blocks.sand, 0);
+        this.setBlockAndMetadata(world, i, j - 1, k, Blocks.sand, 0);
         this.setBlockAndMetadata(world, i, j + height + 2, k, this.palmLeaves, 0);
         this.setBlockAndMetadata(world, i, j + height + 1, k + 1, this.palmLeaves, 0);
         this.setBlockAndMetadata(world, i, j + height + 1, k + 2, this.palmLeaves, 0);

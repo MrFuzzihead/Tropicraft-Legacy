@@ -6,7 +6,6 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
@@ -71,8 +70,7 @@ public class RenderAshen extends RenderLiving {
             GL11.glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);
             GL11.glRotatef(5.0f, 0.0f, 0.0f, 1.0f);
             GL11.glScalef(scale, scale, scale);
-            RenderManager.instance.itemRenderer
-                .renderItem(entityliving, new ItemStack((Item) TCItemRegistry.blowGun), 0);
+            RenderManager.instance.itemRenderer.renderItem(entityliving, new ItemStack(TCItemRegistry.blowGun), 0);
             GL11.glPopMatrix();
         }
         if (((EntityAshen) entityliving).hasMask()) {

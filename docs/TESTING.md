@@ -74,6 +74,9 @@ What the current checks cover - all of it needs the real game:
 | a tropical fish ticks | the fish state machine after the dead school-spawn path was removed |
 | every Tropicraft item/block is named `item.tropicraft:*` / `tile.tropicraft:*` | the item/block naming convention, i.e. every `getUnlocalizedName` in the mod |
 | the crafting/smelting recipes involving Tropicraft are unchanged | a count + CRC32 fingerprint of every such recipe, listed in `build/gametest/recipes-*.txt` |
+| a creative player's hit does not become a Koa's target / a creative player is not an enemy | target acquisition, including CoroUtil's retaliation path (#50) |
+| a passive animal is not a hostile mob | `IMob` classification (spawn caps, peaceful handling) |
+| hostile mobs do not survive peaceful | the peaceful rule across all four hostile mob families |
 | deferred decoration flushes when its neighbourhood loads | the deferred-decoration gate and the throttled sweep |
 | the shutdown flush decorates parked chunks | the shutdown decoration flush, through `ChunkProviderServer.loadChunk` |
 | the Tropicraft dimension generates | worldgen smoke test |
@@ -110,9 +113,9 @@ to a single "covered by any test" number that two different class-id spaces allo
 
 ```
 jacoco coverage (executed source lines)
-  unit tests : 232 (1.5%)
-  in-game    : 3293 (21.7%)
-  combined   : 3483 (22.9%) of 15185 measurable
+  unit tests : 233 (1.5%)
+  in-game    : 3046 (19.4%)
+  combined   : 3223 (20.5%) of 15691 measurable
 ```
 
 The in-game run is most of the coverage because a dedicated server loads and touches a large part of the mod while

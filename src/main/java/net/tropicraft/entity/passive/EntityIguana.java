@@ -6,9 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
@@ -16,7 +14,11 @@ import net.minecraft.world.World;
 import net.tropicraft.entity.EntityTropicraftAnimal;
 import net.tropicraft.registry.TCItemRegistry;
 
-public class EntityIguana extends EntityTropicraftAnimal implements IMob {
+/**
+ * A passive animal. {@code IMob} used to be declared here, which marked the iguana as hostile to everything that
+ * classifies mobs by type (spawn caps, peaceful handling) while its behaviour was an ordinary animal's.
+ */
+public class EntityIguana extends EntityTropicraftAnimal {
 
     private int angerLevel;
 
@@ -77,7 +79,7 @@ public class EntityIguana extends EntityTropicraftAnimal implements IMob {
 
     protected void dropFewItems(final boolean recentlyHit, final int looting) {
         for (int numDrops = 3 + this.rand.nextInt(1 + looting), i = 0; i < numDrops; ++i) {
-            this.dropItem((Item) TCItemRegistry.scale, 1);
+            this.dropItem(TCItemRegistry.scale, 1);
         }
     }
 

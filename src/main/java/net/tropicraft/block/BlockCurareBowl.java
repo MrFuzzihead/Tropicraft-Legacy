@@ -86,7 +86,7 @@ public class BlockCurareBowl extends BlockTropicraft implements ITileEntityProvi
                     }
                 }
             } else if (entityplayer.getCurrentEquippedItem()
-                .getItem() == Item.getItemFromBlock((Block) TCBlockRegistry.flowers)) {
+                .getItem() == Item.getItemFromBlock(TCBlockRegistry.flowers)) {
                     bowl.addIngredient(entityplayer.getCurrentEquippedItem());
                     if (!entityplayer.capabilities.isCreativeMode) {
                         final ItemStack getCurrentEquippedItem = entityplayer.getCurrentEquippedItem();

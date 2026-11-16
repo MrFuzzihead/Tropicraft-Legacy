@@ -23,15 +23,15 @@ public class ItemTropicraftShovel extends ItemTropicraftTool {
 
     static {
         blocksEffectiveAgainst = Sets.newHashSet(
-            (Block) Blocks.grass,
+            Blocks.grass,
             Blocks.dirt,
-            (Block) Blocks.sand,
+            Blocks.sand,
             Blocks.gravel,
             Blocks.snow_layer,
             Blocks.snow,
             Blocks.clay,
             Blocks.farmland,
             Blocks.soul_sand,
-            (Block) Blocks.mycelium);
+            Blocks.mycelium);
     }
 }

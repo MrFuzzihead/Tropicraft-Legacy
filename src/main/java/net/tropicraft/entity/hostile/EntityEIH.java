@@ -16,6 +16,7 @@ import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 import net.tropicraft.entity.EntityLand;
 import net.tropicraft.registry.TCBlockRegistry;
+import net.tropicraft.util.TropicraftUtils;
 
 public class EntityEIH extends EntityLand implements IMob {
 
@@ -62,6 +63,12 @@ public class EntityEIH extends EntityLand implements IMob {
 
     public void onLivingUpdate() {
         super.onLivingUpdate();
+        // EntityCoroAI's mobs remove themselves on peaceful; this one does not inherit that, and vanilla does not
+        // sweep hostile mobs when the difficulty changes (measured, see ServerGameTests).
+        if (TropicraftUtils.isPeaceful(this.worldObj)) {
+            this.setDead();
+            return;
+        }
         if (!this.isImmobile()) {
             this.prevRotationYaw = this.rotationYaw;
             this.prevRotationPitch = this.rotationPitch;

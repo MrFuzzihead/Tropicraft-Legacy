@@ -117,94 +117,94 @@ public class TCBlockRegistry {
     public static final BlockEIHMixer eihMixer;
 
     public static void init() {
-        registerBlock((Block) TCBlockRegistry.chunkOHead, "chunk");
-        registerBlock((Block) TCBlockRegistry.chunkStairs, "chunkStairs");
+        registerBlock(TCBlockRegistry.chunkOHead, "chunk");
+        registerBlock(TCBlockRegistry.chunkStairs, "chunkStairs");
         registerBlock(TCBlockRegistry.eudialyteOre, "oreEudialyte");
         registerBlock(TCBlockRegistry.zirconOre, "oreZircon");
         registerBlock(TCBlockRegistry.azuriteOre, "oreAzurite");
-        registerMultiBlock((Block) TCBlockRegistry.oreBlocks, "blockOre", TCNames.oreBlockNames);
-        registerBlock((Block) TCBlockRegistry.thatchBundle, "thatch");
-        Blocks.fire.setFireInfo((Block) TCBlockRegistry.thatchBundle, 60, 20);
-        registerMultiBlock((Block) TCBlockRegistry.coral, "coral", TCNames.coralNames);
-        registerBlock((Block) TCBlockRegistry.bambooBundle, "bambooBundle");
-        Blocks.fire.setFireInfo((Block) TCBlockRegistry.bambooBundle, 5, 20);
-        registerMultiBlock((Block) TCBlockRegistry.logs, "log", TCNames.logNames);
-        Blocks.fire.setFireInfo((Block) TCBlockRegistry.logs, 5, 5);
-        registerMultiBlock((Block) TCBlockRegistry.planks, "plank", TCNames.plankNames);
-        Blocks.fire.setFireInfo((Block) TCBlockRegistry.planks, 5, 5);
-        registerBlock((Block) TCBlockRegistry.bambooStairs, "bambooStairs");
-        Blocks.fire.setFireInfo((Block) TCBlockRegistry.bambooStairs, 5, 20);
-        registerBlock((Block) TCBlockRegistry.thatchStairs, "thatchStairs");
-        Blocks.fire.setFireInfo((Block) TCBlockRegistry.thatchStairs, 60, 20);
-        registerBlock((Block) TCBlockRegistry.palmStairs, "palmStairs");
-        Blocks.fire.setFireInfo((Block) TCBlockRegistry.palmStairs, 5, 20);
-        registerBlock((Block) TCBlockRegistry.mahoganyStairs, "mahoganyStairs");
-        Blocks.fire.setFireInfo((Block) TCBlockRegistry.mahoganyStairs, 5, 20);
-        registerMultiBlock((Block) TCBlockRegistry.tallFlowers, "tallFlower", TCNames.tallFlowerNames);
-        Blocks.fire.setFireInfo((Block) TCBlockRegistry.tallFlowers, 60, 100);
-        registerMultiBlock((Block) TCBlockRegistry.pineapple, "pineapple", TCNames.pineappleNames);
-        Blocks.fire.setFireInfo((Block) TCBlockRegistry.pineapple, 60, 100);
-        registerBlockNoName((Block) TCBlockRegistry.bambooFence, "bambooFence");
-        Blocks.fire.setFireInfo((Block) TCBlockRegistry.bambooFence, 5, 20);
-        registerBlockNoName((Block) TCBlockRegistry.palmFence, "palmFence");
-        Blocks.fire.setFireInfo((Block) TCBlockRegistry.palmFence, 5, 20);
-        registerMultiBlock((Block) TCBlockRegistry.saplings, "sapling", TCNames.saplingNames);
-        Blocks.fire.setFireInfo((Block) TCBlockRegistry.saplings, 30, 60);
-        registerBlock((Block) TCBlockRegistry.coffeePlant, "coffeePlant");
-        Blocks.fire.setFireInfo((Block) TCBlockRegistry.coffeePlant, 60, 100);
-        registerBlock((Block) TCBlockRegistry.bambooFenceGate, "bambooFenceGate");
-        Blocks.fire.setFireInfo((Block) TCBlockRegistry.bambooFenceGate, 5, 20);
-        registerBlock((Block) TCBlockRegistry.palmFenceGate, "palmFenceGate");
-        Blocks.fire.setFireInfo((Block) TCBlockRegistry.palmFenceGate, 5, 20);
-        registerBlock((Block) TCBlockRegistry.tikiTorch, "tikiTorch");
-        registerBlock((Block) TCBlockRegistry.bambooDoor, "bambooDoor");
-        Blocks.fire.setFireInfo((Block) TCBlockRegistry.bambooDoor, 5, 20);
+        registerMultiBlock(TCBlockRegistry.oreBlocks, "blockOre", TCNames.oreBlockNames);
+        registerBlock(TCBlockRegistry.thatchBundle, "thatch");
+        Blocks.fire.setFireInfo(TCBlockRegistry.thatchBundle, 60, 20);
+        registerMultiBlock(TCBlockRegistry.coral, "coral", TCNames.coralNames);
+        registerBlock(TCBlockRegistry.bambooBundle, "bambooBundle");
+        Blocks.fire.setFireInfo(TCBlockRegistry.bambooBundle, 5, 20);
+        registerMultiBlock(TCBlockRegistry.logs, "log", TCNames.logNames);
+        Blocks.fire.setFireInfo(TCBlockRegistry.logs, 5, 5);
+        registerMultiBlock(TCBlockRegistry.planks, "plank", TCNames.plankNames);
+        Blocks.fire.setFireInfo(TCBlockRegistry.planks, 5, 5);
+        registerBlock(TCBlockRegistry.bambooStairs, "bambooStairs");
+        Blocks.fire.setFireInfo(TCBlockRegistry.bambooStairs, 5, 20);
+        registerBlock(TCBlockRegistry.thatchStairs, "thatchStairs");
+        Blocks.fire.setFireInfo(TCBlockRegistry.thatchStairs, 60, 20);
+        registerBlock(TCBlockRegistry.palmStairs, "palmStairs");
+        Blocks.fire.setFireInfo(TCBlockRegistry.palmStairs, 5, 20);
+        registerBlock(TCBlockRegistry.mahoganyStairs, "mahoganyStairs");
+        Blocks.fire.setFireInfo(TCBlockRegistry.mahoganyStairs, 5, 20);
+        registerMultiBlock(TCBlockRegistry.tallFlowers, "tallFlower", TCNames.tallFlowerNames);
+        Blocks.fire.setFireInfo(TCBlockRegistry.tallFlowers, 60, 100);
+        registerMultiBlock(TCBlockRegistry.pineapple, "pineapple", TCNames.pineappleNames);
+        Blocks.fire.setFireInfo(TCBlockRegistry.pineapple, 60, 100);
+        registerBlockNoName(TCBlockRegistry.bambooFence, "bambooFence");
+        Blocks.fire.setFireInfo(TCBlockRegistry.bambooFence, 5, 20);
+        registerBlockNoName(TCBlockRegistry.palmFence, "palmFence");
+        Blocks.fire.setFireInfo(TCBlockRegistry.palmFence, 5, 20);
+        registerMultiBlock(TCBlockRegistry.saplings, "sapling", TCNames.saplingNames);
+        Blocks.fire.setFireInfo(TCBlockRegistry.saplings, 30, 60);
+        registerBlock(TCBlockRegistry.coffeePlant, "coffeePlant");
+        Blocks.fire.setFireInfo(TCBlockRegistry.coffeePlant, 60, 100);
+        registerBlock(TCBlockRegistry.bambooFenceGate, "bambooFenceGate");
+        Blocks.fire.setFireInfo(TCBlockRegistry.bambooFenceGate, 5, 20);
+        registerBlock(TCBlockRegistry.palmFenceGate, "palmFenceGate");
+        Blocks.fire.setFireInfo(TCBlockRegistry.palmFenceGate, 5, 20);
+        registerBlock(TCBlockRegistry.tikiTorch, "tikiTorch");
+        registerBlock(TCBlockRegistry.bambooDoor, "bambooDoor");
+        Blocks.fire.setFireInfo(TCBlockRegistry.bambooDoor, 5, 20);
         // NOTE: Slabs are intentionally not registered as flammable here. The Forest Altar Ruin uses
         // the "Chunk" (metadata 2) slab as a non-flammable buffer around its eternal netherrack
         // fire; if flammable slab metadata is ever added, that variant must stay non-flammable.
         registerMultiBlock(
-            (Block) TCBlockRegistry.singleSlabs,
+            TCBlockRegistry.singleSlabs,
             "singleSlabs",
             (Class<? extends ItemBlock>) ItemTropicraftSlab.class,
             new Object[] { TCBlockRegistry.singleSlabs, TCBlockRegistry.doubleSlabs, false });
         registerMultiBlock(
-            (Block) TCBlockRegistry.doubleSlabs,
+            TCBlockRegistry.doubleSlabs,
             "doubleSlabs",
             (Class<? extends ItemBlock>) ItemTropicraftSlab.class,
             new Object[] { TCBlockRegistry.doubleSlabs, TCBlockRegistry.singleSlabs, true });
-        registerBlock((Block) TCBlockRegistry.tropicsWater, "tropicsWater");
-        registerBlock((Block) TCBlockRegistry.rainStopper, "rainStopper");
-        registerMultiBlock((Block) TCBlockRegistry.flowers, "flower", TCNames.flowerIndices);
-        Blocks.fire.setFireInfo((Block) TCBlockRegistry.flowers, 60, 100);
-        registerBlock((Block) TCBlockRegistry.flowerPot, ItemFlowerPot.class, "flowerPot");
-        registerBlock((Block) TCBlockRegistry.coconut, "coconut");
+        registerBlock(TCBlockRegistry.tropicsWater, "tropicsWater");
+        registerBlock(TCBlockRegistry.rainStopper, "rainStopper");
+        registerMultiBlock(TCBlockRegistry.flowers, "flower", TCNames.flowerIndices);
+        Blocks.fire.setFireInfo(TCBlockRegistry.flowers, 60, 100);
+        registerBlock(TCBlockRegistry.flowerPot, ItemFlowerPot.class, "flowerPot");
+        registerBlock(TCBlockRegistry.coconut, "coconut");
         registerBlock(TCBlockRegistry.firePit, "firePit");
-        registerBlock((Block) TCBlockRegistry.bambooChest, "bambooChest");
-        registerBlock((Block) TCBlockRegistry.tropicsPortal, "portal");
-        registerBlock((Block) TCBlockRegistry.tropicsPortalWall, "portalWall");
-        registerMultiBlock((Block) TCBlockRegistry.fruitLeaves, "leaf", TCNames.fruitLeafNames);
-        Blocks.fire.setFireInfo((Block) TCBlockRegistry.fruitLeaves, 30, 60);
-        registerBlock((Block) TCBlockRegistry.palmLeaves, "leafPalm");
-        Blocks.fire.setFireInfo((Block) TCBlockRegistry.palmLeaves, 30, 60);
-        registerMultiBlock((Block) TCBlockRegistry.rainforestLeaves, "leafRainforest", TCNames.rainforestLeafNames);
-        Blocks.fire.setFireInfo((Block) TCBlockRegistry.rainforestLeaves, 30, 60);
-        registerBlock((Block) TCBlockRegistry.bambooChute, "bambooChute");
-        Blocks.fire.setFireInfo((Block) TCBlockRegistry.bambooChute, 60, 100);
-        registerBlock((Block) TCBlockRegistry.purifiedSand, "purifiedSand");
-        registerMultiBlock((Block) TCBlockRegistry.mineralSands, "mineralSand", TCNames.mineralSandNames);
-        registerBlock((Block) TCBlockRegistry.sifter, "sifter");
-        registerBlock((Block) TCBlockRegistry.curareBowl, "curareBowl");
-        registerMultiBlock((Block) TCBlockRegistry.bongoDrum, "bongoDrum", TCNames.bongoDrumNames);
-        Blocks.fire.setFireInfo((Block) TCBlockRegistry.bongoDrum, 5, 20);
-        registerBlock((Block) TCBlockRegistry.koaChest, "koaChest");
-        registerBlock((Block) TCBlockRegistry.purchasePlate, "purchasePlate");
-        registerBlock((Block) TCBlockRegistry.bambooMug, "bambooMug");
-        registerBlock((Block) TCBlockRegistry.eihMixer, "eihMixer");
+        registerBlock(TCBlockRegistry.bambooChest, "bambooChest");
+        registerBlock(TCBlockRegistry.tropicsPortal, "portal");
+        registerBlock(TCBlockRegistry.tropicsPortalWall, "portalWall");
+        registerMultiBlock(TCBlockRegistry.fruitLeaves, "leaf", TCNames.fruitLeafNames);
+        Blocks.fire.setFireInfo(TCBlockRegistry.fruitLeaves, 30, 60);
+        registerBlock(TCBlockRegistry.palmLeaves, "leafPalm");
+        Blocks.fire.setFireInfo(TCBlockRegistry.palmLeaves, 30, 60);
+        registerMultiBlock(TCBlockRegistry.rainforestLeaves, "leafRainforest", TCNames.rainforestLeafNames);
+        Blocks.fire.setFireInfo(TCBlockRegistry.rainforestLeaves, 30, 60);
+        registerBlock(TCBlockRegistry.bambooChute, "bambooChute");
+        Blocks.fire.setFireInfo(TCBlockRegistry.bambooChute, 60, 100);
+        registerBlock(TCBlockRegistry.purifiedSand, "purifiedSand");
+        registerMultiBlock(TCBlockRegistry.mineralSands, "mineralSand", TCNames.mineralSandNames);
+        registerBlock(TCBlockRegistry.sifter, "sifter");
+        registerBlock(TCBlockRegistry.curareBowl, "curareBowl");
+        registerMultiBlock(TCBlockRegistry.bongoDrum, "bongoDrum", TCNames.bongoDrumNames);
+        Blocks.fire.setFireInfo(TCBlockRegistry.bongoDrum, 5, 20);
+        registerBlock(TCBlockRegistry.koaChest, "koaChest");
+        registerBlock(TCBlockRegistry.purchasePlate, "purchasePlate");
+        registerBlock(TCBlockRegistry.bambooMug, "bambooMug");
+        registerBlock(TCBlockRegistry.eihMixer, "eihMixer");
     }
 
     private static void registerMultiBlock(final Block block, final String name, final Class<? extends ItemBlock> c,
         final Object[] params) {
-        GameRegistry.registerBlock(block, (Class) c, "tile." + name, params);
+        GameRegistry.registerBlock(block, c, "tile." + name, params);
         block.setBlockName(name);
     }
 
@@ -214,7 +214,7 @@ public class TCBlockRegistry {
         final Class<? extends ItemBlock> clazz = (Class<? extends ItemBlock>) (TCBlockRegistry.multiBlockMap
             .containsKey(name) ? ((Class<? extends ItemBlock>) TCBlockRegistry.multiBlockMap.get(name))
                 : ItemBlockTropicraft.class);
-        GameRegistry.registerBlock(block, (Class) clazz, "tile." + name, new Object[] { namesList });
+        GameRegistry.registerBlock(block, clazz, "tile." + name, new Object[] { namesList });
         block.setBlockName(name);
     }
 
@@ -239,7 +239,7 @@ public class TCBlockRegistry {
         TCBlockRegistry.multiBlockMap.put("singleSlabs", (Class<? extends ItemBlock>) ItemSlab.class);
         TCBlockRegistry.multiBlockMap.put("doubleSlabs", (Class<? extends ItemBlock>) ItemSlab.class);
         chunkOHead = (BlockTropicraft) new BlockChunkOHead();
-        chunkStairs = new BlockTropicraftStairs("chunkStairs", (Block) TCBlockRegistry.chunkOHead, 0);
+        chunkStairs = new BlockTropicraftStairs("chunkStairs", TCBlockRegistry.chunkOHead, 0);
         eudialyteOre = new BlockTropicraftOre().setHardness(3.0f)
             .setResistance(5.0f);
         zirconOre = new BlockTropicraftOre().setHardness(4.0f)
@@ -254,18 +254,18 @@ public class TCBlockRegistry {
             .setStepSound(Block.soundTypeWood);
         logs = (BlockTropicraft) new BlockTropicraftLog(TCNames.logNames);
         planks = (BlockTropicraft) new BlockTropicraftPlank(TCNames.plankNames);
-        bambooStairs = new BlockTropicraftStairs("bambooStairs", (Block) TCBlockRegistry.bambooBundle, 0);
-        thatchStairs = new BlockTropicraftStairs("thatchStairs", (Block) TCBlockRegistry.thatchBundle, 0);
-        palmStairs = new BlockTropicraftStairs("palmStairs", (Block) TCBlockRegistry.planks, 0);
-        mahoganyStairs = new BlockTropicraftStairs("mahoganyStairs", (Block) TCBlockRegistry.planks, 3);
+        bambooStairs = new BlockTropicraftStairs("bambooStairs", TCBlockRegistry.bambooBundle, 0);
+        thatchStairs = new BlockTropicraftStairs("thatchStairs", TCBlockRegistry.thatchBundle, 0);
+        palmStairs = new BlockTropicraftStairs("palmStairs", TCBlockRegistry.planks, 0);
+        mahoganyStairs = new BlockTropicraftStairs("mahoganyStairs", TCBlockRegistry.planks, 3);
         pineapple = new BlockPineapple(TCNames.pineappleNames);
         tallFlowers = new BlockTallFlowers(TCNames.tallFlowerNames);
         bambooFenceGate = new BlockTropicraftFenceGate(
-            (Block) TCBlockRegistry.bambooBundle,
+            TCBlockRegistry.bambooBundle,
             0,
             "bambooFenceGate",
             Material.wood);
-        palmFenceGate = new BlockTropicraftFenceGate((Block) TCBlockRegistry.planks, 1, "palmFenceGate", Material.wood);
+        palmFenceGate = new BlockTropicraftFenceGate(TCBlockRegistry.planks, 1, "palmFenceGate", Material.wood);
         bambooFence = new BlockTropicraftFence(
             "bambooFence",
             "bambooBundle_Side",
@@ -286,7 +286,7 @@ public class TCBlockRegistry {
         rainStopper = (BlockTropicraft) new BlockRainStopper();
         flowers = new BlockTropicraftFlower(TCNames.flowerIndices);
         flowerPot = new BlockTropicraftFlowerPot();
-        firePit = (Block) new BlockFirePit();
+        firePit = new BlockFirePit();
         coconut = new BlockCoconut();
         tropicsPortalWall = new BlockPortalWall();
         tropicsPortal = new BlockTropicsPortal(TCFluidRegistry.tropicsPortal, Material.water);

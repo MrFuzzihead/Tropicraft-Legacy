@@ -1,6 +1,5 @@
 package net.tropicraft.registry;
 
-import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -37,7 +36,7 @@ public class TCCreativeTabRegistry {
         }
 
         public Item getTabIconItem() {
-            return (Item) TCItemRegistry.pearl;
+            return TCItemRegistry.pearl;
         }
     }
 
@@ -48,7 +47,7 @@ public class TCCreativeTabRegistry {
         }
 
         public Item getTabIconItem() {
-            return (Item) TCItemRegistry.fishingNet;
+            return TCItemRegistry.fishingNet;
         }
     }
 
@@ -60,7 +59,7 @@ public class TCCreativeTabRegistry {
 
         @SideOnly(Side.CLIENT)
         public Item getTabIconItem() {
-            return (Item) TCItemRegistry.pickaxeEudialyte;
+            return TCItemRegistry.pickaxeEudialyte;
         }
     }
 
@@ -71,7 +70,7 @@ public class TCCreativeTabRegistry {
         }
 
         public Item getTabIconItem() {
-            return (Item) TCItemRegistry.swordZircon;
+            return TCItemRegistry.swordZircon;
         }
     }
 
@@ -83,7 +82,7 @@ public class TCCreativeTabRegistry {
 
         @SideOnly(Side.CLIENT)
         public Item getTabIconItem() {
-            return (Item) TCItemRegistry.fertilizer;
+            return TCItemRegistry.fertilizer;
         }
     }
 
@@ -94,7 +93,7 @@ public class TCCreativeTabRegistry {
         }
 
         public Item getTabIconItem() {
-            final ItemStack stack = new ItemStack((Block) TCBlockRegistry.bambooBundle);
+            final ItemStack stack = new ItemStack(TCBlockRegistry.bambooBundle);
             return stack.getItem();
         }
     }
@@ -106,7 +105,7 @@ public class TCCreativeTabRegistry {
         }
 
         public Item getTabIconItem() {
-            return (Item) TCItemRegistry.lime;
+            return TCItemRegistry.lime;
         }
     }
 

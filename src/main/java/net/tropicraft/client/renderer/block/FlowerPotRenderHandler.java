@@ -35,12 +35,12 @@ public class FlowerPotRenderHandler implements ISimpleBlockRenderingHandler {
 
     private void renderFlowerPot(final IBlockAccess world, final int x, final int y, final int z,
         final BlockTropicraftFlowerPot block, final RenderBlocks rb) {
-        rb.renderStandardBlock((Block) block, x, y, z);
+        rb.renderStandardBlock(block, x, y, z);
         final Tessellator tessellator = Tessellator.instance;
         tessellator.setBrightness(block.getMixedBrightnessForBlock(world, x, y, z));
         final float f = 1.0f;
         final int l = block.colorMultiplier(world, x, y, z);
-        final IIcon icon = rb.getBlockIconFromSide((Block) block, 0);
+        final IIcon icon = rb.getBlockIconFromSide(block, 0);
         float f2 = (l >> 16 & 0xFF) / 255.0f;
         float f3 = (l >> 8 & 0xFF) / 255.0f;
         float f4 = (l & 0xFF) / 255.0f;
@@ -54,12 +54,12 @@ public class FlowerPotRenderHandler implements ISimpleBlockRenderingHandler {
         }
         tessellator.setColorOpaque_F(f * f2, f * f3, f * f4);
         final float f5 = 0.1865f;
-        rb.renderFaceXPos((Block) block, (double) (x - 0.5f + f5), (double) y, (double) z, icon);
-        rb.renderFaceXNeg((Block) block, (double) (x + 0.5f - f5), (double) y, (double) z, icon);
-        rb.renderFaceZPos((Block) block, (double) x, (double) y, (double) (z - 0.5f + f5), icon);
-        rb.renderFaceZNeg((Block) block, (double) x, (double) y, (double) (z + 0.5f - f5), icon);
+        rb.renderFaceXPos(block, (double) (x - 0.5f + f5), (double) y, (double) z, icon);
+        rb.renderFaceXNeg(block, (double) (x + 0.5f - f5), (double) y, (double) z, icon);
+        rb.renderFaceZPos(block, (double) x, (double) y, (double) (z - 0.5f + f5), icon);
+        rb.renderFaceZNeg(block, (double) x, (double) y, (double) (z + 0.5f - f5), icon);
         rb.renderFaceYPos(
-            (Block) block,
+            block,
             (double) x,
             (double) (y - 0.5f + f5 + 0.1875f),
             (double) z,
@@ -76,54 +76,49 @@ public class FlowerPotRenderHandler implements ISimpleBlockRenderingHandler {
             tessellator.addTranslation(f7 / 16.0f, var20 / 16.0f, var21 / 16.0f);
             if (var19 > 0 && var19 < 17) {
                 rb.drawCrossedSquares(
-                    this.draw((Block) TCBlockRegistry.flowers, var19 - 1),
+                    this.draw(TCBlockRegistry.flowers, var19 - 1),
                     (double) x,
                     (double) y,
                     (double) z,
                     0.75f);
             } else if (var19 == 17) {
                 rb.drawCrossedSquares(
-                    this.draw((Block) TCBlockRegistry.tallFlowers, 0),
+                    this.draw(TCBlockRegistry.tallFlowers, 0),
                     (double) x,
                     (double) y,
                     (double) z,
                     0.75f);
                 rb.drawCrossedSquares(
-                    this.draw((Block) TCBlockRegistry.tallFlowers, 1),
+                    this.draw(TCBlockRegistry.tallFlowers, 1),
                     (double) x,
                     y + 0.75,
                     (double) z,
                     0.75f);
             } else if (var19 == 18) {
                 rb.drawCrossedSquares(
-                    this.draw((Block) TCBlockRegistry.pineapple, 7),
+                    this.draw(TCBlockRegistry.pineapple, 7),
                     (double) x,
                     (double) y,
                     (double) z,
                     0.75f);
-                rb.drawCrossedSquares(
-                    this.draw((Block) TCBlockRegistry.pineapple, 8),
-                    (double) x,
-                    y + 0.75,
-                    (double) z,
-                    0.75f);
+                rb.drawCrossedSquares(this.draw(TCBlockRegistry.pineapple, 8), (double) x, y + 0.75, (double) z, 0.75f);
             } else if (var19 > 18 && var19 < 25) {
                 rb.drawCrossedSquares(
-                    this.draw((Block) TCBlockRegistry.saplings, var19 - 19),
+                    this.draw(TCBlockRegistry.saplings, var19 - 19),
                     (double) x,
                     (double) y,
                     (double) z,
                     0.75f);
             } else if (var19 >= 25 && var19 < 34) {
                 rb.drawCrossedSquares(
-                    this.draw((Block) Blocks.red_flower, var19 - 25),
+                    this.draw(Blocks.red_flower, var19 - 25),
                     (double) x,
                     (double) y,
                     (double) z,
                     0.75f);
             } else if (var19 == 34) {
                 rb.drawCrossedSquares(
-                    this.draw((Block) Blocks.yellow_flower, var19 - 34),
+                    this.draw(Blocks.yellow_flower, var19 - 34),
                     (double) x,
                     (double) y,
                     (double) z,

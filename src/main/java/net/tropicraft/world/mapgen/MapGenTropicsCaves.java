@@ -244,7 +244,7 @@ public class MapGenTropicsCaves extends MapGenBase {
     protected void digBlock(final Block[] data, final int index, final int x, final int y, final int z,
         final int chunkX, final int chunkZ, final boolean foundTop) {
         final BiomeGenBase biome = this.worldObj.getBiomeGenForCoords(x + chunkX * 16, z + chunkZ * 16);
-        final Block top = (Block) (this.isExceptionBiome(biome) ? Blocks.grass : biome.topBlock);
+        final Block top = (this.isExceptionBiome(biome) ? Blocks.grass : biome.topBlock);
         final Block filler = this.isExceptionBiome(biome) ? Blocks.dirt : biome.fillerBlock;
         final Block block = data[index];
         if (block == Blocks.stone || block == filler || block == top) {

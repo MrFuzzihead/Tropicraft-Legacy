@@ -516,12 +516,12 @@ a future refactor that hands the generator itself to `isAreaLoaded` silently dis
 
 | Item | Finding | Action |
 |------|---------|--------|
-| `dependencies.gradle` | CoroUtil declared `implementation` — see §8 | change to `api` |
-| `mcmod.info` | `"dependencies": []` while the mod requires CoroUtil (`CoroAI`) and UniMixins | add `"dependencies": ["CoroAI", "unimixins"]` (the mod-list UI shows this) |
+| `dependencies.gradle` | CoroUtil declared `implementation` — see §8 | already `api`; the dev runtime needs `api(rfg.deobf(...))`, §11.6 |
+| `mcmod.info` | `"dependencies": []` while the mod requires CoroUtil (`CoroAI`) and UniMixins | **done**, §19.2 |
 | `src/main/java/net/tropicraft/info/TCInfo.java` | hard-coded `VERSION = "v6.0.5"` | delete (B19) |
-| `enableModernJavaSyntax = jabel` | Jabel downgrades **syntax only**, not APIs. Anything past Java 8 in the *stdlib* (`List.of`, `Map.of`, `Optional.isEmpty`, records' generated methods) compiles fine and then throws `NoSuchMethodError` on a Java 8 runtime. Worth a one-line note in the README so nobody adds `List.of(...)` in a PR. | note in the README, or move to `jvmDowngrader` if you actually need newer APIs |
-| `jitpack.yml` | `setupCIWorkspace` only; no tag present in the repo | either finish JitPack setup (see §9.4) or remove the file |
-| `TropicraftWorldUtils.TROPICS_DIMENSION_ID = -127` | hard-coded dimension id | make it a config value with a documented default (and validate `DimensionManager` registration success) |
+| `enableModernJavaSyntax = jabel` | Jabel downgrades **syntax only**, not APIs. Anything past Java 8 in the *stdlib* (`List.of`, `Map.of`, `Optional.isEmpty`, records' generated methods) compiles fine and then throws `NoSuchMethodError` on a Java 8 runtime. | **done**: noted in the README, §19.2 |
+| `jitpack.yml` | `setupCIWorkspace` only; no tag present in the repo | left alone by decision |
+| `TropicraftWorldUtils.TROPICS_DIMENSION_ID = -127` | hard-coded dimension id | **done**: config + registration validation, §19.2 |
 | CI | `build-and-test.yml` triggers on `master`/`main` only; the working branch is `feature-Refactors` | expect no CI on feature branches until a PR exists |
 
 ---
@@ -1015,6 +1015,8 @@ Either delete the 152 constants (keeping only the arrays) or make the registries
 definitions can disagree, and `TCNames.aqua*` proves they already do.
 
 ### B27. Creative / peaceful targeting is inconsistent between mob families (#50)
+
+**Status: fixed** — see §19.1, with in-game checks written first (three of them failed on the old code).
 
 Four different mechanisms, only two of which check creative mode:
 
@@ -1628,27 +1630,99 @@ itself walks the recipe list; the recipe registry refactor removed ~240 lines fr
 
 ---
 
+## 19. Batch: targeting (#50), build metadata, and the cast noise
+
+### 19.1 B27 — creative and peaceful targeting
+
+Five in-game checks were written first; **three of them failed on the old code**, which is what makes the fixes
+worth trusting:
+
+| Check | Old code |
+|---|---|
+| a creative player's hit does not become a Koa's target | **FAIL** — the Koa targeted the FakePlayer that hit it |
+| a creative player is not an enemy | passed (the Koa simply ignored players) |
+| a passive animal is not a hostile mob | **FAIL** — `EntityIguana implements IMob` |
+| the Easter Island Head does not survive peaceful | **FAIL** — still alive |
+| the Ashen does not survive peaceful | **FAIL** — still alive |
+| the Koa do not survive peaceful | passed (inherited from `EntityCoroAI`) |
+
+The root causes and what changed:
+
+* **Retaliation bypassed every filter.** CoroUtil's `AIAgent` has an expiry: when `retaliateTicks` runs out it drops
+  the target *if* `isEnemy` says no. Until then, though, `JobHunt.hookHit` has already recorded the attacker, and
+  `JobAttackTargetShare` hands that target to every mob within 24 blocks. `EntityCoroAI.onLivingUpdate` now clears a
+  creative player from both `entityToAttack` and `retaliateEntity` every tick - the same two fields CoroUtil itself
+  clears on expiry, so this follows the library's own semantics instead of fighting them.
+* **`EntityKoaBase.isEnemy` replaced the creative check.** It overrode `EntityCoroAI.isEnemy` with a bare diplomacy
+  call. Koa stay neutral towards players (that is the design), but a creative player now returns false before the
+  diplomacy call.
+* **`JobExtraTargetting`** assigned `getClosestVulnerablePlayerToEntity` straight into `entityToAttack` with no
+  `isEnemy` check. It now asks first.
+* **`EntityIguana`** no longer declares `IMob`; it is an animal.
+* **Peaceful.** `EntityCoroAI`'s mobs removed themselves, but `EntityEIH` and the Ashen family do not inherit that
+  and **vanilla does not sweep hostile mobs when the difficulty changes** (measured: a spawned EIH survived a
+  peaceful tick, which also settles the bytecode question the review left open). Both now remove themselves through
+  a shared `TropicraftUtils.isPeaceful(world)`.
+
+One deliberate non-change: vanilla's own `EntityMob`/`EntityAITarget` already handles creative players for the Ashen
+family, so they only needed the peaceful half.
+
+### 19.2 Build & metadata
+
+* `mcmod.info` now declares `"dependencies": ["CoroAI", "unimixins"]`, which is what the mod list shows and what the
+  `@Mod` annotation already requires.
+* The README notes that Jabel downgrades **syntax only, not APIs** - a `List.of(...)` compiles and then
+  `NoSuchMethodError`s on Java 8.
+* `TROPICS_DIMENSION_ID` is now `ConfigMisc.tropicsDimensionId` (default -127). Two things worth knowing about how
+  it is wired: the field is **not** `final`, because a `static final int` with a constant initialiser is inlined at
+  every use site and a config value would never reach them; and `initializeDimension()` checks both
+  `registerProviderType` and `isDimensionRegistered` and logs at severe, so a collision with another mod shows up in
+  the log instead of as a dimension that silently does not exist.
+* `jitpack.yml` left alone, as agreed.
+
+### 19.3 Noise
+
+**510 redundant casts** removed across 72 files - 319 `(Block)`, 171 `(Item)`, 18 `(Class)`, 2 `(IInventory)`.
+Verified by the full suite; the two that had to go back (`ItemStack((Item) aobj[i + 1])` in `Encyclopedia`) were
+caught by the compiler, because the vanilla recipe array is `Object[]` and `ItemStack` has separate `Item` and
+`Block` constructors - a good reminder that "redundant cast" and "unnecessary cast" are not the same thing.
+
+**3 unused alias locals** removed (`RenderSnareTrap`'s three `renderManager` copies).
+
+Deliberately left: the other 91 `final X y = this.z;` locals, because they are *used* - they are the decompiler's
+local-copy idiom in model/animation code, and §16.3 has the full argument for why a sweep corrupts them. Also left:
+float literals written as doubles, for the rounding reason in §13.1, and the `(Entity)`/`(EntityLivingBase)` casts,
+where 256 more removals would buy little but carry the real risk (silently selecting a different overload).
+
+### 19.4 Verification
+
+`check` green (51 unit tests, coverage floors, spotless), `gameTestServer` green with **35** checks - six of them
+about targeting and mob classification. The recipe fingerprint and the item/block naming checks also stayed
+identical through the 510-cast change, which is what confirms none of those casts were load-bearing.
+
+---
+
 ## Appendix A — quick-win checklist
 
 - [x] Ship `koavillage.schematic` + `TCSchematics` extractor; fail loudly on a bad build (B1) — §11.1
 - [x] Dev runtime: `devOnlyNonPublishable(rfg.deobf(...))` for coroutil, or no dev run works at all (§11.6)
-- [ ] `dependencies.gradle`: `implementation` → `api` for coroutil (§8) — already `api`; the remaining item is
-      keeping it `api` if the deobf path is ever cleaned up
-- [ ] `mcmod.info`: add `CoroAI`, `unimixins` dependencies; drop stale keys
+- [x] `dependencies.gradle`: `api` for coroutil was already right (§8); the dev runtime needs
+      `api(rfg.deobf(...))` (§11.6)
+- [x] `mcmod.info`: add `CoroAI`, `unimixins` dependencies (§19.2)
 - [x] Delete `info/TCInfo.java`, `TileEntityFactory` (`getTopWaterBlockY` is gone, §12)
 - [x] Delete duplicate `registerEntity(EntityTropiCreeper…)`; convert entity IDs to literals (B9, §12)
 - [x] `ItemEntry.matchesItem`: reference → `getItem()` comparison; delete the empty `else if` (§11.4)
 - [x] `EntityDart`: `static final int[] POTIONS`, bounds-check `dartType`, delete the empty `if` (§11.2)
-- [x] `ChunkProviderTropicraft`: reset `flag` per column, local `sandMetadata` (§11.3); `fallInstantly` in
-      `finally` (B6) still open
+- [x] `ChunkProviderTropicraft`: reset `flag` per column, local `sandMetadata` (§11.3), `fallInstantly` in
+      `finally` (§12)
 - [x] `JobFish`: `< 0.0f` → `<= 0.0f`, delete `rand.nextInt(1)`, use `worldObj.rand` (§12)
 - [x] `EffectHelper`: tick on one side only (§12)
 - [x] `TropicalBook`: per-world save file, null-check the resource stream, try-with-resources (§16.1)
 - [x] `Tropicraft.dbg`: delete or gate behind a config key (§13)
 - [x] Replace the remaining `System.out/err` with `FMLLog` at appropriate levels (42 → 0 in `src/main/java`, §16.2)
 - [x] Replace the remaining `catch (Exception) { printStackTrace(); }` (21 → 0 in `src/main/java`, §16.2)
-- [ ] Extract `RenderWaterMobBase` for the three duplicated `doRender`s (R1)
-- [ ] Extract `IUnlocalizedTropicraft` for the six duplicated `getUnlocalizedName`s (R2)
+- [ ] Extract `RenderWaterMobBase` for the three duplicated `doRender`s (R1) — deferred, needs a client (§17.4)
+- [x] Extract the duplicated `getUnlocalizedName` logic (R2 shipped as `TropicraftNames`, §17.1)
 - [x] `BlockRainforestLeaves.imageNames[1][0]` → `"leafMahogany"` and `[0][1]` → `"leafKapok"` (B24, #9, §12)
 - [x] Delete the two duplicate `*Frame` lang lines (B25, #3, §12)
 - [x] `ItemCoconutBomb`: move `--stackSize` inside the whitelist branch; add an enabled toggle (B23, #45, §12)

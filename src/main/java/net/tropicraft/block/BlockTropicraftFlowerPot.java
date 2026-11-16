@@ -82,7 +82,7 @@ public class BlockTropicraftFlowerPot extends BlockTropicraft implements ITileEn
     @SideOnly(Side.CLIENT)
     public Item getItem(final World world, final int x, final int y, final int z) {
         final ItemStack var5 = getPlantForMeta(world.getBlockMetadata(x, y, z));
-        return (Item) ((var5 == null) ? Item.getItemFromBlock(this) : var5.getItem());
+        return ((var5 == null) ? Item.getItemFromBlock(this) : var5.getItem());
     }
 
     public boolean canPlaceBlockAt(final World par1World, final int par2, final int par3, final int par4) {
@@ -122,76 +122,76 @@ public class BlockTropicraftFlowerPot extends BlockTropicraft implements ITileEn
     public static ItemStack getPlantForMeta(final int meta) {
         switch (meta) {
             case 1: {
-                return new ItemStack((Block) TCBlockRegistry.flowers, 1, 0);
+                return new ItemStack(TCBlockRegistry.flowers, 1, 0);
             }
             case 2: {
-                return new ItemStack((Block) TCBlockRegistry.flowers, 1, 1);
+                return new ItemStack(TCBlockRegistry.flowers, 1, 1);
             }
             case 3: {
-                return new ItemStack((Block) TCBlockRegistry.flowers, 1, 2);
+                return new ItemStack(TCBlockRegistry.flowers, 1, 2);
             }
             case 4: {
-                return new ItemStack((Block) TCBlockRegistry.flowers, 1, 3);
+                return new ItemStack(TCBlockRegistry.flowers, 1, 3);
             }
             case 5: {
-                return new ItemStack((Block) TCBlockRegistry.flowers, 1, 4);
+                return new ItemStack(TCBlockRegistry.flowers, 1, 4);
             }
             case 6: {
-                return new ItemStack((Block) TCBlockRegistry.flowers, 1, 5);
+                return new ItemStack(TCBlockRegistry.flowers, 1, 5);
             }
             case 7: {
-                return new ItemStack((Block) TCBlockRegistry.flowers, 1, 6);
+                return new ItemStack(TCBlockRegistry.flowers, 1, 6);
             }
             case 8: {
-                return new ItemStack((Block) TCBlockRegistry.flowers, 1, 7);
+                return new ItemStack(TCBlockRegistry.flowers, 1, 7);
             }
             case 9: {
-                return new ItemStack((Block) TCBlockRegistry.flowers, 1, 8);
+                return new ItemStack(TCBlockRegistry.flowers, 1, 8);
             }
             case 10: {
-                return new ItemStack((Block) TCBlockRegistry.flowers, 1, 9);
+                return new ItemStack(TCBlockRegistry.flowers, 1, 9);
             }
             case 11: {
-                return new ItemStack((Block) TCBlockRegistry.flowers, 1, 10);
+                return new ItemStack(TCBlockRegistry.flowers, 1, 10);
             }
             case 12: {
-                return new ItemStack((Block) TCBlockRegistry.flowers, 1, 11);
+                return new ItemStack(TCBlockRegistry.flowers, 1, 11);
             }
             case 13: {
-                return new ItemStack((Block) TCBlockRegistry.flowers, 1, 12);
+                return new ItemStack(TCBlockRegistry.flowers, 1, 12);
             }
             case 14: {
-                return new ItemStack((Block) TCBlockRegistry.flowers, 1, 13);
+                return new ItemStack(TCBlockRegistry.flowers, 1, 13);
             }
             case 15: {
-                return new ItemStack((Block) TCBlockRegistry.flowers, 1, 14);
+                return new ItemStack(TCBlockRegistry.flowers, 1, 14);
             }
             case 16: {
-                return new ItemStack((Block) TCBlockRegistry.flowers, 1, 15);
+                return new ItemStack(TCBlockRegistry.flowers, 1, 15);
             }
             case 17: {
-                return new ItemStack((Block) TCBlockRegistry.tallFlowers, 1, 8);
+                return new ItemStack(TCBlockRegistry.tallFlowers, 1, 8);
             }
             case 18: {
-                return new ItemStack((Block) TCBlockRegistry.pineapple, 1, 8);
+                return new ItemStack(TCBlockRegistry.pineapple, 1, 8);
             }
             case 19: {
-                return new ItemStack((Block) TCBlockRegistry.saplings, 1, 0);
+                return new ItemStack(TCBlockRegistry.saplings, 1, 0);
             }
             case 20: {
-                return new ItemStack((Block) TCBlockRegistry.saplings, 1, 1);
+                return new ItemStack(TCBlockRegistry.saplings, 1, 1);
             }
             case 21: {
-                return new ItemStack((Block) TCBlockRegistry.saplings, 1, 2);
+                return new ItemStack(TCBlockRegistry.saplings, 1, 2);
             }
             case 22: {
-                return new ItemStack((Block) TCBlockRegistry.saplings, 1, 3);
+                return new ItemStack(TCBlockRegistry.saplings, 1, 3);
             }
             case 23: {
-                return new ItemStack((Block) TCBlockRegistry.saplings, 1, 4);
+                return new ItemStack(TCBlockRegistry.saplings, 1, 4);
             }
             case 24: {
-                return new ItemStack((Block) Blocks.red_flower, 1, 0);
+                return new ItemStack(Blocks.red_flower, 1, 0);
             }
             default: {
                 return null;
@@ -202,22 +202,22 @@ public class BlockTropicraftFlowerPot extends BlockTropicraft implements ITileEn
     public static int getMetaForPlant(final ItemStack itemstack) {
         final Item item = itemstack.getItem();
         final int damage = itemstack.getItemDamage() + 1;
-        if (item == Item.getItemFromBlock((Block) TCBlockRegistry.flowers)) {
+        if (item == Item.getItemFromBlock(TCBlockRegistry.flowers)) {
             return damage;
         }
-        if (item == Item.getItemFromBlock((Block) TCBlockRegistry.tallFlowers)) {
+        if (item == Item.getItemFromBlock(TCBlockRegistry.tallFlowers)) {
             return 17;
         }
-        if (item == Item.getItemFromBlock((Block) TCBlockRegistry.pineapple)) {
+        if (item == Item.getItemFromBlock(TCBlockRegistry.pineapple)) {
             return 18;
         }
-        if (item == Item.getItemFromBlock((Block) TCBlockRegistry.saplings)) {
+        if (item == Item.getItemFromBlock(TCBlockRegistry.saplings)) {
             return 19 + damage - 1;
         }
-        if (item == Item.getItemFromBlock((Block) Blocks.red_flower)) {
+        if (item == Item.getItemFromBlock(Blocks.red_flower)) {
             return 25 + damage - 1;
         }
-        if (item == Item.getItemFromBlock((Block) Blocks.yellow_flower)) {
+        if (item == Item.getItemFromBlock(Blocks.yellow_flower)) {
             return 34 + damage - 1;
         }
         return 0;

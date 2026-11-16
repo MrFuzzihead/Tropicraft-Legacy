@@ -211,7 +211,7 @@ public class ItemCocktail extends ItemTropicraft {
             return false;
         }
         if (par3World.canPlaceEntityOnSide(
-            (Block) TCBlockRegistry.bambooMug,
+            TCBlockRegistry.bambooMug,
             par4,
             par5,
             par6,
@@ -219,7 +219,7 @@ public class ItemCocktail extends ItemTropicraft {
             par7,
             (Entity) par2EntityPlayer,
             (ItemStack) null)) {
-            final Block var12 = (Block) TCBlockRegistry.bambooMug;
+            final Block var12 = TCBlockRegistry.bambooMug;
             final int var13 = this.getMetadata(par1ItemStack.getItemDamage());
             final int var14 = var12.onBlockPlaced(par3World, par4, par5, par6, par7, par8, par9, par10, var13);
             if (this.placeBlockAt(
@@ -251,7 +251,7 @@ public class ItemCocktail extends ItemTropicraft {
     public boolean placeBlockAt(final ItemStack stack, final EntityPlayer player, final World world, final int x,
         final int y, final int z, final int side, final float hitX, final float hitY, final float hitZ,
         final int metadata) {
-        if (!world.setBlock(x, y, z, (Block) TCBlockRegistry.bambooMug, metadata, 2)) {
+        if (!world.setBlock(x, y, z, TCBlockRegistry.bambooMug, metadata, 2)) {
             return false;
         }
         if (world.getBlock(x, y, z) == TCBlockRegistry.bambooMug) {

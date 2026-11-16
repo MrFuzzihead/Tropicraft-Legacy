@@ -5,7 +5,6 @@ import java.util.List;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -149,7 +148,7 @@ public class TileEntityCurareBowl extends TileEntity {
     }
 
     private ItemStack getCurareResult(final CurareType curare) {
-        return new ItemStack((Item) TCItemRegistry.curare, 1, curare.curareId);
+        return new ItemStack(TCItemRegistry.curare, 1, curare.curareId);
     }
 
     private CurareType getResult(final ItemStack[] ingredients1) {

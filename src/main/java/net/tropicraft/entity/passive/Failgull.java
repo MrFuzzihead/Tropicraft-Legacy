@@ -78,7 +78,7 @@ public class Failgull extends EntityFlying {
         }
         if (!this.inFlock) {
             final List list = this.worldObj
-                .getEntitiesWithinAABB((Class) Failgull.class, this.boundingBox.expand(10.0, 10.0, 10.0));
+                .getEntitiesWithinAABB(Failgull.class, this.boundingBox.expand(10.0, 10.0, 10.0));
             final int lowest = this.getEntityId();
             Failgull f = null;
             for (final Object o : list) {

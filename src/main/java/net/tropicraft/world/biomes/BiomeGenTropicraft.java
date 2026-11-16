@@ -59,7 +59,7 @@ public class BiomeGenTropicraft extends BiomeGenBase {
 
     public BiomeGenTropicraft(final int biomeID) {
         super(biomeID);
-        this.sandBlock = (Block) Blocks.sand;
+        this.sandBlock = Blocks.sand;
         this.sandMetadata = 0;
         this.spawnableCreatureList.clear();
         this.spawnableMonsterList.clear();

@@ -33,7 +33,7 @@ public class ItemFishBucket extends ItemTropicraft {
             fish.disableDespawning();
             world.spawnEntityInWorld((Entity) fish);
         }
-        final ItemStack stack = new ItemStack((Item) TCItemRegistry.bucketTropicsWater);
+        final ItemStack stack = new ItemStack(TCItemRegistry.bucketTropicsWater);
         TCItemRegistry.bucketTropicsWater.fill(stack, new FluidStack(TCFluidRegistry.tropicsWater, 1000), true);
         return stack;
     }

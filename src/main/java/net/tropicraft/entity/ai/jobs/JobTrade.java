@@ -97,7 +97,7 @@ public class JobTrade extends JobBase {
                 (float) this.ai.maxPFRange,
                 600);
         }
-        this.idTradeBlock = (Block) TCBlockRegistry.purchasePlate;
+        this.idTradeBlock = TCBlockRegistry.purchasePlate;
         this.ai.maxDistanceFromHome = 0.5;
         this.tradeDistTrigger = 4.0f;
         if (this.tradeBlockPos == null) {

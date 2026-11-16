@@ -2,7 +2,6 @@ package net.tropicraft.block;
 
 import java.util.Random;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.util.MathHelper;
@@ -37,7 +36,7 @@ public class BlockTropicraftOre extends BlockTropicraft {
     }
 
     public int quantityDroppedWithBonus(final int metadata, final Random random) {
-        if (metadata > 0 && Item.getItemFromBlock((Block) this) != this.getItemDropped(0, random, metadata)) {
+        if (metadata > 0 && Item.getItemFromBlock(this) != this.getItemDropped(0, random, metadata)) {
             int j = random.nextInt(metadata + 2) - 1;
             if (j < 0) {
                 j = 0;
@@ -48,7 +47,7 @@ public class BlockTropicraftOre extends BlockTropicraft {
     }
 
     public int getExpDrop(final IBlockAccess world, final int metadata, final int fortune) {
-        if (this.getItemDropped(metadata, this.rand, fortune) != Item.getItemFromBlock((Block) this)) {
+        if (this.getItemDropped(metadata, this.rand, fortune) != Item.getItemFromBlock(this)) {
             int j1 = 0;
             if (this == TCBlockRegistry.azuriteOre) {
                 j1 = MathHelper.getRandomIntegerInRange(this.rand, 5, 7);

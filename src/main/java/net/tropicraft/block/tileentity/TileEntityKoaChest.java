@@ -152,7 +152,7 @@ public class TileEntityKoaChest extends TileEntityChest implements IInventory {
     public int getHomeKoaCount() {
         final float dist = 160.0f;
         final List<ICoroAI> ents = (List<ICoroAI>) this.worldObj.getEntitiesWithinAABB(
-            (Class) ICoroAI.class,
+            ICoroAI.class,
             AxisAlignedBB
                 .getBoundingBox(
                     (double) this.xCoord,
@@ -297,6 +297,6 @@ public class TileEntityKoaChest extends TileEntityChest implements IInventory {
     }
 
     public Block getBlockType() {
-        return (Block) TCBlockRegistry.koaChest;
+        return TCBlockRegistry.koaChest;
     }
 }

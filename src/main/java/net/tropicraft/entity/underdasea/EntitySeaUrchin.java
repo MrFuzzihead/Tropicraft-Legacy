@@ -59,7 +59,7 @@ public class EntitySeaUrchin extends EntityEchinoderm {
     }
 
     protected Item getDropItem() {
-        return (Item) (this.isChild() ? null : TCItemRegistry.seaUrchinRoe);
+        return (this.isChild() ? null : TCItemRegistry.seaUrchinRoe);
     }
 
     public EntityEchinodermEgg createEgg() {

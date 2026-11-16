@@ -1,6 +1,5 @@
 package net.tropicraft.item.placeable;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -65,7 +64,7 @@ public class ItemUmbrella extends ItemTropicraftColored {
                 final int y = j + 4;
                 for (int x = i - 3; x <= i + 2; ++x) {
                     for (int z = k - 3; z <= k + 2; ++z) {
-                        world.setBlock(x, y, z, (Block) TCBlockRegistry.rainStopper);
+                        world.setBlock(x, y, z, TCBlockRegistry.rainStopper);
                     }
                 }
             }

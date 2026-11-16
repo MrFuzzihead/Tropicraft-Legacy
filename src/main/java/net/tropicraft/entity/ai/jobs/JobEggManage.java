@@ -58,7 +58,7 @@ public class JobEggManage extends JobBase {
         if (this.eggSpawnCountdown == -1 && this.ent.worldObj.getWorldTime() % 80L == 0L) {
             this.eggSpawnCountdown = this.eggSpawnCountdownMax;
             final List<SpiderEgg> foundEggs = (List<SpiderEgg>) this.ent.worldObj.getEntitiesWithinAABB(
-                (Class) SpiderEgg.class,
+                SpiderEgg.class,
                 this.ent.boundingBox.expand(
                     (double) this.eggScanRangeMotherToEgg,
                     (double) this.eggScanRangeMotherToEgg,

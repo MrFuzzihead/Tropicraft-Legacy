@@ -8,7 +8,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityFishHook;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
@@ -87,7 +86,7 @@ public class EntityTropicalFish extends EntityTropicraftWaterMob {
 
     public void checkForLeader() {
         final List list = this.worldObj
-            .getEntitiesWithinAABB((Class) EntityTropicalFish.class, this.boundingBox.expand(10.0, 10.0, 10.0));
+            .getEntitiesWithinAABB(EntityTropicalFish.class, this.boundingBox.expand(10.0, 10.0, 10.0));
         for (final Object ent : list) {
             if (((EntityTropicalFish) ent).getColor() == this.getColor()) {
                 if (this.getEntityId() > ((Entity) ent).getEntityId()) {
@@ -125,7 +124,7 @@ public class EntityTropicalFish extends EntityTropicraftWaterMob {
 
     public void checkForHook() {
         final List list = this.worldObj
-            .getEntitiesWithinAABB((Class) EntityFishHook.class, this.boundingBox.expand(10.0, 10.0, 10.0));
+            .getEntitiesWithinAABB(EntityFishHook.class, this.boundingBox.expand(10.0, 10.0, 10.0));
         if (list.isEmpty()) {
             this.targetHook = false;
             this.hook = null;
@@ -149,16 +148,13 @@ public class EntityTropicalFish extends EntityTropicraftWaterMob {
             .getItem() != TCItemRegistry.fishingNet) {
             return false;
         }
-        if (!entityplayer.inventory.hasItem((Item) TCItemRegistry.bucketTropicsWater)) {
+        if (!entityplayer.inventory.hasItem(TCItemRegistry.bucketTropicsWater)) {
             return false;
         }
         for (int i = 0; i < entityplayer.inventory.mainInventory.length; ++i) {
             if (entityplayer.inventory.getStackInSlot(i) != null && entityplayer.inventory.getStackInSlot(i)
                 .getItem() == TCItemRegistry.bucketTropicsWater) {
-                entityplayer.inventory.mainInventory[i] = new ItemStack(
-                    (Item) TCItemRegistry.fishBucket,
-                    1,
-                    this.getColor());
+                entityplayer.inventory.mainInventory[i] = new ItemStack(TCItemRegistry.fishBucket, 1, this.getColor());
                 this.setDead();
                 entityplayer.swingItem();
                 return true;

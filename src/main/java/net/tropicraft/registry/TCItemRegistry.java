@@ -355,10 +355,8 @@ public class TCItemRegistry {
             .setUnlocalizedName("Trade Winds");
         TCItemRegistry.portalEnchanter = new ItemPortalEnchanter();
         TCItemRegistry.bambooMug = new ItemTropicraft().setMaxStackSize(16);
-        TCItemRegistry.tropiFrame = new ItemTCItemFrame((Class) EntityTCItemFrame.class, true)
-            .setUnlocalizedName("tropiFrame");
-        TCItemRegistry.koaFrame = new ItemTCItemFrame((Class) EntityTCItemFrame.class, false)
-            .setUnlocalizedName("koaFrame");
+        TCItemRegistry.tropiFrame = new ItemTCItemFrame(EntityTCItemFrame.class, true).setUnlocalizedName("tropiFrame");
+        TCItemRegistry.koaFrame = new ItemTCItemFrame(EntityTCItemFrame.class, false).setUnlocalizedName("koaFrame");
         TCItemRegistry.cocktail = new ItemCocktail(TCCreativeTabRegistry.tabFood);
         TCItemRegistry.snareTrap = new ItemSnareTrap().setUnlocalizedName("snareTrap");
         TCItemRegistry.encTropica = new ItemTropBook("encTropica").setUnlocalizedName("encTropica");

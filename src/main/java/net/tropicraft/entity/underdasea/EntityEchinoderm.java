@@ -99,7 +99,7 @@ public abstract class EntityEchinoderm extends EntityWaterMob {
         EntityEchinoderm closestMate = null;
         double closestSqDist = -1.0;
         final AxisAlignedBB aabb = this.boundingBox.expand(8.0, 8.0, 8.0);
-        for (final Object obj : this.worldObj.getEntitiesWithinAABB((Class) this.getClass(), aabb)) {
+        for (final Object obj : this.worldObj.getEntitiesWithinAABB(this.getClass(), aabb)) {
             if (obj == this) {
                 continue;
             }

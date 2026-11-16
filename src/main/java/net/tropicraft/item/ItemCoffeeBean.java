@@ -36,9 +36,9 @@ public class ItemCoffeeBean extends ItemTropicraftMulti implements IPlantable {
 
     @Override
     public void getSubItems(final Item item, final CreativeTabs tab, final List list) {
-        list.add(new ItemStack((Item) this, 1, 0));
-        list.add(new ItemStack((Item) this, 1, 1));
-        list.add(new ItemStack((Item) this, 1, 2));
+        list.add(new ItemStack(this, 1, 0));
+        list.add(new ItemStack(this, 1, 1));
+        list.add(new ItemStack(this, 1, 2));
     }
 
     @SideOnly(Side.CLIENT)
@@ -76,7 +76,7 @@ public class ItemCoffeeBean extends ItemTropicraftMulti implements IPlantable {
     }
 
     public Block getPlant(final IBlockAccess world, final int x, final int y, final int z) {
-        return (Block) TCBlockRegistry.coffeePlant;
+        return TCBlockRegistry.coffeePlant;
     }
 
     public int getPlantMetadata(final IBlockAccess world, final int x, final int y, final int z) {
@@ -103,7 +103,7 @@ public class ItemCoffeeBean extends ItemTropicraftMulti implements IPlantable {
         if (!world.isAirBlock(x, y + 1, z)) {
             return false;
         }
-        world.setBlock(x, y + 1, z, (Block) TCBlockRegistry.coffeePlant, 0, 2);
+        world.setBlock(x, y + 1, z, TCBlockRegistry.coffeePlant, 0, 2);
         --stack.stackSize;
         return true;
     }

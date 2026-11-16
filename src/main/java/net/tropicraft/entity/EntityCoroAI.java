@@ -159,6 +159,7 @@ public class EntityCoroAI extends EntityLand implements ICoroAI, IMob {
 
     public void onLivingUpdate() {
         super.onLivingUpdate();
+        this.dropCreativeTarget();
         this.agent.onLivingUpdateTick();
         if (this.getAIAgent().activeFormation != null && this == this.getAIAgent().activeFormation.leader) {
             this.motionX *= 0.8;
@@ -170,6 +171,28 @@ public class EntityCoroAI extends EntityLand implements ICoroAI, IMob {
         if (this.worldObj.isRemote && this.isInWater()) {
             this.motionY += 0.03;
         }
+    }
+
+    /**
+     * A creative player must not stay on the target list.
+     * <p>
+     * CoroUtil's {@code JobHunt.hookHit} records the attacker before anything asks {@link #isEnemy}, and its own
+     * expiry only drops the target once {@code retaliateTicks} runs out - so a creative player's stray hit got them
+     * chased for that whole window, and {@code JobAttackTargetShare} handed the same target to every mob nearby
+     * (issue #50). Vanilla's {@code EntityAITarget} does this check itself; CoroAI's job system does not.
+     * </p>
+     */
+    private void dropCreativeTarget() {
+        if (isCreativePlayer(this.agent.entityToAttack)) {
+            this.agent.entityToAttack = null;
+        }
+        if (isCreativePlayer(this.agent.retaliateEntity)) {
+            this.agent.retaliateEntity = null;
+        }
+    }
+
+    private static boolean isCreativePlayer(final Entity entity) {
+        return entity instanceof EntityPlayer && ((EntityPlayer) entity).capabilities.isCreativeMode;
     }
 
     protected String getLivingSound() {

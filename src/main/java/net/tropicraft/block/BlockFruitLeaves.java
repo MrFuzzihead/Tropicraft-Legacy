@@ -3,7 +3,6 @@ package net.tropicraft.block;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -41,7 +40,7 @@ public class BlockFruitLeaves extends BlockLeaves {
         final float par6, final int par7) {
         if (!par1World.isRemote && par1World.rand.nextInt(3) == 0) {
             final Item item = this.getItemDropped(meta, par1World.rand, par7);
-            if (item == Item.getItemFromBlock((Block) TCBlockRegistry.saplings)) {
+            if (item == Item.getItemFromBlock(TCBlockRegistry.saplings)) {
                 super.dropBlockAsItem(par1World, x, y, z, new ItemStack(item, 1, this.damageDropped(meta) + 2));
             } else {
                 super.dropBlockAsItem(par1World, x, y, z, new ItemStack(item, 1, this.damageDropped(meta)));
@@ -87,18 +86,18 @@ public class BlockFruitLeaves extends BlockLeaves {
     public Item getItemDropped(final int metadata, final Random random, final int j) {
         final int treeType = metadata & 0x3;
         if (random.nextFloat() >= 0.8f) {
-            return Item.getItemFromBlock((Block) TCBlockRegistry.saplings);
+            return Item.getItemFromBlock(TCBlockRegistry.saplings);
         }
         if (treeType == 0) {
-            return (Item) TCItemRegistry.grapefruit;
+            return TCItemRegistry.grapefruit;
         }
         if (treeType == 1) {
-            return (Item) TCItemRegistry.lemon;
+            return TCItemRegistry.lemon;
         }
         if (treeType == 2) {
-            return (Item) TCItemRegistry.lime;
+            return TCItemRegistry.lime;
         }
-        return (Item) TCItemRegistry.orange;
+        return TCItemRegistry.orange;
     }
 
     public IIcon getIcon(final int var1, final int meta) {

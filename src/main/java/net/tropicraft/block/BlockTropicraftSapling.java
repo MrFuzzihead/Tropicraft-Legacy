@@ -115,7 +115,7 @@ public class BlockTropicraftSapling extends BlockSapling implements IGrowable {
         if (gen != null) {
             world.setBlockToAir(x, y, z);
             if (!gen.generate(world, rand, x, y, z)) {
-                world.setBlock(x, y, z, (Block) this, type, 3);
+                world.setBlock(x, y, z, this, type, 3);
             }
         }
     }

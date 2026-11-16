@@ -6,7 +6,6 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.tileentity.TileEntityMobSpawner;
@@ -27,8 +26,8 @@ public class WorldGenHomeTree extends TCGenBase {
 
     public WorldGenHomeTree(final World world, final Random random) {
         super(world, random);
-        this.woodID = (Block) TCBlockRegistry.logs;
-        this.leafID = (Block) TCBlockRegistry.rainforestLeaves;
+        this.woodID = TCBlockRegistry.logs;
+        this.leafID = TCBlockRegistry.rainforestLeaves;
         this.branchList = new ArrayList<BranchNode>();
     }
 
@@ -124,7 +123,7 @@ public class WorldGenHomeTree extends TCGenBase {
             // oak stuck in the middle of the mahogany trunk - see issue #32.
             this.placeBlock(trunkX, y, trunkZ, this.woodID, this.woodMeta, false);
         }
-        this.worldObj.setBlock(trunkX - 1, height + j, trunkZ - 1, (Block) TCBlockRegistry.bambooChest);
+        this.worldObj.setBlock(trunkX - 1, height + j, trunkZ - 1, TCBlockRegistry.bambooChest);
         final TileEntityChest chest = (TileEntityChest) this.worldObj.getTileEntity(trunkX - 1, height + j, trunkZ - 1);
         if (chest != null) {
             for (int treasure = this.rand.nextInt(6) + 4, x = 0; x < treasure; ++x) {
@@ -396,13 +395,13 @@ public class WorldGenHomeTree extends TCGenBase {
             return new ItemStack(TCItemRegistry.bambooChute, this.rand.nextInt(20) + 1);
         }
         if (picker < 8) {
-            return new ItemStack((Item) TCItemRegistry.coconutBomb, this.rand.nextInt(3) + 1);
+            return new ItemStack(TCItemRegistry.coconutBomb, this.rand.nextInt(3) + 1);
         }
         if (picker < 10) {
-            return new ItemStack((Item) TCItemRegistry.scale, this.rand.nextInt(3) + 1);
+            return new ItemStack(TCItemRegistry.scale, this.rand.nextInt(3) + 1);
         }
         if (picker < 14) {
-            return new ItemStack((Item) TCItemRegistry.cookedFrogLeg, this.rand.nextInt(4) + 1);
+            return new ItemStack(TCItemRegistry.cookedFrogLeg, this.rand.nextInt(4) + 1);
         }
         if (picker <= 15) {
             return new ItemStack(TCItemRegistry.recordTradeWinds, 1);
@@ -410,7 +409,7 @@ public class WorldGenHomeTree extends TCGenBase {
         if (picker == 16) {
             return new ItemStack(TCItemRegistry.recordEasternIsles, 1);
         }
-        return new ItemStack((Item) TCItemRegistry.ore, 1, 3);
+        return new ItemStack(TCItemRegistry.ore, 1, 3);
     }
 
     private class BranchNode {

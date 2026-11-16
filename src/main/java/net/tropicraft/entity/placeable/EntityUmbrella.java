@@ -5,7 +5,6 @@ import java.util.List;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
@@ -209,9 +208,7 @@ public class EntityUmbrella extends Entity {
                     this.riddenByEntity.mountEntity((Entity) this);
                 }
                 if (!flag) {
-                    this.entityDropItem(
-                        new ItemStack((Item) TCItemRegistry.umbrella, 1, this.getDamageFromColor()),
-                        0.0f);
+                    this.entityDropItem(new ItemStack(TCItemRegistry.umbrella, 1, this.getDamageFromColor()), 0.0f);
                 }
                 this.setDead();
                 final int y = this.spawnY + 4;

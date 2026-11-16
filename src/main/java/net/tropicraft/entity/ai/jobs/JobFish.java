@@ -6,7 +6,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Items;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.util.DamageSource;
 import net.tropicraft.entity.underdasea.EntityTropicraftWaterMob;
@@ -319,11 +318,10 @@ public class JobFish extends JobBase {
 
     protected int getFishCount() {
         int count = 0;
+        count += CoroUtilInventory
+            .getItemCount(this.ai.entInv.inventory, Item.itemRegistry.getNameForObject((Object) Items.fish));
         count += CoroUtilInventory.getItemCount(
-            (IInventory) this.ai.entInv.inventory,
-            Item.itemRegistry.getNameForObject((Object) Items.fish));
-        count += CoroUtilInventory.getItemCount(
-            (IInventory) this.ai.entInv.inventory,
+            this.ai.entInv.inventory,
             Item.itemRegistry.getNameForObject((Object) TCItemRegistry.freshMarlin));
         return count;
     }

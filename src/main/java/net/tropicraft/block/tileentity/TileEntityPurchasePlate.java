@@ -56,8 +56,7 @@ public class TileEntityPurchasePlate extends TileEntity {
         } else if (this.tradeState == 1) {
             ++this.tradeState;
         } else if (this.tradeState == 2 && this.tradeKoa != null && !this.tradeKoa.getAIAgent().ent.isDead) {
-            final JobTrade job = (JobTrade) this.tradeKoa.getAIAgent().jobMan
-                .getFirstJobByClass((Class) JobTrade.class);
+            final JobTrade job = (JobTrade) this.tradeKoa.getAIAgent().jobMan.getFirstJobByClass(JobTrade.class);
             if (job != null) {
                 job.tradeConfirmCallback();
             }

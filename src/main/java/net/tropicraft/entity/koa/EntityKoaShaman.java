@@ -2,7 +2,6 @@ package net.tropicraft.entity.koa;
 
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.tropicraft.entity.ai.jobs.JobQuestGiver;
@@ -30,7 +29,7 @@ public class EntityKoaShaman extends EntityKoaBase {
 
     public IEntityLivingData onSpawnWithEgg(final IEntityLivingData par1EntityLivingData) {
         this.agent.entInv.setSlotContents(0, new ItemStack(TCItemRegistry.bambooSpear));
-        this.agent.entInv.setSlotContents(1, new ItemStack((Item) TCItemRegistry.swordZirconium));
+        this.agent.entInv.setSlotContents(1, new ItemStack(TCItemRegistry.swordZirconium));
         this.agent.entInv.syncToClient();
         return super.onSpawnWithEgg(par1EntityLivingData);
     }

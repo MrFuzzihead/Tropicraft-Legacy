@@ -1,8 +1,6 @@
 package net.tropicraft.registry;
 
-import net.minecraft.block.Block;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -21,14 +19,14 @@ public class TCFluidRegistry {
     }
 
     public static void postInit() {
-        TCFluidRegistry.tropicsWater.setBlock((Block) TCBlockRegistry.tropicsWater)
+        TCFluidRegistry.tropicsWater.setBlock(TCBlockRegistry.tropicsWater)
             .setUnlocalizedName(TCBlockRegistry.tropicsWater.getUnlocalizedName());
-        TCFluidRegistry.tropicsPortal.setBlock((Block) TCBlockRegistry.tropicsPortal)
+        TCFluidRegistry.tropicsPortal.setBlock(TCBlockRegistry.tropicsPortal)
             .setUnlocalizedName(TCBlockRegistry.tropicsPortal.getUnlocalizedName());
         FluidRegistry.registerFluid(TCFluidRegistry.tropicsWater);
         FluidContainerRegistry.registerFluidContainer(
             TCFluidRegistry.tropicsWater,
-            new ItemStack((Item) TCItemRegistry.bucketTropicsWater),
+            new ItemStack(TCItemRegistry.bucketTropicsWater),
             new ItemStack(Items.bucket));
     }
 

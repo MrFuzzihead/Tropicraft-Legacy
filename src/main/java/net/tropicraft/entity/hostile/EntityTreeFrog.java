@@ -13,7 +13,6 @@ import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.EnumDifficulty;
@@ -51,11 +50,7 @@ public abstract class EntityTreeFrog extends EntityTropicraftAnimal
         this.tasks.addTask(2, (EntityAIBase) new EntityAIWander((EntityCreature) this, 1.0));
         this.targetTasks.addTask(
             1,
-            (EntityAIBase) new EntityAINearestAttackableTarget(
-                (EntityCreature) this,
-                (Class) EntityPlayer.class,
-                0,
-                true));
+            (EntityAIBase) new EntityAINearestAttackableTarget((EntityCreature) this, EntityPlayer.class, 0, true));
     }
 
     public EntityTreeFrog(final World world, final int parType) {
@@ -142,7 +137,7 @@ public abstract class EntityTreeFrog extends EntityTropicraftAnimal
 
     protected void dropFewItems(final boolean par1, final int par2) {
         for (int j = 2, k = 0; k < j; ++k) {
-            this.dropItem((Item) TCItemRegistry.frogLeg, 1);
+            this.dropItem(TCItemRegistry.frogLeg, 1);
         }
     }
 

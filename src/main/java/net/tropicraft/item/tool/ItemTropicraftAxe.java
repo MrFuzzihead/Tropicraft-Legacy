@@ -34,14 +34,14 @@ public class ItemTropicraftAxe extends ItemTropicraftTool {
             Blocks.bookshelf,
             Blocks.log,
             Blocks.log2,
-            (Block) Blocks.chest,
+            Blocks.chest,
             Blocks.pumpkin,
             Blocks.lit_pumpkin,
-            (Block) TCBlockRegistry.logs,
-            (Block) TCBlockRegistry.mahoganyStairs,
-            (Block) TCBlockRegistry.palmFence,
-            (Block) TCBlockRegistry.palmFenceGate,
-            (Block) TCBlockRegistry.palmStairs,
-            (Block) TCBlockRegistry.planks);
+            TCBlockRegistry.logs,
+            TCBlockRegistry.mahoganyStairs,
+            TCBlockRegistry.palmFence,
+            TCBlockRegistry.palmFenceGate,
+            TCBlockRegistry.palmStairs,
+            TCBlockRegistry.planks);
     }
 }

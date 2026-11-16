@@ -71,7 +71,7 @@ public class BlockPineapple extends BlockTallFlowers implements IGrowable {
         if (world.getBlock(i, j, k) == this && meta < 7 && world.isAirBlock(i, j + 1, k)) {
             final int growth = meta;
             if (growth >= 6) {
-                world.setBlock(i, j + 1, k, (Block) this, 8, 3);
+                world.setBlock(i, j + 1, k, this, 8, 3);
                 world.setBlockMetadataWithNotify(i, j, k, 7, 3);
             } else {
                 world.setBlockMetadataWithNotify(i, j, k, growth + 1, 3);
@@ -133,6 +133,6 @@ public class BlockPineapple extends BlockTallFlowers implements IGrowable {
 
     @Override
     public void func_149853_b(final World world, final Random rand, final int x, final int y, final int z) {
-        world.setBlock(x, y + 1, z, (Block) this, 8, 3);
+        world.setBlock(x, y + 1, z, this, 8, 3);
     }
 }

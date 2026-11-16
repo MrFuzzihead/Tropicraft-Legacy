@@ -23,7 +23,7 @@ public class SpiderBase extends EntityCoroAI implements IMob {
                 return true;
             }
         });
-        this.agent.jobMan.addJob((JobBase) new JobAttackTargetShare(this.agent.jobMan, (Class) SpiderBase.class));
+        this.agent.jobMan.addJob((JobBase) new JobAttackTargetShare(this.agent.jobMan, SpiderBase.class));
         this.agent.shouldAvoid = false;
         this.setSize(1.4f, 0.9f);
     }

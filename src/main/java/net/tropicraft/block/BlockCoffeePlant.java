@@ -71,7 +71,7 @@ public class BlockCoffeePlant extends BlockTropicraft {
             int height;
             for (height = 1; world.getBlock(x, y - height, z) == this; ++height) {}
             if (height < 3 && random.nextInt(this.isFertile(world, x, y - height, z) ? 10 : 20) == 0) {
-                world.setBlock(x, y + 1, z, (Block) this, 0, 2);
+                world.setBlock(x, y + 1, z, this, 0, 2);
             }
         }
     }
@@ -107,8 +107,8 @@ public class BlockCoffeePlant extends BlockTropicraft {
         if ((world.getBlockMetadata(x, y, z) & 0x7) != 0x6) {
             return false;
         }
-        world.setBlock(x, y, z, (Block) this, 0, 3);
-        final ItemStack stack = new ItemStack((Item) TCItemRegistry.coffeeBean, 1, 2);
+        world.setBlock(x, y, z, this, 0, 3);
+        final ItemStack stack = new ItemStack(TCItemRegistry.coffeeBean, 1, 2);
         this.dropBlockAsItem(world, x, y, z, stack);
         return true;
     }
@@ -123,7 +123,7 @@ public class BlockCoffeePlant extends BlockTropicraft {
 
     public ItemStack getPickBlock(final MovingObjectPosition target, final World world, final int x, final int y,
         final int z) {
-        return new ItemStack((Item) TCItemRegistry.coffeeBean, 1, 0);
+        return new ItemStack(TCItemRegistry.coffeeBean, 1, 0);
     }
 
     public int getDamageValue(final World par1World, final int par2, final int par3, final int par4) {

@@ -42,7 +42,7 @@ public class TCBlockEvents {
         ItemStack drop = null;
         if (inHand != null
             && (inHand instanceof ItemSword || inHand.getItemUseAction(new ItemStack(inHand)) == EnumAction.block)) {
-            drop = new ItemStack((Item) TCItemRegistry.pineappleCubes);
+            drop = new ItemStack(TCItemRegistry.pineappleCubes);
         } else {
             drop = new ItemStack(block, 1, 0);
         }
@@ -92,7 +92,7 @@ public class TCBlockEvents {
         ItemStack drop = null;
         if (inHand != null
             && (inHand instanceof ItemSword || inHand.getItemUseAction(new ItemStack(inHand)) == EnumAction.block)) {
-            drop = new ItemStack((Item) TCItemRegistry.coconutChunk);
+            drop = new ItemStack(TCItemRegistry.coconutChunk);
         } else {
             drop = new ItemStack(block, 1, 0);
         }

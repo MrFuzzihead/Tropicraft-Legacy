@@ -9,10 +9,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.zip.CRC32;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.monster.IMob;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -26,14 +28,23 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.DamageSource;
+import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.ChunkProviderServer;
+import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.common.util.FakePlayerFactory;
 import net.tropicraft.block.tileentity.TileEntityKoaChest;
 import net.tropicraft.economy.ItemEntry;
 import net.tropicraft.economy.ItemValues;
+import net.tropicraft.entity.hostile.EntityAshenHunter;
+import net.tropicraft.entity.hostile.EntityEIH;
+import net.tropicraft.entity.hostile.EntityTropiCreeper;
 import net.tropicraft.entity.koa.EntityKoaBase;
+import net.tropicraft.entity.koa.EntityKoaHunter;
+import net.tropicraft.entity.passive.EntityIguana;
 import net.tropicraft.entity.projectile.EntityDart;
 import net.tropicraft.entity.underdasea.EntityTropicalFish;
 import net.tropicraft.info.TCNames;
@@ -46,6 +57,8 @@ import net.tropicraft.util.TropicraftWorldUtils;
 import net.tropicraft.world.biomes.BiomeGenTropicraft;
 import net.tropicraft.world.chunk.ChunkProviderTropicraft;
 import net.tropicraft.world.location.TownKoaVillage;
+
+import com.mojang.authlib.GameProfile;
 
 import build.world.Build;
 import cpw.mods.fml.common.registry.EntityRegistry;
@@ -93,6 +106,9 @@ public final class ServerGameTests {
         itemNamesFollowTheRegisterConvention();
         blockNamesFollowTheRegisterConvention();
         craftingAndSmeltingRecipesAreUnchanged();
+        creativePlayersAreNotTargeted();
+        passiveAnimalsAreNotHostileMobs();
+        hostileMobsDoNotSurvivePeaceful();
         tropicsChunksGenerate();
         deferredDecorationFlushesWhenItsNeighbourhoodLoads();
         return failures;
@@ -758,6 +774,128 @@ public final class ServerGameTests {
             }
         } catch (final Throwable ignored) {
             // best effort: the assertion message carries the numbers
+        }
+    }
+
+    // ---------------------------------------------------------------------------------------------------------
+    // Targeting and mob classification (#50)
+    // ---------------------------------------------------------------------------------------------------------
+
+    /**
+     * A creative player must never become a mob's target, including by hitting it. CoroUtil's {@code JobHunt} records
+     * the attacker before anything asks whether it is an enemy, so a creative player's stray hit used to put them on
+     * the target list and the whole village would hunt them (issue #50).
+     */
+    private static void creativePlayersAreNotTargeted() {
+        final WorldServer tropics = TropicraftWorldUtils.tropics();
+        if (tropics == null) {
+            fail("a creative player is not targeted", "the Tropicraft dimension did not load");
+            return;
+        }
+        final EnumDifficulty difficulty = tropics.difficultySetting;
+        try {
+            final FakePlayer creative = FakePlayerFactory.get(
+                tropics,
+                new GameProfile(
+                    UUID.nameUUIDFromBytes("tropicraft-gametest-creative".getBytes("UTF-8")),
+                    "TCGameTest"));
+            creative.capabilities.isCreativeMode = true;
+            creative.capabilities.disableDamage = true;
+
+            final EntityKoaHunter koa = new EntityKoaHunter(tropics);
+            koa.setPosition(8.5, 100.0, 8.5);
+            tropics.spawnEntityInWorld(koa);
+
+            // Hitting it is the path that bypasses isEnemy entirely.
+            koa.attackEntityFrom(DamageSource.causePlayerDamage(creative), 1.0f);
+            koa.onLivingUpdate();
+            final Entity target = koa.getAIAgent().entityToAttack;
+            assertTrue(
+                "a creative player's hit does not become a Koa's target",
+                target != creative,
+                "the Koa is now targeting " + target);
+
+            // And asking directly must not consider them an enemy either.
+            assertTrue(
+                "a creative player is not an enemy",
+                !koa.isEnemy(creative) && !((EntityTropiCreeper) new EntityTropiCreeper(tropics)).isEnemy(creative),
+                "isEnemy agreed that the creative player is an enemy");
+
+            // A survival player is still an ordinary potential enemy for the non-Koa families.
+            final FakePlayer survival = FakePlayerFactory.get(
+                tropics,
+                new GameProfile(
+                    UUID.nameUUIDFromBytes("tropicraft-gametest-survival".getBytes("UTF-8")),
+                    "TCGameTest2"));
+            survival.capabilities.isCreativeMode = false;
+            survival.capabilities.disableDamage = false;
+            assertTrue(
+                "a survival player is still a potential enemy",
+                new EntityTropiCreeper(tropics).isEnemy(survival),
+                "isEnemy said a survival player is not an enemy");
+            koa.setDead();
+        } catch (final Throwable t) {
+            t.printStackTrace();
+            fail("a creative player is not targeted", t.toString());
+        } finally {
+            tropics.difficultySetting = difficulty;
+        }
+    }
+
+    /** A passive animal must not be classified as a hostile mob; that is what {@code IMob} means to the spawn code. */
+    private static void passiveAnimalsAreNotHostileMobs() {
+        final WorldServer tropics = TropicraftWorldUtils.tropics();
+        if (tropics == null) {
+            fail("a passive animal is not a hostile mob", "the Tropicraft dimension did not load");
+            return;
+        }
+        try {
+            final EntityIguana iguana = new EntityIguana(tropics);
+            assertTrue(
+                "a passive animal is not a hostile mob",
+                !(((Object) iguana) instanceof IMob),
+                "EntityIguana is still declared as IMob");
+        } catch (final Throwable t) {
+            t.printStackTrace();
+            fail("a passive animal is not a hostile mob", t.toString());
+        }
+    }
+
+    /**
+     * Peaceful must remove hostile mobs of every family, not just the CoroAI ones. The CoroAI base class kills itself,
+     * but the Tropicraft mobs that do not share it (the Easter Island Head, the Ashen) have to handle it themselves.
+     */
+    private static void hostileMobsDoNotSurvivePeaceful() {
+        final WorldServer tropics = TropicraftWorldUtils.tropics();
+        if (tropics == null) {
+            fail("hostile mobs do not survive peaceful", "the Tropicraft dimension did not load");
+            return;
+        }
+        final EnumDifficulty difficulty = tropics.difficultySetting;
+        try {
+            tropics.difficultySetting = EnumDifficulty.PEACEFUL;
+            final EntityEIH eih = new EntityEIH(tropics);
+            eih.setPosition(8.5, 100.0, 8.5);
+            tropics.spawnEntityInWorld(eih);
+            eih.onLivingUpdate();
+            assertTrue("the Easter Island Head does not survive peaceful", eih.isDead, "it is still alive");
+
+            final EntityAshenHunter ashen = new EntityAshenHunter(tropics);
+            ashen.setPosition(8.5, 100.0, 8.5);
+            tropics.spawnEntityInWorld(ashen);
+            ashen.onLivingUpdate();
+            assertTrue("the Ashen does not survive peaceful", ashen.isDead, "it is still alive");
+
+            final EntityKoaHunter koa = new EntityKoaHunter(tropics);
+            koa.setPosition(8.5, 100.0, 8.5);
+            tropics.spawnEntityInWorld(koa);
+            koa.onLivingUpdate();
+            assertTrue("the Koa do not survive peaceful", koa.isDead, "it is still alive");
+        } catch (final Throwable t) {
+            t.printStackTrace();
+            fail("hostile mobs do not survive peaceful", t.toString());
+        } finally {
+            tropics.difficultySetting = difficulty;
         }
     }
 

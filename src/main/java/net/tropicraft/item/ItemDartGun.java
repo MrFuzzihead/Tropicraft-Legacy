@@ -52,13 +52,13 @@ public class ItemDartGun extends ItemTropicraft {
             1.0f,
             1.0f / (ItemDartGun.itemRand.nextFloat() * 0.4f + 1.2f) + f * 0.5f);
         int slot = 0;
-        slot = TropicraftUtils.getSlotOfItem(entityplayer.inventory, (Item) TCItemRegistry.dart);
+        slot = TropicraftUtils.getSlotOfItem(entityplayer.inventory, TCItemRegistry.dart);
         if (!world.isRemote && (slot > -1 || entityplayer.capabilities.isCreativeMode)) {
             ItemStack dartStack;
             if (slot > -1) {
                 dartStack = entityplayer.inventory.mainInventory[slot];
             } else {
-                dartStack = new ItemStack((Item) TCItemRegistry.dart, 1, world.rand.nextInt(ItemDart.dartNames.length));
+                dartStack = new ItemStack(TCItemRegistry.dart, 1, world.rand.nextInt(ItemDart.dartNames.length));
             }
             if (!entityplayer.capabilities.isCreativeMode) {
                 if (dartStack.stackSize > 1) {

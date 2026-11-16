@@ -2,7 +2,6 @@ package net.tropicraft.world.worldgen;
 
 import java.util.Random;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
@@ -19,7 +18,7 @@ public class WorldGenCoral extends WorldGenerator {
                 - random.nextInt(8), y = j; (world.isAirBlock(x, y, z) || world.getBlock(x, y - 1, z)
                     .getMaterial() == Material.water) && y > 0; --y) {}
             if (TCBlockRegistry.coral.canBlockStay(world, x, y, z)) {
-                world.setBlock(x, y, z, (Block) TCBlockRegistry.coral, random.nextInt(6), 3);
+                world.setBlock(x, y, z, TCBlockRegistry.coral, random.nextInt(6), 3);
             }
         }
         return true;

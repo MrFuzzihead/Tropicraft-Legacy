@@ -34,7 +34,7 @@ public class ItemSnareTrap extends ItemTropicraft {
             return false;
         }
         final List objs = world.getEntitiesWithinAABB(
-            (Class) EntitySnareTrap.class,
+            EntitySnareTrap.class,
             AxisAlignedBB.getBoundingBox(
                 (double) x,
                 (double) (y - height + 1),

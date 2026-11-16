@@ -23,7 +23,7 @@ public class ItemBambooDoor extends ItemTropicraft {
             return false;
         }
         ++par5;
-        final Block block = (Block) TCBlockRegistry.bambooDoor;
+        final Block block = TCBlockRegistry.bambooDoor;
         if (!par2EntityPlayer.canPlayerEdit(par4, par5, par6, par7, par1ItemStack)
             || !par2EntityPlayer.canPlayerEdit(par4, par5 + 1, par6, par7, par1ItemStack)) {
             return false;

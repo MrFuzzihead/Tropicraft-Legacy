@@ -270,7 +270,7 @@ public class WorldGenEIH extends TCGenBase {
                 break;
             }
             case 6: {
-                block = (Block) TCBlockRegistry.oreBlocks;
+                block = TCBlockRegistry.oreBlocks;
                 meta = oreMeta;
                 break;
             }
@@ -283,6 +283,6 @@ public class WorldGenEIH extends TCGenBase {
     }
 
     static {
-        EIH_BLOCK = (Block) TCBlockRegistry.chunkOHead;
+        EIH_BLOCK = TCBlockRegistry.chunkOHead;
     }
 }

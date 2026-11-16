@@ -3,7 +3,6 @@ package net.tropicraft.block;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockFalling;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -39,7 +38,7 @@ public class BlockMineralSands extends BlockFalling {
     }
 
     public Item getItemDropped(final int meta, final Random rand, final int unused) {
-        return Item.getItemFromBlock((Block) TCBlockRegistry.mineralSands);
+        return Item.getItemFromBlock(TCBlockRegistry.mineralSands);
     }
 
     public void onEntityWalking(final World world, final int x, final int y, final int z, final Entity entity) {

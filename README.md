@@ -68,6 +68,10 @@ The built jars are placed in `build/libs/`. To launch a development client:
 ./gradlew runClient    # on Windows: gradlew.bat runClient
 ```
 
+A note on Java versions: `enableModernJavaSyntax = jabel` lets the sources use syntax newer than Java 8. Jabel
+downgrades **syntax only, not APIs** — `List.of(...)`, `Map.of(...)`, `Optional.isEmpty()` or a record's generated
+methods compile fine and then throw `NoSuchMethodError` on the Java 8 runtime the mod supports. Stick to Java 8 APIs.
+
 Tests: `./gradlew test` runs the JUnit suite with coverage, and `./gradlew gameTestServer` boots a real dedicated
 server with a non-shipped test mod that asserts the game-facing behaviour (villages, registries, the Koa economy,
 worldgen). Coverage from both runs is reported separately and summarised by `./gradlew jacocoCoverageSummary`. See

@@ -2,7 +2,6 @@ package net.tropicraft.item;
 
 import java.util.List;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -70,13 +69,13 @@ public class ItemCurare extends ItemTropicraft {
                 previous = i;
                 ++count;
             } else {
-                ItemStack flower = new ItemStack((Block) TCBlockRegistry.flowers, 1, previous);
+                ItemStack flower = new ItemStack(TCBlockRegistry.flowers, 1, previous);
                 list.add(
                     count + " " + ColorHelper.color(this.getColorValueFromDamage(previous)) + flower.getDisplayName());
                 previous = i;
                 count = 1;
                 if (totalcount == damages.length) {
-                    flower = new ItemStack((Block) TCBlockRegistry.flowers, 1, i);
+                    flower = new ItemStack(TCBlockRegistry.flowers, 1, i);
                     list.add(
                         count + " " + ColorHelper.color(this.getColorValueFromDamage(i)) + flower.getDisplayName());
                 }
