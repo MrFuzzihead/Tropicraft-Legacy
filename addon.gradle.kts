@@ -355,12 +355,16 @@ tasks.register("gameTestServer") {
 tasks.register("jacocoCoverageSummary") {
     group = "verification"
     description = "Prints unit, in-game and combined (union of executed lines) coverage"
+    // Never read a stale unit report: jacocoTestReport depends on `test`. The in-game report is only refreshed by
+    // gameTestServer, so its age is reported below rather than silently trusted.
+    dependsOn(tasks.named("jacocoTestReport"))
 
     val unitXmlPath = project.layout.buildDirectory.file("reports/jacoco/test/jacocoTestReport.xml")
         .get().asFile.absolutePath
     val gameXmlPath = project.layout.buildDirectory.file("reports/jacoco/gameTest/jacocoGameTestReport.xml")
         .get().asFile.absolutePath
     val summaryPath = project.layout.buildDirectory.file("reports/jacoco/summary.txt").get().asFile.absolutePath
+    val gameTestExecPath = gameTestExecFile.get().asFile.absolutePath
 
     doLast {
         // Local functions and only plain captured values, so the action does not reference the build script.
@@ -406,6 +410,13 @@ tasks.register("jacocoCoverageSummary") {
 
         val unit = readPerSourceFile(java.io.File(unitXmlPath))
         val game = readPerSourceFile(java.io.File(gameXmlPath))
+        val gameXmlFile = java.io.File(gameXmlPath)
+        val gameExecFile = java.io.File(gameTestExecPath)
+        val gameNote = when {
+            game.isEmpty() -> " (no gameTestServer run yet)"
+            gameExecFile.isFile && gameExecFile.lastModified() > gameXmlFile.lastModified() -> " (STALE: rerun gameTestServer)"
+            else -> ""
+        }
         if (unit.isEmpty() && game.isEmpty()) {
             throw GradleException("No coverage reports found; run `test jacocoTestReport` or `gameTestServer` first.")
         }
@@ -437,7 +448,7 @@ tasks.register("jacocoCoverageSummary") {
         val lines = listOf(
             "jacoco coverage (executed source lines)",
             "  unit tests : ${unitCovered.cardinality()} (${percent(unitCovered.cardinality(), total)})",
-            "  in-game    : ${gameCovered.cardinality()} (${percent(gameCovered.cardinality(), total)})",
+            "  in-game    : ${gameCovered.cardinality()} (${percent(gameCovered.cardinality(), total)})$gameNote",
             "  combined   : ${union.cardinality()} (${percent(union.cardinality(), total)}) of $total measurable"
         )
         lines.forEach { logger.lifecycle(it) }

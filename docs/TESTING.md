@@ -95,13 +95,14 @@ So there are two reports and one summary:
 
 `jacocoGameTestReport` normalises the dump (`normalizeGameTestClasses` strips the class id from the file names) and
 reports against it. `jacocoCoverageSummary` computes the union of executed source lines, which is the closest thing
-to a single "covered by any test" number that two different class-id spaces allow. Current numbers:
+to a single "covered by any test" number that two different class-id spaces allow. Snapshot from the P1 batches
+(it shrinks when code is deleted; it says `STALE` if `gameTest.exec` is newer than the report it is reading):
 
 ```
 jacoco coverage (executed source lines)
-  unit tests : 76 (0.5%)
-  in-game    : 3192 (22.2%)
-  combined   : 3229 (22.4%) of 14400 measurable
+  unit tests : 88 (0.6%)
+  in-game    : 3139 (21.7%)
+  combined   : 3188 (22.0%) of 14459 measurable
 ```
 
 The in-game run is most of the coverage because a dedicated server loads and touches a large part of the mod while
