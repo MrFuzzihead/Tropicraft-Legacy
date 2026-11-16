@@ -29,7 +29,7 @@ public class RenderTreeFrog extends RenderLiving {
 
     public void renderTreeFrog(final EntityTreeFrog entitytreefrog, final double d, final double d1, final double d2,
         final float f, final float f1) {
-        super.doRender((EntityLiving) entitytreefrog, d, d1, d2, f, f1);
+        super.doRender(entitytreefrog, d, d1, d2, f, f1);
     }
 
     public void doRender(final EntityLiving entityliving, final double d, final double d1, final double d2,

@@ -25,7 +25,7 @@ public class RenderLostMask extends Render {
 
     public void renderLostMask(final EntityLostMask entity, final double d, final double d1, final double d2,
         final float f, final float f1) {
-        this.bindEntityTexture((Entity) entity);
+        this.bindEntityTexture(entity);
         GL11.glPushMatrix();
         GL11.glTranslatef((float) d, (float) d1, (float) d2);
         GL11.glRotatef(f, 0.0f, 1.0f, 0.0f);

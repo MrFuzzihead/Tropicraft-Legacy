@@ -1,7 +1,6 @@
 package net.tropicraft.item;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemHangingEntity;
 import net.minecraft.item.ItemStack;
@@ -39,7 +38,7 @@ public class ItemTCItemFrame extends ItemHangingEntity {
         }
         if (entityhanging != null && entityhanging.onValidSurface()) {
             if (!par3World.isRemote) {
-                par3World.spawnEntityInWorld((Entity) entityhanging);
+                par3World.spawnEntityInWorld(entityhanging);
             }
             --par1ItemStack.stackSize;
         }

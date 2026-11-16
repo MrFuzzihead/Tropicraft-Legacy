@@ -117,7 +117,7 @@ public class ModelMarlin extends ModelBase {
 
     public void setRotationAngles(final float f, final float f1, final float f2, final float f3, final float f4,
         final float f5, final Entity ent) {
-        final float angle = f2 * 3.14159f / 180.0f;
+
         super.setRotationAngles(f, f1, f2, f3, f4, f5, ent);
         if (!this.inWater) {
             this.head.rotateAngleY = (float) Math.sin(f2 * 0.55f) * 0.26f;

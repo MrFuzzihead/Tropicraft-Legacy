@@ -6,8 +6,6 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -57,7 +55,7 @@ public class ItemPineapple extends ItemTallFlowers {
             return false;
         }
         if (world.getBlock(x, y, z) == this.block) {
-            this.block.onBlockPlacedBy(world, x, y, z, (EntityLivingBase) player, stack);
+            this.block.onBlockPlacedBy(world, x, y, z, player, stack);
             this.block.onPostBlockPlaced(world, x, y, z, metadata);
         }
         return true;
@@ -114,7 +112,7 @@ public class ItemPineapple extends ItemTallFlowers {
             .isSolid()) {
             return false;
         }
-        if (world.canPlaceEntityOnSide(this.block, x, y, z, false, side, (Entity) player, itemstack)) {
+        if (world.canPlaceEntityOnSide(this.block, x, y, z, false, side, player, itemstack)) {
             final int meta = this.block.onBlockPlaced(world, x, y, z, side, hitX, hitY, hitZ, 0);
             if (this.placeBlockAt(itemstack, player, world, x, y, z, side, hitX, hitY, hitZ, meta)) {
                 world.playSoundEffect(

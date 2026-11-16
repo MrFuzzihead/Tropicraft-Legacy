@@ -73,15 +73,14 @@ public class EntityManOWar extends EntityWaterMob {
         if (this.inWater) {
             if (this.attackTime == 0) {
                 final List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(
-                    (Entity) this,
+                    this,
                     this.boundingBox.expand(2.0, 8.0, 2.0)
                         .getOffsetBoundingBox(0.0, -8.0, 0.0));
                 for (int i = 0; i < list.size(); ++i) {
                     final Entity ent = (Entity) list.get(i);
-                    if (!(ent instanceof EntityManOWar) && ent instanceof EntityLiving
-                        && ((EntityLiving) ent).isInWater()) {
+                    if (!(ent instanceof EntityManOWar) && ent instanceof EntityLiving && (ent).isInWater()) {
                         final byte byte0 = this.getAttackStrength();
-                        ((EntityLiving) ent).attackEntityFrom(DamageSource.drown, (float) byte0);
+                        (ent).attackEntityFrom(DamageSource.drown, (float) byte0);
                         this.attackTime = 60;
                     }
                 }
@@ -106,7 +105,7 @@ public class EntityManOWar extends EntityWaterMob {
                 this.motionY = this.randomMotionVecY * this.randomMotionSpeed;
                 this.motionZ = this.randomMotionVecZ * this.randomMotionSpeed;
             }
-            final float f2 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
+
             this.renderYawOffset += (-(float) Math.atan2(this.motionX, this.motionZ) * 180.0f / 3.141593f
                 - this.renderYawOffset) * 0.1f;
             this.rotationYaw = this.renderYawOffset;

@@ -180,12 +180,12 @@ public class EntityUmbrella extends Entity {
         }
         this.setRotation(this.rotationYaw += (float) d12, this.rotationPitch);
         final List<?> list = (List<?>) this.worldObj
-            .getEntitiesWithinAABBExcludingEntity((Entity) this, this.boundingBox.expand(0.2f, 0.2, 0.2f));
+            .getEntitiesWithinAABBExcludingEntity(this, this.boundingBox.expand(0.2f, 0.2, 0.2f));
         if (list != null && list.size() > 0) {
             for (int j2 = 0; j2 < list.size(); ++j2) {
                 final Entity entity = (Entity) list.get(j2);
                 if (entity != this.riddenByEntity && entity.canBePushed() && entity instanceof EntityUmbrella) {
-                    entity.applyEntityCollision((Entity) this);
+                    entity.applyEntityCollision(this);
                 }
             }
         }
@@ -204,7 +204,7 @@ public class EntityUmbrella extends Entity {
                 && ((EntityPlayer) damagesource.getEntity()).capabilities.isCreativeMode;
             if (flag || this.getDamage() > 40.0f) {
                 if (this.riddenByEntity != null) {
-                    this.riddenByEntity.mountEntity((Entity) this);
+                    this.riddenByEntity.mountEntity(this);
                 }
                 if (!flag) {
                     this.entityDropItem(new ItemStack(TCItemRegistry.umbrella, 1, this.getDamageFromColor()), 0.0f);

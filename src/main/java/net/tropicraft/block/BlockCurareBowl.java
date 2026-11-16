@@ -3,7 +3,6 @@ package net.tropicraft.block;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -42,7 +41,7 @@ public class BlockCurareBowl extends BlockTropicraft implements ITileEntityProvi
                             (double) (par3 + var10),
                             (double) (par4 + var11),
                             var9);
-                        par1World.spawnEntityInWorld((Entity) item);
+                        par1World.spawnEntityInWorld(item);
                     }
                 }
             } else {

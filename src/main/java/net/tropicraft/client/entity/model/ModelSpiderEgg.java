@@ -24,7 +24,7 @@ public class ModelSpiderEgg extends ModelBase {
         this.body.mirror = false;
         float bodyWidth = 10.0f;
         float bodyHeight = 5.0f;
-        final float entHeight = 2.0f;
+
         (this.body3 = new ModelRenderer((ModelBase) this, 0, 8)).addBox(
             -bodyWidth / 2.0f,
             -bodyHeight / 2.0f,

@@ -1,7 +1,6 @@
 package net.tropicraft.event;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.tropicraft.util.EffectHelper;
 
@@ -21,10 +20,9 @@ public class TCPacketEvents {
             final NBTTagCompound nbt = PacketHelper.readNBTTagCompound(event.packet.payload());
             final String packetCommand = nbt.getString("packetCommand");
             if (packetCommand.equals("effectAdd")) {
-                EffectHelper
-                    .addEntry((EntityLivingBase) Minecraft.getMinecraft().thePlayer, nbt.getInteger("effectTime"));
+                EffectHelper.addEntry(Minecraft.getMinecraft().thePlayer, nbt.getInteger("effectTime"));
             } else if (packetCommand.equals("effectRemove")) {
-                EffectHelper.removeEntry((EntityLivingBase) Minecraft.getMinecraft().thePlayer);
+                EffectHelper.removeEntry(Minecraft.getMinecraft().thePlayer);
             }
         } catch (Exception ex) {
             FMLLog.warning("[Tropicraft] Could not read a packet from the server: %s", ex);

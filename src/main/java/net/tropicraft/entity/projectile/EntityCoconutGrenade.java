@@ -1,7 +1,5 @@
 package net.tropicraft.entity.projectile;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityThrowable;
@@ -15,12 +13,12 @@ public class EntityCoconutGrenade extends EntityThrowable implements IProjectile
     }
 
     public EntityCoconutGrenade(final World world, final EntityPlayer player) {
-        super(world, (EntityLivingBase) player);
+        super(world, player);
     }
 
     protected void onImpact(final MovingObjectPosition mop) {
         if (!this.worldObj.isRemote) {
-            this.worldObj.createExplosion((Entity) this, this.posX, this.posY, this.posZ, 2.4f, true);
+            this.worldObj.createExplosion(this, this.posX, this.posY, this.posZ, 2.4f, true);
         }
     }
 }

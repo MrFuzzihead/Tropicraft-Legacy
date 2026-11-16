@@ -8,7 +8,6 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
@@ -98,7 +97,7 @@ public class TileEntityPurchasePlateRenderer extends TileEntitySpecialRenderer {
         final ItemStack is = ItemValues.itemsBuyable.get(par1TileEntityMobSpawner.itemIndex).item;
         if (is != null) {
             RenderManager.instance.itemRenderer.renderItem(
-                (EntityLivingBase) FMLClientHandler.instance()
+                FMLClientHandler.instance()
                     .getClient().thePlayer,
                 is,
                 0);

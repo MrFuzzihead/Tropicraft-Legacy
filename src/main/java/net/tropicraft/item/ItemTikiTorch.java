@@ -2,7 +2,6 @@ package net.tropicraft.item;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -54,7 +53,7 @@ public class ItemTikiTorch extends ItemTropicraft {
             .isSolid()) {
             return false;
         }
-        if (!world.canPlaceEntityOnSide(block, x, y, z, false, side, (Entity) player, itemstack)) {
+        if (!world.canPlaceEntityOnSide(block, x, y, z, false, side, player, itemstack)) {
             return false;
         }
         final Block blockBelow = world.getBlock(x, y - 1, z);

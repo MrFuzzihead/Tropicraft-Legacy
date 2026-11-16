@@ -1,7 +1,6 @@
 package net.tropicraft.entity;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
@@ -143,7 +142,7 @@ public class EntityCoroAI extends EntityLand implements ICoroAI, IMob {
     }
 
     public void attackMelee(final Entity ent, final float dist) {
-        ent.attackEntityFrom(DamageSource.causeMobDamage((EntityLivingBase) this), 2.0f);
+        ent.attackEntityFrom(DamageSource.causeMobDamage(this), 2.0f);
     }
 
     public void attackRanged(final Entity ent, final float dist) {}

@@ -2,7 +2,6 @@ package net.tropicraft.entity.passive;
 
 import java.util.List;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityFlying;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.projectile.EntitySnowball;
@@ -101,7 +100,7 @@ public class Failgull extends EntityFlying {
         if (!this.worldObj.isRemote && this.worldObj.rand.nextInt(20) == 0) {
             final EntitySnowball s = new EntitySnowball(this.worldObj, this.posX, this.posY, this.posZ);
             s.setThrowableHeading(0.0, 0.0, 0.0, 0.0f, 0.0f);
-            this.worldObj.spawnEntityInWorld((Entity) s);
+            this.worldObj.spawnEntityInWorld(s);
         }
     }
 
@@ -112,7 +111,7 @@ public class Failgull extends EntityFlying {
         final AxisAlignedBB axisalignedbb = this.boundingBox.copy();
         for (int i = 1; i < par7; ++i) {
             axisalignedbb.offset(d4, d5, d6);
-            if (!this.worldObj.getCollidingBoundingBoxes((Entity) this, axisalignedbb)
+            if (!this.worldObj.getCollidingBoundingBoxes(this, axisalignedbb)
                 .isEmpty()) {
                 return false;
             }

@@ -115,7 +115,7 @@ public class TCMiscEvents {
                 continue;
             }
             for (int ii = 0; ii < world.playerEntities.size(); ++ii) {
-                final Entity entity1 = (Entity) world.playerEntities.get(ii);
+                final Entity entity1 = world.playerEntities.get(ii);
                 if (entity1 instanceof EntityPlayerMP && ((EntityPlayerMP) entity1).isPotionActive(Potion.confusion)
                     && entity1.ridingEntity instanceof EntityChair) {
                     entity1.ridingEntity = null;

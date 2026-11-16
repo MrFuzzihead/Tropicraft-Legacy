@@ -1,8 +1,6 @@
 package net.tropicraft.item;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -24,12 +22,12 @@ public class ItemTropicraftLeafballNew extends ItemTropicraftLeafball {
             --itemstack.stackSize;
         }
         world.playSoundAtEntity(
-            (Entity) entityplayer,
+            entityplayer,
             "random.bow",
             0.5f,
             0.4f / (ItemTropicraftLeafballNew.itemRand.nextFloat() * 0.4f + 0.8f));
         if (!world.isRemote) {
-            world.spawnEntityInWorld((Entity) new EntityTropicraftLeafballNew(world, (EntityLivingBase) entityplayer));
+            world.spawnEntityInWorld(new EntityTropicraftLeafballNew(world, entityplayer));
         }
         return itemstack;
     }

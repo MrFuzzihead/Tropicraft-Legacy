@@ -44,7 +44,7 @@ public class ItemFireArmor extends ItemTropicraftArmor {
                 MathHelper.floor_double(player.posX),
                 MathHelper.floor_double(player.posY + 1.0),
                 MathHelper.floor_double(player.posZ))) {
-                itemStack.damageItem(-1, (EntityLivingBase) player);
+                itemStack.damageItem(-1, player);
             }
         }
     }
@@ -253,10 +253,10 @@ public class ItemFireArmor extends ItemTropicraftArmor {
                 for (int layer = 0; layer < 4; ++layer) {
                     for (int j = 0; j < ItemFireArmor.fxLayers[layer].size(); ++j) {
                         final EntityFX entity1 = (EntityFX) ItemFireArmor.fxLayers[layer].get(j);
-                        if (entity1 instanceof EntityFlameFX && player.getDistanceToEntity((Entity) entity1) < 4.0f
+                        if (entity1 instanceof EntityFlameFX && player.getDistanceToEntity(entity1) < 4.0f
                             && entity1.posY > player.posY) {
-                            if (player.getDistanceToEntity((Entity) entity1) < 2.0f || rand.nextInt(5) == 0) {
-                                this.moveEnt((Entity) entity1, (Entity) player, false);
+                            if (player.getDistanceToEntity(entity1) < 2.0f || rand.nextInt(5) == 0) {
+                                this.moveEnt(entity1, player, false);
                             }
                         }
                     }
@@ -316,13 +316,13 @@ public class ItemFireArmor extends ItemTropicraftArmor {
             final float rad_angle = angle * 0.01745329f;
             final float rad_pitch = pitch * 0.01745329f * 2.0f;
             final float uhh = 1.0f;
-            final float newY = uhh * (float) Math.sin(rad_pitch);
+
             float projection = uhh * (float) Math.cos(rad_pitch);
             projection = 1.0f;
             final float newX = projection * (float) Math.cos(rad_angle);
             final float newZ = projection * (float) Math.sin(rad_angle);
             final float newVecX = newX / uhh;
-            final float newVecY = newY / uhh;
+
             final float newVecZ = newZ / uhh;
             ent.motionY += vecY / var2 * speed;
             ent.motionX += newVecX * speed;

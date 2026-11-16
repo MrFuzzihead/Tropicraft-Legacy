@@ -1,6 +1,5 @@
 package net.tropicraft.item;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
@@ -26,13 +25,10 @@ public class ItemCoconutBomb extends ItemTropicraft {
             }
             return itemstack;
         }
-        world.playSoundAtEntity(
-            (Entity) player,
-            "random.bow",
-            0.5f,
-            0.4f / (ItemCoconutBomb.itemRand.nextFloat() * 0.4f + 0.8f));
+        world
+            .playSoundAtEntity(player, "random.bow", 0.5f, 0.4f / (ItemCoconutBomb.itemRand.nextFloat() * 0.4f + 0.8f));
         if (!world.isRemote) {
-            world.spawnEntityInWorld((Entity) new EntityCoconutGrenade(world, player));
+            world.spawnEntityInWorld(new EntityCoconutGrenade(world, player));
             --itemstack.stackSize;
         }
         return itemstack;

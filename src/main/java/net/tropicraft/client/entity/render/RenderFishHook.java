@@ -25,7 +25,7 @@ public class RenderFishHook extends Render {
         GL11.glScalef(0.5f, 0.5f, 0.5f);
         final int i = 1;
         final byte byte0 = 2;
-        this.bindEntityTexture((Entity) entityfish);
+        this.bindEntityTexture(entityfish);
         final Tessellator tessellator = Tessellator.instance;
         final float f2 = (i * 8 + 0) / 128.0f;
         final float f3 = (i * 8 + 8) / 128.0f;
@@ -50,8 +50,7 @@ public class RenderFishHook extends Render {
                 + (entityfish.angler.rotationYaw - entityfish.angler.prevRotationYaw) * f1) * 3.141593f / 180.0f;
             final double d3 = MathHelper.sin(f9);
             final double d4 = MathHelper.cos(f9);
-            final float f10 = entityfish.angler.getSwingProgress(f1);
-            final float f11 = MathHelper.sin(MathHelper.sqrt_float(f10) * 3.141593f);
+
             final Vec3 vec3d = Vec3.createVectorHelper(-0.5, 0.03, 0.8);
             double d5 = entityfish.angler.prevPosX + (entityfish.angler.posX - entityfish.angler.prevPosX) * f1
                 + vec3d.xCoord;

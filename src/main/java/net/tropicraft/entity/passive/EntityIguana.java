@@ -4,7 +4,6 @@ import java.util.List;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -35,7 +34,7 @@ public class EntityIguana extends EntityTropicraftAnimal {
         final Entity entity = damagesource.getEntity();
         if (entity instanceof EntityPlayer) {
             final List list = this.worldObj
-                .getEntitiesWithinAABBExcludingEntity((Entity) this, this.boundingBox.expand(32.0, 32.0, 32.0));
+                .getEntitiesWithinAABBExcludingEntity(this, this.boundingBox.expand(32.0, 32.0, 32.0));
             for (int i = 0; i < list.size(); ++i) {
                 final Entity entity2 = (Entity) list.get(i);
                 if (entity2 instanceof EntityIguana) {
@@ -67,7 +66,7 @@ public class EntityIguana extends EntityTropicraftAnimal {
             && entity.boundingBox.minY < this.boundingBox.maxY) {
                 this.attackTime = 20;
                 final byte byte0 = 2;
-                entity.attackEntityFrom(DamageSource.causeMobDamage((EntityLivingBase) this), (float) byte0);
+                entity.attackEntityFrom(DamageSource.causeMobDamage(this), (float) byte0);
             }
     }
 
@@ -95,8 +94,8 @@ public class EntityIguana extends EntityTropicraftAnimal {
         if (this.angerLevel == 0) {
             return null;
         }
-        final EntityPlayer entityplayer = this.worldObj.getClosestVulnerablePlayerToEntity((Entity) this, 16.0);
-        return (Entity) ((entityplayer != null && this.canEntityBeSeen((Entity) entityplayer)) ? entityplayer : null);
+        final EntityPlayer entityplayer = this.worldObj.getClosestVulnerablePlayerToEntity(this, 16.0);
+        return ((entityplayer != null && this.canEntityBeSeen(entityplayer)) ? entityplayer : null);
     }
 
     public float getSoundVolume() {

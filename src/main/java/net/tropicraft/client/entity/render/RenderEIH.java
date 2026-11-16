@@ -20,12 +20,12 @@ public class RenderEIH extends RenderLiving {
 
     public void doRender(final EntityLiving entityliving, final double d, final double d1, final double d2,
         final float f, final float f1) {
-        super.doRender((EntityLiving) entityliving, d, d1, d2, f, f1);
+        super.doRender(entityliving, d, d1, d2, f, f1);
     }
 
     public void doRender(final Entity entity, final double d, final double d1, final double d2, final float f,
         final float f1) {
-        this.doRender((EntityLiving) entity, d, d1, d2, f, f1);
+        this.doRender(entity, d, d1, d2, f, f1);
     }
 
     protected void preRenderScale(final EntityEIH entityeih, final float f) {

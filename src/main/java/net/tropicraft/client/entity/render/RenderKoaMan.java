@@ -109,7 +109,7 @@ public class RenderKoaMan extends RenderLiving {
 
     protected void renderLivingLabel(final EntityLiving entityliving, final String s, final double d, final double d1,
         final double d2, final int i) {
-        final float f = entityliving.getDistanceToEntity((Entity) this.renderManager.livingPlayer);
+        final float f = entityliving.getDistanceToEntity(this.renderManager.livingPlayer);
         if (f > i) {
             return;
         }
@@ -153,7 +153,7 @@ public class RenderKoaMan extends RenderLiving {
     protected void passSpecialRender(final EntityLiving entityliving, final double d, final double d1,
         final double d2) {
         if (entityliving instanceof EntityLiving
-            && this.renderManager.livingPlayer.getDistanceToEntity((Entity) entityliving) < 12.0f) {
+            && this.renderManager.livingPlayer.getDistanceToEntity(entityliving) < 12.0f) {
             this.renderName(entityliving, d, d1, d2);
         }
     }
@@ -162,7 +162,7 @@ public class RenderKoaMan extends RenderLiving {
         if (Minecraft.isGuiEnabled() && entitykoa != this.renderManager.livingPlayer) {
             final float f = 1.6f;
             final float f2 = 0.01666667f * f;
-            final float f3 = entitykoa.getDistanceToEntity((Entity) this.renderManager.livingPlayer);
+            final float f3 = entitykoa.getDistanceToEntity(this.renderManager.livingPlayer);
             final float f4 = entitykoa.isSneaking() ? 32.0f : 64.0f;
             final String s = entitykoa.getCustomNameTag();
             if (f3 < f4) {

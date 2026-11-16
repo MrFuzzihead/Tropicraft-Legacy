@@ -117,8 +117,8 @@ to a single "covered by any test" number that two different class-id spaces allo
 ```
 jacoco coverage (executed source lines)
   unit tests : 363 (2.3%)
-  in-game    : 3033 (19.3%)
-  combined   : 3299 (21.0%) of 15703 measurable
+  in-game    : 3075 (19.1%)
+  combined   : 3341 (20.8%) of 16089 measurable
 
 Note: nothing in this harness renders anything. Renderer changes (`RenderWaterMobBase`) and model/animation changes
 (`ModelKoaMan`, `ModelTropiCreeper`, `ModelAshen`) are verified by hand in a client; the checklist for the last such

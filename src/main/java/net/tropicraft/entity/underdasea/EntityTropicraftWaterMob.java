@@ -199,7 +199,7 @@ public abstract class EntityTropicraftWaterMob extends EntityWaterMob {
             }
         }
         if (this.targetEntity == null) {
-            this.targetEntity = (Entity) this.getAttackTarget();
+            this.targetEntity = this.getAttackTarget();
             if (this.rand.nextInt(this.hyperness) == 0 || !this.inWater
                 || (this.randomMotionVecX == 0.0f && this.randomMotionVecY == 0.0f && this.randomMotionVecZ == 0.0f)) {
                 final float f = this.rand.nextFloat() * 3.141593f * 2.0f;
@@ -356,8 +356,7 @@ public abstract class EntityTropicraftWaterMob extends EntityWaterMob {
     public void applyEntityCollision(final Entity entity) {
         super.applyEntityCollision(entity);
         if (this.targetEntity != null && entity.equals((Object) this.targetEntity) && this.attackStrength() != 0) {
-            this.targetEntity
-                .attackEntityFrom(DamageSource.causeMobDamage((EntityLivingBase) this), (float) this.attackStrength());
+            this.targetEntity.attackEntityFrom(DamageSource.causeMobDamage(this), (float) this.attackStrength());
             this.attackTime = 60;
         }
     }

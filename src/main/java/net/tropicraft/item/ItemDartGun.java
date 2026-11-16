@@ -3,8 +3,6 @@ package net.tropicraft.item;
 import java.util.List;
 
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
@@ -45,9 +43,9 @@ public class ItemDartGun extends ItemTropicraft {
         if (f > 1.0f) {
             f = 1.0f;
         }
-        itemstack.damageItem(1, (EntityLivingBase) entityplayer);
+        itemstack.damageItem(1, entityplayer);
         world.playSoundAtEntity(
-            (Entity) entityplayer,
+            entityplayer,
             "dartblow",
             1.0f,
             1.0f / (ItemDartGun.itemRand.nextFloat() * 0.4f + 1.2f) + f * 0.5f);
@@ -72,17 +70,17 @@ public class ItemDartGun extends ItemTropicraft {
             if (itemstack.getItemDamage() == 0) {
                 final EntityDart entitydart = new EntityDart(
                     world,
-                    (Entity) entityplayer,
+                    entityplayer,
                     f * 2.0f,
                     (short) dartStack.getItemDamage());
-                world.spawnEntityInWorld((Entity) entitydart);
+                world.spawnEntityInWorld(entitydart);
             } else {
                 final EntityDart entitydart = new EntityDart(
                     world,
-                    (Entity) entityplayer,
+                    entityplayer,
                     f * 2.0f,
                     (short) (itemstack.getItemDamage() - 1));
-                world.spawnEntityInWorld((Entity) entitydart);
+                world.spawnEntityInWorld(entitydart);
             }
         }
     }

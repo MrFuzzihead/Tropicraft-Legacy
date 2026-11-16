@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
@@ -139,7 +138,7 @@ public class TileEntityEIHMixer extends TileEntity {
                 (double) this.yCoord,
                 (double) this.zCoord,
                 this.ingredients[0]);
-            this.worldObj.spawnEntityInWorld((Entity) item);
+            this.worldObj.spawnEntityInWorld(item);
             this.ingredients[0] = null;
         }
         if (this.ingredients[1] != null) {
@@ -149,7 +148,7 @@ public class TileEntityEIHMixer extends TileEntity {
                 (double) this.yCoord,
                 (double) this.zCoord,
                 this.ingredients[1]);
-            this.worldObj.spawnEntityInWorld((Entity) item);
+            this.worldObj.spawnEntityInWorld(item);
             this.ingredients[1] = null;
         }
         this.ticks = 80;
@@ -164,7 +163,7 @@ public class TileEntityEIHMixer extends TileEntity {
             (double) this.yCoord,
             (double) this.zCoord,
             this.result);
-        this.worldObj.spawnEntityInWorld((Entity) e);
+        this.worldObj.spawnEntityInWorld(e);
         final ItemStack container1 = this.ingredients[0].getItem()
             .getContainerItem(this.ingredients[0]);
         if (container1 != null) {
@@ -174,7 +173,7 @@ public class TileEntityEIHMixer extends TileEntity {
                 (double) this.yCoord,
                 (double) this.zCoord,
                 container1);
-            this.worldObj.spawnEntityInWorld((Entity) e);
+            this.worldObj.spawnEntityInWorld(e);
         }
         final ItemStack container2 = this.ingredients[1].getItem()
             .getContainerItem(this.ingredients[1]);
@@ -185,7 +184,7 @@ public class TileEntityEIHMixer extends TileEntity {
                 (double) this.yCoord,
                 (double) this.zCoord,
                 container2);
-            this.worldObj.spawnEntityInWorld((Entity) e);
+            this.worldObj.spawnEntityInWorld(e);
         }
         this.ingredients[0] = null;
         this.ingredients[1] = null;

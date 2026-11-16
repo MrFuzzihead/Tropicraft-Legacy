@@ -16,7 +16,7 @@ public class RenderIguana extends RenderLiving {
 
     public void renderIguana(final EntityIguana entityiguana, final double d, final double d1, final double d2,
         final float f, final float f1) {
-        super.doRender((EntityLiving) entityiguana, d, d1, d2, f, f1);
+        super.doRender(entityiguana, d, d1, d2, f, f1);
     }
 
     public void doRender(final EntityLiving entityliving, final double d, final double d1, final double d2,

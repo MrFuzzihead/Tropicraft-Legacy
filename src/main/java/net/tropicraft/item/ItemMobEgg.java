@@ -85,7 +85,7 @@ public class ItemMobEgg extends ItemTropicraftMulti {
                     if (!world.isRemote) {
                         final EntityTropicalFish fish = new EntityTropicalFish(world);
                         fish.setLocationAndAngles(i + 0.5, (double) j, k + 5.5, 0.0f, 0.0f);
-                        world.spawnEntityInWorld((Entity) fish);
+                        world.spawnEntityInWorld(fish);
                         return true;
                     }
                     break;

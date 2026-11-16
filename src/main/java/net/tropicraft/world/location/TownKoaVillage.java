@@ -1,6 +1,5 @@
 package net.tropicraft.world.location;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.nbt.NBTTagCompound;
@@ -181,8 +180,8 @@ public class TownKoaVillage extends TownObject implements ICustomGen {
                 (double) (this.spawn.posY + parData.coords.posY),
                 (double) (this.spawn.posZ + parData.coords.posZ + 0.5f));
             this.getWorld()
-                .spawnEntityInWorld((Entity) ent);
-            this.addEntity(parData.type, (EntityLivingBase) ent);
+                .spawnEntityInWorld(ent);
+            this.addEntity(parData.type, ent);
             parData.entityUUID = ent.getPersistentID();
             ent.onSpawnWithEgg((IEntityLivingData) null);
         }

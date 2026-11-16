@@ -36,7 +36,7 @@ public class RenderTropicalFish extends RenderWaterMob {
     protected void renderEquippedItems(final EntityLivingBase entityliving, final float f) {
         GL11.glPushMatrix();
         this.fish.Body.postRender(0.045f);
-        this.bindEntityTexture((Entity) entityliving);
+        this.bindEntityTexture(entityliving);
         GL11.glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
         GL11.glTranslatef(0.85f, 0.0f, 0.0f);
         this.mask.renderFish(((EntityTropicalFish) entityliving).getColor() * 2);

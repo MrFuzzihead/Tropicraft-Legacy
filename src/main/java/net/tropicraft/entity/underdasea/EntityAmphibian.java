@@ -124,7 +124,7 @@ public class EntityAmphibian extends EntityCreature {
                 this.motionY = this.randomMotionVecY * this.randomMotionSpeed;
                 this.motionZ = this.randomMotionVecZ * this.randomMotionSpeed;
             }
-            final float f4 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
+
             this.renderYawOffset += (-(float) Math.atan2(this.motionX, this.motionZ) * 180.0f / 3.141593f
                 - this.renderYawOffset) * 0.1f;
             this.rotationYaw = this.renderYawOffset;

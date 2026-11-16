@@ -80,7 +80,7 @@ public class TileEntityKoaChest extends TileEntityChest implements IInventory {
                 // nothing tracks.
                 return;
             }
-            this.worldObj.spawnEntityInWorld((Entity) koa);
+            this.worldObj.spawnEntityInWorld(koa);
             koa.onSpawnWithEgg(null);
             koa.getAIAgent()
                 .spawnedOrNBTReloadedInit();

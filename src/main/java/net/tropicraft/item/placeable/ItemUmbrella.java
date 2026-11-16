@@ -1,6 +1,5 @@
 package net.tropicraft.item.placeable;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -60,7 +59,7 @@ public class ItemUmbrella extends ItemTropicraftColored {
                 if (world.getBlock(i, j, k) == Blocks.snow) {
                     --j;
                 }
-                world.spawnEntityInWorld((Entity) new EntityUmbrella(world, (double) i, j + 1.01, (double) k, color));
+                world.spawnEntityInWorld(new EntityUmbrella(world, (double) i, j + 1.01, (double) k, color));
                 final int y = j + 4;
                 for (int x = i - 3; x <= i + 2; ++x) {
                     for (int z = k - 3; z <= k + 2; ++z) {

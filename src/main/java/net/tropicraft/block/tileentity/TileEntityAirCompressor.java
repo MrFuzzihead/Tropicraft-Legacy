@@ -1,6 +1,5 @@
 package net.tropicraft.block.tileentity;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
@@ -104,7 +103,7 @@ public class TileEntityAirCompressor extends TileEntity {
                 (double) this.yCoord,
                 (double) this.zCoord,
                 this.tank);
-            this.worldObj.spawnEntityInWorld((Entity) tankItem);
+            this.worldObj.spawnEntityInWorld(tankItem);
             this.tank = null;
         }
         this.ticks = 0;

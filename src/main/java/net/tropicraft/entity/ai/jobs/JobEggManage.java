@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
@@ -85,7 +84,7 @@ public class JobEggManage extends JobBase {
             eggSpawn.setPosition(spawnCoords.xCoord, spawnCoords.yCoord, spawnCoords.zCoord);
             eggSpawn.onSpawnWithEgg(null);
             eggSpawn.motherID = this.ai.entID;
-            this.ent.worldObj.spawnEntityInWorld((Entity) eggSpawn);
+            this.ent.worldObj.spawnEntityInWorld(eggSpawn);
             this.eggs.add(eggSpawn);
         }
         if (this.eggs.size() > 0 && this.ent.worldObj.getWorldTime() % 80L == 0L) {
@@ -96,9 +95,9 @@ public class JobEggManage extends JobBase {
                 }
             }
             if (this.eggs.size() > 0 && this.ent.getNavigator()
-                .noPath() && this.ent.getDistanceToEntity((Entity) this.eggs.get(0)) > this.eggMaxDistGuard) {
+                .noPath() && this.ent.getDistanceToEntity(this.eggs.get(0)) > this.eggMaxDistGuard) {
                 this.ai.walkTo(
-                    (Entity) this.ent,
+                    this.ent,
                     MathHelper.floor_double(this.eggs.get(0).posX),
                     MathHelper.floor_double(this.eggs.get(0).posY),
                     MathHelper.floor_double(this.eggs.get(0).posZ),

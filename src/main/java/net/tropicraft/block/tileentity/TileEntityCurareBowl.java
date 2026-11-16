@@ -3,7 +3,6 @@ package net.tropicraft.block.tileentity;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
@@ -96,7 +95,7 @@ public class TileEntityCurareBowl extends TileEntity {
             (double) this.zCoord,
             stack);
         if (!this.worldObj.isRemote) {
-            this.worldObj.spawnEntityInWorld((Entity) result);
+            this.worldObj.spawnEntityInWorld(result);
         }
         this.ingredients.clear();
         this.sync();

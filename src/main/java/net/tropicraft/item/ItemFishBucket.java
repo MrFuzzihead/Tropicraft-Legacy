@@ -3,7 +3,6 @@ package net.tropicraft.item;
 import java.util.List;
 
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -31,7 +30,7 @@ public class ItemFishBucket extends ItemTropicraft {
             fish.setPosition(entityplayer.posX, entityplayer.posY, entityplayer.posZ);
             fish.setColor(itemstack.getItemDamage());
             fish.disableDespawning();
-            world.spawnEntityInWorld((Entity) fish);
+            world.spawnEntityInWorld(fish);
         }
         final ItemStack stack = new ItemStack(TCItemRegistry.bucketTropicsWater);
         TCItemRegistry.bucketTropicsWater.fill(stack, new FluidStack(TCFluidRegistry.tropicsWater, 1000), true);

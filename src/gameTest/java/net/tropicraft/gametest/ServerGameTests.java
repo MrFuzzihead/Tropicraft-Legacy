@@ -950,14 +950,18 @@ public final class ServerGameTests {
         mob.setPosition(x + 0.5, y, z + 0.5);
         world.spawnEntityInWorld(mob);
         final double startX = mob.posX;
+        final double startY = mob.posY;
         final double startZ = mob.posZ;
         boolean everWet = false;
         for (int i = 0; i < 200; ++i) {
             mob.onUpdate();
             everWet |= mob.isInWater();
         }
-        final double moved = Math
-            .sqrt((mob.posX - startX) * (mob.posX - startX) + (mob.posZ - startZ) * (mob.posZ - startZ));
+        // All three axes: a ray mostly swims up and down towards its target depth, and a frozen one does not move in
+        // any of them.
+        final double moved = Math.sqrt(
+            (mob.posX - startX) * (mob.posX - startX) + (mob.posY - startY) * (mob.posY - startY)
+                + (mob.posZ - startZ) * (mob.posZ - startZ));
         assertTrue(
             label + " swims",
             // The seahorse is a slow drifter (about 1.5 blocks in 200 ticks); the failure this catches - the eagle

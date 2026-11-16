@@ -1,6 +1,5 @@
 package net.tropicraft.item.placeable;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -59,8 +58,7 @@ public class ItemChair extends ItemTropicraftColored {
                 if (world.getBlock(i, j, k) == Blocks.snow) {
                     --j;
                 }
-                world.spawnEntityInWorld(
-                    (Entity) new EntityChair(world, (double) i, j + 1.01, (double) k, color, entityplayer));
+                world.spawnEntityInWorld(new EntityChair(world, (double) i, j + 1.01, (double) k, color, entityplayer));
             }
             if (!entityplayer.capabilities.isCreativeMode) {
                 --itemstack.stackSize;

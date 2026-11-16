@@ -2,7 +2,6 @@ package net.tropicraft.entity.ai.jobs;
 
 import java.util.Random;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Vec3;
@@ -65,14 +64,14 @@ public class JobEggHatch extends JobBase {
                         spider.motionX = (rand.nextDouble() - rand.nextDouble()) * 0.5;
                         spider.motionY = (rand.nextDouble() - rand.nextDouble()) * 0.5;
                         spider.motionZ = (rand.nextDouble() - rand.nextDouble()) * 0.5;
-                        this.ent.worldObj.spawnEntityInWorld((Entity) spider);
+                        this.ent.worldObj.spawnEntityInWorld(spider);
                         this.ent.setDead();
                     }
                 }
             }
         } else {
-            final EntityPlayer player = this.ent.worldObj.getClosestVulnerablePlayerToEntity((Entity) this.ent, 48.0);
-            if (player != null && player.canEntityBeSeen((Entity) this.ent)) {
+            final EntityPlayer player = this.ent.worldObj.getClosestVulnerablePlayerToEntity(this.ent, 48.0);
+            if (player != null && player.canEntityBeSeen(this.ent)) {
                 this.startHatching();
             }
         }

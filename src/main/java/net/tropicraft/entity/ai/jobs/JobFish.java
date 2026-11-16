@@ -2,9 +2,7 @@ package net.tropicraft.entity.ai.jobs;
 
 import java.util.Random;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.util.DamageSource;
@@ -103,15 +101,9 @@ public class JobFish extends JobBase {
             if (!this.ent.isInWater()) {
                 if (this.walkingTimeout <= 0 || this.ent.getNavigator()
                     .noPath()) {
-                    final float tdist = (float) this.ent
-                        .getDistance((double) this.ai.targX, (double) this.ai.targY, (double) this.ai.targZ);
-                    this.ai.walkTo(
-                        (Entity) this.ent,
-                        this.ai.targX,
-                        this.ai.targY,
-                        this.ai.targZ,
-                        (float) this.pfRangeHome,
-                        600);
+
+                    this.ai
+                        .walkTo(this.ent, this.ai.targX, this.ai.targY, this.ai.targZ, (float) this.pfRangeHome, 600);
                 }
             } else if (this.findLandClose()) {
                 this.setJobState(EnumJobState.W4);
@@ -125,8 +117,7 @@ public class JobFish extends JobBase {
             if (this.ent.getDistance((double) this.ai.targX, (double) this.ai.targY, (double) this.ai.targZ) < 8.0
                 || this.ent.isInWater()
                 || test) {
-                if (CoroUtilEntity
-                    .canCoordBeSeenFromFeet((EntityLivingBase) this.ent, this.ai.targX, this.ai.targY, this.ai.targZ)
+                if (CoroUtilEntity.canCoordBeSeenFromFeet(this.ent, this.ai.targX, this.ai.targY, this.ai.targZ)
                     || test) {
                     this.ai.setState(EnumActState.IDLE);
                     this.setJobState(EnumJobState.W2);
@@ -153,7 +144,7 @@ public class JobFish extends JobBase {
                 final EntityTropicraftWaterMob fish = (EntityTropicraftWaterMob) this.getFishEntity().bobber;
                 if (fish.outOfWaterTick > 10) {
                     this.ai.entInv.setSlotActive(AIInventory.slot_Melee);
-                    this.ai.entInv.performLeftClick((Entity) fish, 0.0f);
+                    this.ai.entInv.performLeftClick(fish, 0.0f);
                     // Health is never negative, so `< 0.0f` could never be true and the catch - the only path that
                     // leads to depositing early - never happened.
                     if (fish.getHealth() <= 0.0f || fish.isDead) {
@@ -168,13 +159,8 @@ public class JobFish extends JobBase {
                     this.catchFish();
                 }
                 if (this.getFishCount() > 4 || (rand.nextInt(EARLY_RETURN_CHANCE) == 0 && this.getFishCount() >= 2)) {
-                    this.ai.walkTo(
-                        (Entity) this.ent,
-                        this.ai.homeX,
-                        this.ai.homeY,
-                        this.ai.homeZ,
-                        (float) this.pfRangeHome,
-                        600);
+                    this.ai
+                        .walkTo(this.ent, this.ai.homeX, this.ai.homeY, this.ai.homeZ, (float) this.pfRangeHome, 600);
                     this.setJobState(EnumJobState.W3);
                 } else if (rand.nextInt(2) == 0) {
                     this.setJobState(EnumJobState.IDLE);
@@ -191,13 +177,7 @@ public class JobFish extends JobBase {
             }
             if (this.walkingTimeout <= 0 || (this.ent.getNavigator()
                 .noPath() && this.ent.worldObj.getWorldTime() % 20L == 0L)) {
-                this.ai.walkTo(
-                    (Entity) this.ent,
-                    this.ai.homeX,
-                    this.ai.homeY,
-                    this.ai.homeZ,
-                    (float) this.pfRangeHome,
-                    600);
+                this.ai.walkTo(this.ent, this.ai.homeX, this.ai.homeY, this.ai.homeZ, (float) this.pfRangeHome, 600);
             }
             if (this.ent.getDistance((double) this.ai.homeX, (double) this.ai.homeY, (double) this.ai.homeZ) < 2.0) {
                 this.ai.faceCoord(
@@ -226,21 +206,11 @@ public class JobFish extends JobBase {
                 .noPath() && this.ent.worldObj.getWorldTime() % 20L == 0L)) {
                 if (this.ent.getDistance((double) this.dryCastX, (double) this.dryCastY, (double) this.dryCastZ)
                     < 64.0) {
-                    this.ai.walkTo(
-                        (Entity) this.ent,
-                        this.dryCastX,
-                        this.dryCastY,
-                        this.dryCastZ,
-                        (float) this.ai.maxPFRange,
-                        600);
+                    this.ai
+                        .walkTo(this.ent, this.dryCastX, this.dryCastY, this.dryCastZ, (float) this.ai.maxPFRange, 600);
                 } else {
-                    this.ai.walkTo(
-                        (Entity) this.ent,
-                        this.ai.targX,
-                        this.ai.targY,
-                        this.ai.targZ,
-                        (float) this.ai.maxPFRange,
-                        600);
+                    this.ai
+                        .walkTo(this.ent, this.ai.targX, this.ai.targY, this.ai.targZ, (float) this.ai.maxPFRange, 600);
                 }
             }
         }
@@ -343,7 +313,7 @@ public class JobFish extends JobBase {
         for (int j = 0; j < this.ai.entInv.inventory.invList.length; ++j) {
             if (this.ai.entInv.inventory.invList[j] != null
                 && this.isFish(this.ai.entInv.inventory.invList[j].getItem())) {
-                CoroUtilItem.tossItemFromEntity((Entity) this.ent, this.ai.entInv.inventory.invList[j], false, false);
+                CoroUtilItem.tossItemFromEntity(this.ent, this.ai.entInv.inventory.invList[j], false, false);
             }
         }
     }

@@ -1,6 +1,5 @@
 package net.tropicraft.entity.hostile;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
@@ -43,7 +42,7 @@ public class AIAshenChaseAndPickupLostMask extends EntityAIBase {
                     .tryMoveToXYZ(vec3.xCoord, vec3.yCoord, vec3.zCoord, this.speed);
                 return true;
             }
-        } else if (this.ashen.getDistanceSqToEntity((Entity) this.ashen.maskToTrack) <= this.maskGrabDistance) {
+        } else if (this.ashen.getDistanceSqToEntity(this.ashen.maskToTrack) <= this.maskGrabDistance) {
             this.ashen.pickupMask(this.ashen.maskToTrack);
         } else if (this.ashen.worldObj.getTotalWorldTime() % 40L == 0L) {
             this.ashen.getNavigator()

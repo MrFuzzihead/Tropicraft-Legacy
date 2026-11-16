@@ -57,7 +57,7 @@ public abstract class RenderWaterMobBase extends RenderLiving {
     @Override
     protected void func_110827_b(final EntityLiving entity, final double x, final double y, final double z,
         final float yaw, final float partialTicks) {
-        // Reached only if something calls the base class's doRender(EntityLiving) directly, which cannot happen for
+        // Reached only if something calls the base class's doRenderdirectly, which cannot happen for
         // these classes; routed to the same body so it can never render twice or render vanilla's version.
         this.renderWaterMob(entity, x, y, z, yaw, partialTicks);
     }
@@ -108,14 +108,8 @@ public abstract class RenderWaterMobBase extends RenderLiving {
             for (int pass = 0; pass < 4; ++pass) {
                 final int passResult = this.shouldRenderPass(entity, pass, partialTicks);
                 if (passResult > 0) {
-                    this.renderPassModel.render(
-                        (Entity) entity,
-                        limbSwing,
-                        limbSwingAmount,
-                        rotation,
-                        rotationYaw - yawOffset,
-                        pitch,
-                        pixel);
+                    this.renderPassModel
+                        .render(entity, limbSwing, limbSwingAmount, rotation, rotationYaw - yawOffset, pitch, pixel);
                     if (passResult == 15) {
                         final float glintTime = entity.ticksExisted + partialTicks;
                         this.renderManager.renderEngine.bindTexture(RenderWaterMobBase.RES_ITEM_GLINT);
@@ -138,7 +132,7 @@ public abstract class RenderWaterMobBase extends RenderLiving {
                             GL11.glTranslatef(0.0f, glintOffset, 0.0f);
                             GL11.glMatrixMode(5888);
                             this.renderPassModel.render(
-                                (Entity) entity,
+                                entity,
                                 limbSwing,
                                 limbSwingAmount,
                                 rotation,
@@ -173,19 +167,13 @@ public abstract class RenderWaterMobBase extends RenderLiving {
                 GL11.glDepthFunc(514);
                 if (entity.hurtTime > 0 || entity.deathTime > 0) {
                     GL11.glColor4f(brightness, 0.0f, 0.0f, 0.4f);
-                    this.mainModel.render(
-                        (Entity) entity,
-                        limbSwing,
-                        limbSwingAmount,
-                        rotation,
-                        rotationYaw - yawOffset,
-                        pitch,
-                        pixel);
+                    this.mainModel
+                        .render(entity, limbSwing, limbSwingAmount, rotation, rotationYaw - yawOffset, pitch, pixel);
                     for (int pass = 0; pass < 4; ++pass) {
                         if (this.inheritRenderPass(entity, pass, partialTicks) >= 0) {
                             GL11.glColor4f(brightness, 0.0f, 0.0f, 0.4f);
                             this.renderPassModel.render(
-                                (Entity) entity,
+                                entity,
                                 limbSwing,
                                 limbSwingAmount,
                                 rotation,
@@ -201,19 +189,13 @@ public abstract class RenderWaterMobBase extends RenderLiving {
                     final float blue = (color & 0xFF) / 255.0f;
                     final float alpha = (color >> 24 & 0xFF) / 255.0f;
                     GL11.glColor4f(red, green, blue, alpha);
-                    this.mainModel.render(
-                        (Entity) entity,
-                        limbSwing,
-                        limbSwingAmount,
-                        rotation,
-                        rotationYaw - yawOffset,
-                        pitch,
-                        pixel);
+                    this.mainModel
+                        .render(entity, limbSwing, limbSwingAmount, rotation, rotationYaw - yawOffset, pitch, pixel);
                     for (int pass = 0; pass < 4; ++pass) {
                         if (this.inheritRenderPass(entity, pass, partialTicks) >= 0) {
                             GL11.glColor4f(red, green, blue, alpha);
                             this.renderPassModel.render(
-                                (Entity) entity,
+                                entity,
                                 limbSwing,
                                 limbSwingAmount,
                                 rotation,

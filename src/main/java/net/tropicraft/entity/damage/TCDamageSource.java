@@ -11,6 +11,6 @@ public class TCDamageSource extends DamageSource {
     }
 
     public static DamageSource causeDartDamage(final EntityDart dart, final Entity shooter) {
-        return new DartDamage("dart", (Entity) dart, shooter).setProjectile();
+        return new DartDamage("dart", dart, shooter).setProjectile();
     }
 }

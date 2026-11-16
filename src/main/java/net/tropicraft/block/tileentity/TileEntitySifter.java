@@ -2,7 +2,6 @@ package net.tropicraft.block.tileentity;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -94,7 +93,7 @@ public class TileEntitySifter extends TileEntity {
         }
         final EntityItem eitem = new EntityItem(this.worldObj, x, y, z, stack);
         eitem.setLocationAndAngles(x, y, z, 0.0f, 0.0f);
-        this.worldObj.spawnEntityInWorld((Entity) eitem);
+        this.worldObj.spawnEntityInWorld(eitem);
     }
 
     private ItemStack getCommonItem() {

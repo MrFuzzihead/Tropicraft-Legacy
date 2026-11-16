@@ -1755,10 +1755,9 @@ caught by the compiler, because the vanilla recipe array is `Object[]` and `Item
 
 **3 unused alias locals** removed (`RenderSnareTrap`'s three `renderManager` copies).
 
-Deliberately left: the other 91 `final X y = this.z;` locals, because they are *used* - they are the decompiler's
-local-copy idiom in model/animation code, and §16.3 has the full argument for why a sweep corrupts them. Also left:
-float literals written as doubles, for the rounding reason in §13.1, and the `(Entity)`/`(EntityLivingBase)` casts,
-where 256 more removals would buy little but carry the real risk (silently selecting a different overload).
+Deliberately left at the time: the other 91 `final X y = this.z;` locals and the `(Entity)`/`(EntityLivingBase)`
+casts. Both were swept later - see §23 - after the alias inlining was verified in game and the cast sites were
+checked for overloaded calls.
 
 ### 19.4 Verification
 
@@ -1972,6 +1971,54 @@ Both of the checks added in §21 needed loosening, and it is worth recording why
 
 Moral: a worldgen or AI assertion with a numeric threshold needs to hold for *any* seed, not the one that happened to
 be generated while it was written.
+
+---
+
+## 23. The last of the noise: entity casts and float locals
+
+The two items §19.3 left behind were swept once there was a way to make each one safe.
+
+### 23.1 The `(Entity*)` casts
+
+171 casts removed (`(Entity)`, `(EntityLivingBase)`, `(EntityLiving)`) across ~70 files. Before sweeping, the calls they
+feed were listed and checked for overloads - `spawnEntityInWorld`, `getDistanceToEntity`, `faceEntity`,
+`damageItem`, `causeMobDamage`, `render`, `mountEntity`, `canPlaceEntityOnSide`, `onBlockPlacedBy`,
+`getEntitiesWithinAABBExcludingEntity`, `canEntityBeSeen`, `bindEntityTexture` - all single-overload, so there was no
+way for removing a cast to silently pick a different method.
+
+25 were put back, and the compiler found every one:
+
+* elements of **raw `List`s** (`final Entity entity1 = o;`) - the cast is what makes the assignment type-check, and the
+  proper fix is typing the collection, which is a separate job;
+* members that live on `EntityLiving` but not `EntityLivingBase` (`func_130225_q`, `canEntityBeSeen`);
+* constructor arguments of an interface type narrowed to `EntityLiving`.
+
+`(EntityPlayer)` and `(EntityPlayerMP)` casts were left alone on purpose: those are genuine downcasts.
+
+Bonus finds while restoring: a local variable named `EntityLivingBase` (`final EntityLivingBase EntityLivingBase =
+this.getThrower();`) - decompiler residue that reads like a type - and a cast that the sweep had stripped from inside a
+parenthesised expression (`(ent).getEntityId()`).
+
+### 23.2 The float locals
+
+Only the true aliases were inlined: `final float x = this.a.b;` with no arithmetic and **no write to that path between
+the declaration and the last use**, which is checkable by reading the region. That covered four in `ModelKoaMan`
+(`rotateAngleY`, `rotateAngleY2`, `rotateAngleZ`, `ffff`) - the block that assigns the head's rotation to the headband
+and ten leaves.
+
+Eleven genuinely unused float locals were deleted (`JobFish.tdist`, `RenderFishHook.f10/f11`, `RenderWallStarfish.offsetY`,
+`EntityTropicraftLeafballNew.f`, `EntityAmphibian.f4`, `EntityManOWar.f2`, `ItemFireArmor.newY/newVecY`,
+`ModelMarlin.angle`, `ModelSpiderEgg.entHeight`).
+
+Left alone, deliberately: float locals holding a **computed expression** (`final float f4 = (f * 30.0f + f3 * 70.0f) /
+100.0f;` and friends in the render handlers). Those are named intermediates, not snapshots: inlining them duplicates the
+arithmetic at every use and makes the code harder to read, which is the opposite of the point.
+
+### 23.3 One more flaky check
+
+`an eagle ray swims` measured horizontal displacement only, and the ray mostly swims **vertically** towards its target
+depth - so a perfectly healthy ray that rose 3.75 blocks and drifted 0.2 came in under the bar. The check now measures
+all three axes; the frozen case it exists for is 0.00 on every axis. Three consecutive runs are green.
 
 ---
 

@@ -90,7 +90,7 @@ public class JobTrade extends JobBase {
             this.ent.getNavigator()
                 .clearPathEntity();
             this.ai.walkTo(
-                (Entity) this.ent,
+                this.ent,
                 this.tradeBlockPos.posX,
                 this.tradeBlockPos.posY + 1,
                 this.tradeBlockPos.posZ,
@@ -115,12 +115,11 @@ public class JobTrade extends JobBase {
             }
         }
         if (this.activeTrader == null) {
-            this.activeTrader = this.ent.worldObj
-                .getClosestPlayerToEntity((Entity) this.ent, (double) this.tradeDistTrigger);
+            this.activeTrader = this.ent.worldObj.getClosestPlayerToEntity(this.ent, (double) this.tradeDistTrigger);
             if (this.activeTrader != null) {
                 this.tradeStart();
             }
-        } else if (this.ent.getDistanceToEntity((Entity) this.activeTrader) > this.tradeDistTrigger * 1.5) {
+        } else if (this.ent.getDistanceToEntity(this.activeTrader) > this.tradeDistTrigger * 1.5) {
             this.tradeReset();
         } else {
             this.tradeTick();
@@ -211,7 +210,7 @@ public class JobTrade extends JobBase {
     public boolean isAreaSecure() {
         if (this.tradeBlockPos != null) {
             final List list = this.ent.worldObj.getEntitiesWithinAABBExcludingEntity(
-                (Entity) this.ent,
+                this.ent,
                 AxisAlignedBB
                     .getBoundingBox(
                         (double) this.tradeBlockPos.posX,
@@ -233,7 +232,7 @@ public class JobTrade extends JobBase {
 
     public void onIdleTickAct() {
         if (this.activeTrader != null) {
-            this.ent.faceEntity((Entity) this.activeTrader, 15.0f, 15.0f);
+            this.ent.faceEntity(this.activeTrader, 15.0f, 15.0f);
         }
         if (this.activeTrader == null && this.ent.getNavigator()
             .noPath()) {
@@ -243,7 +242,7 @@ public class JobTrade extends JobBase {
                 if (!CoroUtilBlock
                     .isAir(this.ent.worldObj.getBlock(tryX, MathHelper.floor_double(this.ent.posY - 1.0), tryZ))) {
                     this.ai.walkTo(
-                        (Entity) this.ent,
+                        this.ent,
                         this.tradeBlockPos.posX,
                         MathHelper.floor_double(this.ent.posY),
                         this.tradeBlockPos.posZ,

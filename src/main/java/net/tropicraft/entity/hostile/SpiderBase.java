@@ -1,6 +1,5 @@
 package net.tropicraft.entity.hostile;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.init.Items;
 import net.minecraft.world.World;
@@ -59,7 +58,7 @@ public class SpiderBase extends EntityCoroAI implements IMob {
             && this.agent.entityToAttack != null
             && this.onGround
             && this.worldObj.rand.nextInt(3) == 0
-            && this.agent.entityToAttack.getDistanceToEntity((Entity) this) < 5.0f) {
+            && this.agent.entityToAttack.getDistanceToEntity(this) < 5.0f) {
             this.jump();
             this.motionX *= 2.4f;
             this.motionZ *= 2.4f;

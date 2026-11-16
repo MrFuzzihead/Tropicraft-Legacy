@@ -6,8 +6,6 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumAction;
@@ -202,7 +200,7 @@ public class ItemCocktail extends ItemTropicraft {
             par6,
             false,
             par7,
-            (Entity) par2EntityPlayer,
+            par2EntityPlayer,
             (ItemStack) null)) {
             final Block var12 = TCBlockRegistry.bambooMug;
             final int var13 = this.getMetadata(par1ItemStack.getItemDamage());
@@ -240,7 +238,7 @@ public class ItemCocktail extends ItemTropicraft {
             return false;
         }
         if (world.getBlock(x, y, z) == TCBlockRegistry.bambooMug) {
-            TCBlockRegistry.bambooMug.onBlockPlacedBy(world, x, y, z, (EntityLivingBase) player, (ItemStack) null);
+            TCBlockRegistry.bambooMug.onBlockPlacedBy(world, x, y, z, player, (ItemStack) null);
             TCBlockRegistry.bambooMug.onPostBlockPlaced(world, x, y, z, metadata);
             final TileEntityBambooMug mug = (TileEntityBambooMug) world.getTileEntity(x, y, z);
             mug.setCocktail(stack.copy());
@@ -284,11 +282,7 @@ public class ItemCocktail extends ItemTropicraft {
 
     public ItemStack onEaten(final ItemStack par1ItemStack, final World par2World,
         final EntityPlayer par3EntityPlayer) {
-        par2World.playSoundAtEntity(
-            (Entity) par3EntityPlayer,
-            "random.burp",
-            0.5f,
-            par2World.rand.nextFloat() * 0.1f + 0.9f);
+        par2World.playSoundAtEntity(par3EntityPlayer, "random.burp", 0.5f, par2World.rand.nextFloat() * 0.1f + 0.9f);
         for (final Ingredient ingredient : getIngredients(par1ItemStack)) {
             ingredient.onDrink(par3EntityPlayer);
         }

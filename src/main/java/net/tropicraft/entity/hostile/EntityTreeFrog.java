@@ -1,9 +1,7 @@
 package net.tropicraft.entity.hostile;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityCreature;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -45,7 +43,7 @@ public abstract class EntityTreeFrog extends EntityTropicraftAnimal
         this.experienceValue = 5;
         this.getNavigator()
             .setAvoidsWater(true);
-        this.tasks.addTask(0, (EntityAIBase) new EntityAISwimming((EntityLiving) this));
+        this.tasks.addTask(0, (EntityAIBase) new EntityAISwimming(this));
         this.tasks.addTask(1, (EntityAIBase) new EntityAIArrowAttack((IRangedAttackMob) this, 1.0, 60, 10.0f));
         this.tasks.addTask(2, (EntityAIBase) new EntityAIWander((EntityCreature) this, 1.0));
         this.targetTasks.addTask(
@@ -93,7 +91,7 @@ public abstract class EntityTreeFrog extends EntityTropicraftAnimal
                                 }
                                 final Vec3 pos = this.getNavigator()
                                     .getPath()
-                                    .getPosition((Entity) this);
+                                    .getPosition(this);
                                 this.leapVecX = pos.xCoord - this.posX;
                                 this.leapVecZ = pos.zCoord - this.posZ;
                                 speed = 0.2;
@@ -163,15 +161,12 @@ public abstract class EntityTreeFrog extends EntityTropicraftAnimal
             final double d = entity.posX - this.posX;
             final double d2 = entity.posZ - this.posZ;
             final EntityPoisonBlot entityPoisonBlot;
-            final EntityPoisonBlot entitypoisonblot = entityPoisonBlot = new EntityPoisonBlot(
-                this.worldObj,
-                (EntityLivingBase) this);
+            final EntityPoisonBlot entitypoisonblot = entityPoisonBlot = new EntityPoisonBlot(this.worldObj, this);
             entityPoisonBlot.posY += 1.4f;
             final double d3 = entity.posY + entity.getEyeHeight() - 0.2f - entitypoisonblot.posY;
             final float f2 = MathHelper.sqrt_double(d * d + d2 * d2) * 0.2f;
-            this.worldObj
-                .playSoundAtEntity((Entity) this, "frogspit", 1.0f, 1.0f / (this.rand.nextFloat() * 0.4f + 0.8f));
-            this.worldObj.spawnEntityInWorld((Entity) entitypoisonblot);
+            this.worldObj.playSoundAtEntity(this, "frogspit", 1.0f, 1.0f / (this.rand.nextFloat() * 0.4f + 0.8f));
+            this.worldObj.spawnEntityInWorld(entitypoisonblot);
             entitypoisonblot.setThrowableHeading(d, d3 + f2, d2, 0.6f, 12.0f);
             this.attackTime = 50;
             this.rotationYaw = (float) (Math.atan2(d2, d) * 180.0 / 3.1415927f) - 90.0f;

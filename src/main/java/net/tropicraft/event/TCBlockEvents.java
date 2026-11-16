@@ -1,7 +1,6 @@
 package net.tropicraft.event;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
@@ -118,7 +117,7 @@ public class TCBlockEvents {
                 p_149642_4_ + d3,
                 p_149642_5_);
             entityitem.delayBeforeCanPickup = 10;
-            p_149642_1_.spawnEntityInWorld((Entity) entityitem);
+            p_149642_1_.spawnEntityInWorld(entityitem);
         }
     }
 

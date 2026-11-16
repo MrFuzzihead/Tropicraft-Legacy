@@ -6,7 +6,6 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.entity.RenderBiped;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -49,7 +48,7 @@ public class RenderTropiSkeleton extends RenderBiped {
                     GL11.glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
                     GL11.glScalef(f1, -f1, -f1);
                 }
-                this.renderManager.itemRenderer.renderItem((EntityLivingBase) par1EntityLiving, itemstack2, 0);
+                this.renderManager.itemRenderer.renderItem(par1EntityLiving, itemstack2, 0);
             }
             GL11.glPopMatrix();
         }
@@ -114,7 +113,7 @@ public class RenderTropiSkeleton extends RenderBiped {
                     final float f3 = (j >> 8 & 0xFF) / 255.0f;
                     final float f4 = (j & 0xFF) / 255.0f;
                     GL11.glColor4f(f2, f3, f4, 1.0f);
-                    this.renderManager.itemRenderer.renderItem((EntityLivingBase) par1EntityLiving, itemstack, i);
+                    this.renderManager.itemRenderer.renderItem(par1EntityLiving, itemstack, i);
                 }
             } else {
                 final int i = itemstack.getItem()
@@ -123,7 +122,7 @@ public class RenderTropiSkeleton extends RenderBiped {
                 final float f2 = (i >> 8 & 0xFF) / 255.0f;
                 final float f3 = (i & 0xFF) / 255.0f;
                 GL11.glColor4f(f5, f2, f3, 1.0f);
-                this.renderManager.itemRenderer.renderItem((EntityLivingBase) par1EntityLiving, itemstack, 0);
+                this.renderManager.itemRenderer.renderItem(par1EntityLiving, itemstack, 0);
             }
             GL11.glPopMatrix();
         }

@@ -43,7 +43,7 @@ public class RenderChair extends Render {
         GL11.glRotatef(f + (180.0f - f) * 2.0f, 0.0f, 1.0f, 0.0f);
         Minecraft.getMinecraft().renderEngine.bindTexture(TropicraftUtils.getTextureEntity("chairLayer"));
         GL11.glScalef(-1.0f, -1.0f, 1.0f);
-        this.modelChair.render((Entity) entitychair, 0.0f, 1.0f, 0.1f, 0.0f, 0.0f, 0.0625f);
+        this.modelChair.render(entitychair, 0.0f, 1.0f, 0.1f, 0.0f, 0.0f, 0.0625f);
         GL11.glPushMatrix();
         GL11.glEnable(3042);
         GL11.glBlendFunc(770, 771);
@@ -52,7 +52,7 @@ public class RenderChair extends Render {
             .put(new float[] { this.red, this.green, this.blue, this.alpha })).position(0);
         GL11.glTexEnv(8960, 8705, this.color);
         Minecraft.getMinecraft().renderEngine.bindTexture(TropicraftUtils.getTextureEntity("chairColorLayer"));
-        this.modelChair.render((Entity) entitychair, 0.0f, 1.0f, 0.1f, 0.0f, 0.0f, 0.0625f);
+        this.modelChair.render(entitychair, 0.0f, 1.0f, 0.1f, 0.0f, 0.0f, 0.0625f);
         GL11.glDisable(3042);
         GL11.glTexEnvf(8960, 8704, 8448.0f);
         GL11.glPopMatrix();

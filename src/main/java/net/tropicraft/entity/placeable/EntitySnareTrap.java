@@ -116,7 +116,7 @@ public class EntitySnareTrap extends Entity implements IEntityAdditionalSpawnDat
                     .getEntitiesWithinAABBExcludingEntity(this, this.boundingBox.expand(5.0, 5.0, 5.0));
                 for (final Entity obj : ents) {
                     final Entity ent = obj;
-                    if (ent instanceof EntityLivingBase && ((EntityLivingBase) ent).isEntityAlive()
+                    if (ent instanceof EntityLivingBase && (ent).isEntityAlive()
                         && ent.posX >= this.trapPosX
                         && ent.posX <= this.trapPosX + 1
                         && ent.posZ >= this.trapPosZ
@@ -176,8 +176,7 @@ public class EntitySnareTrap extends Entity implements IEntityAdditionalSpawnDat
         this.caughtEntity = ent;
         this.setFull(true);
         this.setEntityHeight(ent.height + ent.yOffset);
-        this.worldObj
-            .playSoundAtEntity((Entity) this, "random.bow", 1.0f, 1.0f / (this.rand.nextFloat() * 0.4f + 1.2f));
+        this.worldObj.playSoundAtEntity(this, "random.bow", 1.0f, 1.0f / (this.rand.nextFloat() * 0.4f + 1.2f));
         this.setSize(0.6f, this.trapHeight - ent.height - ent.yOffset - 0.5f);
         this.setLocationAndAngles(
             this.trapPosX + 0.5,
@@ -219,7 +218,7 @@ public class EntitySnareTrap extends Entity implements IEntityAdditionalSpawnDat
         if (this.worldObj.isRemote) {
             return true;
         }
-        this.worldObj.playSoundAtEntity((Entity) this, "note.harp", 1.0f, 2.0f - this.rand.nextFloat() / 2.0f);
+        this.worldObj.playSoundAtEntity(this, "note.harp", 1.0f, 2.0f - this.rand.nextFloat() / 2.0f);
         if (this.caughtEntity != null && source.getEntity() == this.caughtEntity && this.rand.nextFloat() > 0.1f) {
             return false;
         }

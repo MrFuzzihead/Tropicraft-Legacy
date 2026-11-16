@@ -116,8 +116,8 @@ public class EntityTropicalFish extends EntityTropicraftWaterMob {
     }
 
     public EntityLivingBase getAttackTarget() {
-        if (this.leader != null && !this.inSchool && this.canEntityBeSeen((Entity) this.leader)) {
-            return (EntityLivingBase) this.leader;
+        if (this.leader != null && !this.inSchool && this.canEntityBeSeen(this.leader)) {
+            return this.leader;
         }
         return null;
     }
@@ -165,7 +165,7 @@ public class EntityTropicalFish extends EntityTropicraftWaterMob {
 
     @Override
     protected void updateEntityActionState() {
-        if (this.leader != null && this.getDistanceToEntity((Entity) this.leader) < 1.5f) {
+        if (this.leader != null && this.getDistanceToEntity(this.leader) < 1.5f) {
             this.inSchool = true;
         }
         if (this.leader != null && this.leader.isDead) {
@@ -178,7 +178,7 @@ public class EntityTropicalFish extends EntityTropicraftWaterMob {
         if (!this.inSchool || this.isLeader) {
             super.updateEntityActionState();
         } else if (this.inSchool && this.leader != null) {
-            if (this.getDistanceToEntity((Entity) this.leader) >= 2.25f && this.ticksExisted % 40 == 0) {
+            if (this.getDistanceToEntity(this.leader) >= 2.25f && this.ticksExisted % 40 == 0) {
                 this.inSchool = false;
             }
             if (!this.leader.isLeader && this.leader.leader != null) {

@@ -26,7 +26,7 @@ public class RenderWallStarfish extends Render {
         final Tessellator tessellator = Tessellator.instance;
         GL11.glPushMatrix();
         final float offsetX = (float) (wallStarfish.posX - x);
-        final float offsetY = (float) (wallStarfish.posY - y);
+
         final float offsetZ = (float) (wallStarfish.posZ - z);
         GL11.glTranslatef(
             (float) x - Direction.offsetX[wallStarfish.hangingDirection] * 0.53125f,
