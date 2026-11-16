@@ -66,6 +66,9 @@ What the current checks cover - all of it needs the real game:
 | `EntityDart.getPotionId` bounds-checks unknown types | the `ArrayIndexOutOfBoundsException` from an NBT `dartType` |
 | an ocean column does not sand over inland columns | the per-column state leak in `replaceBlocksForBiome` |
 | every Tropicraft block registry name is `tropicraft:tile.<name>` | the invariant the village schematic's `blockTranslationMap` depends on |
+| every Tropicraft entity has a unique network id and round-trips through the entity registry | accidental renumbering, duplicate registrations |
+| a Koa chest fills its household, replaces dead members, and does not re-spawn while its members are out of range | the chest spawning a fresh pair on every visit while the old pair was still alive |
+| a tropical fish ticks | the fish state machine after the dead school-spawn path was removed |
 | the Tropicraft dimension generates | worldgen smoke test |
 
 To add a check, add a method to `ServerGameTests` and call it from `runAll()`; use the `assertTrue(name, condition,
@@ -101,8 +104,8 @@ to a single "covered by any test" number that two different class-id spaces allo
 ```
 jacoco coverage (executed source lines)
   unit tests : 88 (0.6%)
-  in-game    : 3139 (21.7%)
-  combined   : 3188 (22.0%) of 14459 measurable
+  in-game    : 3533 (24.4%)
+  combined   : 3582 (24.7%) of 14487 measurable
 ```
 
 The in-game run is most of the coverage because a dedicated server loads and touches a large part of the mod while

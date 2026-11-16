@@ -310,6 +310,8 @@ if (this.getFishCount() > 4 || (rand.nextInt(1) == 0 && this.getFishCount() >= 2
 
 ### B8. `EntityTropicalFish` — school spawning is an empty loop
 
+**Status: resolved by deletion** — see §14.2 for why implementing it was the wrong call.
+
 ```java
 // :212-220
 if (this.getShouldSpawnSchool()) {
@@ -377,6 +379,8 @@ Related: `EffectHelper.listEntities` is a `public static List` (mutable, no null
 `EffectEntry.tick()`.
 
 ### B11. `TileEntityKoaChest.getHomeKoaCount()`
+
+**Status: fixed** — see §14.1, with an in-game repro that fails on the old code.
 
 ```java
 // :110-149
@@ -1209,8 +1213,8 @@ correctly.
 
 | Item | Why it is not in this batch |
 |---|---|
-| **B8** fish schools | The empty loop has to be *replaced* with real spawning, and the copy constructor it would call has an unbounded `do/while (!getCanSpawnHere())` with a `new Random()` per iteration. Enabling it without in-game tuning risks a spawn storm; it wants its own session. |
-| **B11** Koa chest quota | The dead locals are easy, but the real finding (quota counted from loaded members only, so unloaded members let a chest over-spawn) needs an in-game repro before changing behaviour. |
+| ~~B8 fish schools~~ | Done in §14.2. |
+| ~~B11 Koa chest quota~~ | Done in §14.1. |
 | **B12** encyclopedia save file | Changes the on-disk format and the render-path write frequency; needs a decision on where per-world client data should live. |
 | **B13 / B14** pending-decoration sweep and save flush | Both touch chunk loading; they want the cascade detector and a chunk-loading mod in the loop to verify. |
 | **B15–B20** dead code & residue | Big mechanical diff (TCNames, `TCInfo`, `TCPacketEvents`, `TileEntityFactory`, 43 alias locals). Better as one dedicated, no-behaviour-change commit. |
@@ -1253,6 +1257,75 @@ locals (`final X y2 = this.y;`) from 43 to 17.
 * **B8's school-spawning loop.** Still empty (`EntityTropicalFish:212`, with `new Random()` inside the loop header).
   Deleting the dead code would mean deleting the feature; it needs the real implementation and in-game tuning, which
   is the next batch.
+
+---
+
+## 14. P1 fixes applied (batch 3)
+
+Both of these were done repro-first: the in-game suite grew a check that **fails on the old code** before the fix
+went in.
+
+### 14.1 Koa chest household (B11)
+
+The suspicion in the original write-up was right, but the mechanism is worse than "the quota is short":
+
+* `getHomeKoaCount()` counts members in a 160×80×160 box, i.e. only the ones that are loaded *and* close.
+* `addToList()` **silently did nothing** when both slots were full, and `spawnKoa()` incremented its own
+  `hunters`/`fishers` counters *before* calling it, so nothing noticed.
+* `updateList()` cleared the slot of any member it could not resolve, and `OldUtil.getEntByPersistantID` only scans
+  `world.loadedEntityList`.
+
+So any chest whose Koa had wandered out of the scan box spawned a fresh pair on its next 5-minute tick, and the new
+pair was never registered: the world gained two untracked Koa per visit, forever.
+
+The fix makes the **registered slots** the quota:
+
+```java
+int free = this.housePop - this.occupiedSlots();
+if (free <= 0) return;
+```
+
+`addToList` now reports whether it got a slot (and the caller drops the Koa instead of spawning something nothing
+tracks), `updateList` only clears a slot when a *loaded* member is provably dead (an unloaded member keeps its slot -
+that is the whole point), and `getHomeKoaCount` is documented as the live count it actually is, used only to pick
+which type to spawn next.
+
+Trade-off, deliberate and documented in the code: a Koa that dies while its chunk is unloaded keeps its slot, so
+that chest will not replace it. That is bounded (two slots) and much better than unbounded growth; resolving an
+unloaded persistent id would require loading the chunk.
+
+In-game checks added (`koaChestKeepsItsHousehold`):
+
+| Check | Old code |
+|---|---|
+| a Koa chest fills its household | passes |
+| a Koa chest replaces dead members | passes |
+| a Koa chest does not re-spawn while its members are out of range | **fails: 2 → 4 Koa** |
+
+### 14.2 Tropical fish schools (B8) — resolved by deletion
+
+The empty loop was not the whole story:
+
+* `EntityTropicalFish(World)` calls `setShouldSpawnSchool(true)` in the constructor, so **every** naturally spawned
+  fish, bucket release and mob-egg spawn reaches that block on its first tick.
+* Nothing anywhere caps the population, and the school members would not re-spawn (`readEntityFromNBT` and the copy
+  constructor both clear the flag).
+
+Implementing the spawn as written would therefore have multiplied every fish spawn by 4-7 with no cap - a population
+explosion, not a feature. On top of that the copy constructor it would call places itself inside
+`do { ... } while (!this.getCanSpawnHere());` with a fresh position each iteration: an unbounded loop inside entity
+tick if the fish is somewhere it cannot spawn.
+
+So the dead path is gone: the `SHOULD_SPAWN_DATAWATCHER` slot, its accessors, all five call sites, the loop, and the
+copy constructor that existed only to serve it. Fish spawn singly, which is what already happened, and the code no
+longer pretends otherwise. If schools are wanted later they need a population cap, a spawn budget and a bounded
+placement retry - a feature, not a fix.
+
+While in the file: `checkForLeader()` ran `getEntitiesWithinAABB` over a 20³ box **every tick** for every fish that
+was a leader or had no leader. It now runs on the same 40-tick cadence the rest of that method already uses.
+
+An in-game check (`tropicalFishTicksWithoutItsSchoolPath`) drives `updateEntityActionState` twice through reflection
+so the remaining state machine stays honest.
 
 ---
 

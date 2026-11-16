@@ -14,12 +14,16 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.BiomeGenBase;
+import net.tropicraft.block.tileentity.TileEntityKoaChest;
 import net.tropicraft.economy.ItemEntry;
 import net.tropicraft.economy.ItemValues;
+import net.tropicraft.entity.koa.EntityKoaBase;
 import net.tropicraft.entity.projectile.EntityDart;
+import net.tropicraft.entity.underdasea.EntityTropicalFish;
 import net.tropicraft.info.TCNames;
 import net.tropicraft.registry.TCBlockRegistry;
 import net.tropicraft.registry.TCEntityRegistry;
@@ -69,6 +73,8 @@ public final class ServerGameTests {
         mineralSandDoesNotLeakFromAnOceanColumn();
         tropicraftBlocksKeepTheirRegistryPrefix();
         entityIdsAreUniqueAndRoundTrip();
+        koaChestKeepsItsHousehold();
+        tropicalFishTicksWithoutItsSchoolPath();
         tropicsChunksGenerate();
         return failures;
     }
@@ -361,6 +367,138 @@ public final class ServerGameTests {
         } catch (final Throwable t) {
             t.printStackTrace();
             fail("every Tropicraft entity has a unique network id", t.toString());
+        }
+    }
+
+    // ---------------------------------------------------------------------------------------------------------
+    // Koa chest household
+    // ---------------------------------------------------------------------------------------------------------
+
+    /**
+     * A Koa chest keeps {@code housePop} members. It used to decide that from a live scan of the world, and to drop
+     * the ids of anything spawned while both slots were taken - so a chest whose members had wandered more than 160
+     * blocks away spawned a fresh pair on every visit, while the old pair was still alive and untracked.
+     */
+    private static void koaChestKeepsItsHousehold() {
+        final WorldServer tropics = TropicraftWorldUtils.tropics();
+        if (tropics == null) {
+            fail("a Koa chest keeps its household", "the Tropicraft dimension did not load");
+            return;
+        }
+        final int x = 64;
+        final int y = 100;
+        final int z = 64;
+        try {
+            tropics.getChunkFromChunkCoords(x >> 4, z >> 4);
+            tropics.getChunkFromChunkCoords((x + 200) >> 4, z >> 4);
+            final int before = countKoa(tropics);
+            tropics.setBlock(x, y, z, TCBlockRegistry.koaChest);
+            final TileEntity tile = tropics.getTileEntity(x, y, z);
+            if (!(tile instanceof TileEntityKoaChest)) {
+                fail("a Koa chest keeps its household", "placing the chest did not create its tile entity");
+                return;
+            }
+            final TileEntityKoaChest chest = (TileEntityKoaChest) tile;
+
+            chest.spawnKoa(tropics);
+            assertTrue(
+                "a Koa chest fills its household",
+                occupiedSlots(chest) == chest.housePop && countKoa(tropics) - before == chest.housePop,
+                occupiedSlots(chest) + "/" + chest.housePop + " slots, " + (countKoa(tropics) - before) + " spawned");
+
+            // Members that die while loaded are replaced.
+            for (final EntityKoaBase member : ownedMembers(tropics, chest)) {
+                member.setDead();
+            }
+            chest.spawnKoa(tropics);
+            assertTrue(
+                "a Koa chest replaces dead members",
+                occupiedSlots(chest) == chest.housePop && ownedMembers(tropics, chest).size() == chest.housePop,
+                occupiedSlots(
+                    chest) + "/" + chest.housePop + " slots, " + ownedMembers(tropics, chest).size() + " alive");
+
+            // Members that are merely out of the 160 block scan are still members: this is the regression.
+            final int afterReplacement = countKoa(tropics);
+            for (final EntityKoaBase member : ownedMembers(tropics, chest)) {
+                member.setPosition(member.posX + 200.0, member.posY, member.posZ);
+            }
+            chest.spawnKoa(tropics);
+            assertTrue(
+                "a Koa chest does not re-spawn while its members are out of range",
+                countKoa(tropics) == afterReplacement && occupiedSlots(chest) == chest.housePop,
+                "the world went from " + afterReplacement + " to " + countKoa(tropics) + " Koa");
+        } catch (final Throwable t) {
+            t.printStackTrace();
+            fail("a Koa chest keeps its household", t.toString());
+        }
+    }
+
+    private static int countKoa(final WorldServer world) {
+        int count = 0;
+        for (final Object o : world.loadedEntityList) {
+            if (o instanceof EntityKoaBase && !((EntityKoaBase) o).isDead) {
+                ++count;
+            }
+        }
+        return count;
+    }
+
+    private static List<EntityKoaBase> ownedMembers(final WorldServer world, final TileEntityKoaChest chest) {
+        final List<EntityKoaBase> members = new ArrayList<EntityKoaBase>();
+        for (final Object o : world.loadedEntityList) {
+            if (!(o instanceof EntityKoaBase)) {
+                continue;
+            }
+            final EntityKoaBase koa = (EntityKoaBase) o;
+            if (koa.isDead) {
+                continue;
+            }
+            final int id = koa.getAIAgent().entID;
+            for (final int slot : chest.entIDs) {
+                if (slot != -1 && slot == id) {
+                    members.add(koa);
+                    break;
+                }
+            }
+        }
+        return members;
+    }
+
+    private static int occupiedSlots(final TileEntityKoaChest chest) {
+        int occupied = 0;
+        for (final int slot : chest.entIDs) {
+            if (slot != -1) {
+                ++occupied;
+            }
+        }
+        return occupied;
+    }
+
+    /**
+     * The school-spawning block in {@code updateEntityActionState} was an empty loop behind a datawatcher flag that
+     * every naturally constructed fish set to true, so it cleared itself on the first tick and did nothing. It is
+     * gone now (implementing it would have made every fish spawn 3-6 more with no population cap, and the copy
+     * constructor it called placed itself in an unbounded {@code do/while (!getCanSpawnHere())}). This keeps the
+     * remaining state machine honest.
+     */
+    private static void tropicalFishTicksWithoutItsSchoolPath() {
+        final WorldServer overworld = MinecraftServer.getServer()
+            .worldServerForDimension(0);
+        if (overworld == null) {
+            fail("a tropical fish ticks", "no overworld");
+            return;
+        }
+        try {
+            final EntityTropicalFish fish = new EntityTropicalFish(overworld);
+            fish.setPosition(8.5, 62.0, 8.5);
+            final Method update = EntityTropicalFish.class.getDeclaredMethod("updateEntityActionState");
+            update.setAccessible(true);
+            update.invoke(fish);
+            update.invoke(fish);
+            assertTrue("a tropical fish ticks", !fish.isDead, "the fish died on its own update");
+        } catch (final Throwable t) {
+            t.printStackTrace();
+            fail("a tropical fish ticks", t.toString());
         }
     }
 

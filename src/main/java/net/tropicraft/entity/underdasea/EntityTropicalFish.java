@@ -1,7 +1,6 @@
 package net.tropicraft.entity.underdasea;
 
 import java.util.List;
-import java.util.Random;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -25,7 +24,6 @@ public class EntityTropicalFish extends EntityTropicraftWaterMob {
     public Entity hook;
     public boolean hasBeenPlaced;
     public static final String[] names;
-    private static final int SHOULD_SPAWN_DATAWATCHER = 17;
     private static final int DATA_COLOR = 16;
 
     public EntityTropicalFish(final World world) {
@@ -36,7 +34,6 @@ public class EntityTropicalFish extends EntityTropicraftWaterMob {
         this.leader = null;
         this.setSize(0.6f, 0.6f);
         this.setColor(this.worldObj.rand.nextInt(EntityTropicalFish.names.length));
-        this.setShouldSpawnSchool(true);
         this.isCatchable = true;
         this.experienceValue = 3;
     }
@@ -56,17 +53,8 @@ public class EntityTropicalFish extends EntityTropicraftWaterMob {
         return this.dataWatcher.getWatchableObjectInt(16);
     }
 
-    public void setShouldSpawnSchool(final boolean spawnStatus) {
-        this.dataWatcher.updateObject(SHOULD_SPAWN_DATAWATCHER, (spawnStatus ? 1 : -1));
-    }
-
-    public boolean getShouldSpawnSchool() {
-        return this.dataWatcher.getWatchableObjectInt(17) == 1;
-    }
-
     public EntityTropicalFish(final World world, final EntityLiving entityliving, final int i) {
         super(world);
-        this.setShouldSpawnSchool(false);
         this.targetHook = false;
         this.isLeader = true;
         this.inSchool = false;
@@ -91,37 +79,10 @@ public class EntityTropicalFish extends EntityTropicraftWaterMob {
         this.motionY = -MathHelper.sin(this.rotationPitch / 180.0f * 3.141593f);
     }
 
-    public EntityTropicalFish(final EntityTropicalFish original) {
-        this(original.worldObj);
-        this.setShouldSpawnSchool(false);
-        this.targetHook = false;
-        this.isLeader = false;
-        this.inSchool = true;
-        this.leader = original;
-        this.setColor(original.getColor());
-        this.yOffset = 0.0f;
-        this.setSize(original.width, original.height);
-        do {
-            final double offsetX = this.rand.nextDouble() * 3.0 - 1.5;
-            final double offsetY = this.rand.nextDouble() * 2.0 + 1.0;
-            final double offsetZ = this.rand.nextDouble() * 3.0 - 1.5;
-            this.setLocationAndAngles(
-                original.posX + offsetX,
-                original.posY + offsetY,
-                original.posZ + offsetZ,
-                original.rotationYaw,
-                original.rotationPitch);
-        } while (!this.getCanSpawnHere());
-        this.motionX = original.motionX;
-        this.motionY = original.motionY;
-        this.motionZ = original.motionZ;
-    }
-
     @Override
     public void entityInit() {
         super.entityInit();
         this.dataWatcher.addObject(DATA_COLOR, 0);
-        this.dataWatcher.addObject(SHOULD_SPAWN_DATAWATCHER, -1);
     }
 
     public void checkForLeader() {
@@ -152,7 +113,6 @@ public class EntityTropicalFish extends EntityTropicraftWaterMob {
         } else {
             this.hasBeenPlaced = true;
         }
-        this.setShouldSpawnSchool(false);
         this.setColor(nbttagcompound.getInteger("Color"));
     }
 
@@ -209,22 +169,14 @@ public class EntityTropicalFish extends EntityTropicraftWaterMob {
 
     @Override
     protected void updateEntityActionState() {
-        if (this.getShouldSpawnSchool()) {
-            final int maxInSchool = 7;
-            final int minInSchool = 4;
-            for (int numToSpawn = new Random().nextInt(1 + maxInSchool - minInSchool) + minInSchool - 1, i = 0; i
-                < numToSpawn; ++i) {
-                if (!this.worldObj.isRemote) {}
-            }
-            this.setShouldSpawnSchool(false);
-        }
         if (this.leader != null && this.getDistanceToEntity((Entity) this.leader) < 1.5f) {
             this.inSchool = true;
         }
         if (this.leader != null && this.leader.isDead) {
             this.leader = null;
         }
-        if (this.leader == null || this.isLeader) {
+        if ((this.leader == null || this.isLeader) && this.ticksExisted % 40 == 0) {
+            // Was every tick: getEntitiesWithinAABB over a 20x20x20 box per fish, per tick.
             this.checkForLeader();
         }
         if (!this.inSchool || this.isLeader) {

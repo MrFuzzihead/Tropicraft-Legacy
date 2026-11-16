@@ -4,7 +4,6 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityChest;
@@ -46,67 +45,110 @@ public class TileEntityKoaChest extends TileEntityChest implements IInventory {
         this.delay = 80;
     }
 
+    /**
+     * Tops the chest's household up to {@link #housePop}.
+     * <p>
+     * The quota is decided from the registered slots, not from a live scan of the world. A member that is standing in
+     * an unloaded chunk still belongs to this chest, but {@link #getHomeKoaCount()} cannot see it - and
+     * {@link #addToList} used to silently drop the ids of anything spawned while both slots were taken. Visiting a
+     * village whose Koa had wandered out of the 160 block scan window therefore spawned a fresh pair every time
+     * while the old pair was still alive, untracked and never cleaned up.
+     * </p>
+     */
     public void spawnKoa(final World world) {
         this.updateList();
-        final int koaCount = this.getHomeKoaCount();
-        final int spawnCount = this.housePop - koaCount;
-        int spawnTry = 0;
-        while ((this.hunters < this.housePop_hunters || this.fishers < this.housePop_fishers) && spawnTry < 40) {
-            ++spawnTry;
-            EntityKoaBase var2;
-            if (this.hunters < this.housePop_hunters) {
-                ++this.hunters;
-                var2 = new EntityKoaHunter(this.worldObj);
-            } else {
-                ++this.fishers;
-                var2 = new EntityKoaFisher(this.worldObj);
-            }
-            if (var2 == null) {
+        int free = this.housePop - this.occupiedSlots();
+        if (free <= 0) {
+            return;
+        }
+        // The live counts only pick which type to spawn next; what bounds the household is `free` above.
+        this.getHomeKoaCount();
+        for (int spawnTry = 0; free > 0 && spawnTry < this.housePop * 4; ++spawnTry) {
+            final boolean hunter = this.hunters < this.housePop_hunters;
+            final EntityKoaBase koa = hunter ? new EntityKoaHunter(this.worldObj) : new EntityKoaFisher(this.worldObj);
+            koa.setLocationAndAngles(
+                this.xCoord + 0.5,
+                this.yCoord + 1,
+                this.zCoord + 0.5,
+                this.worldObj.rand.nextFloat() * 360.0f,
+                0.0f);
+            koa.getAIAgent().homeX = this.xCoord;
+            koa.getAIAgent().homeY = this.yCoord;
+            koa.getAIAgent().homeZ = this.zCoord;
+            if (!this.addToList(koa)) {
+                // The household filled up between the check and here: drop this one rather than spawn a Koa that
+                // nothing tracks.
                 return;
             }
-            final double var3 = this.xCoord + 0.5;
-            final double var4 = this.yCoord + 1;
-            final double var5 = this.zCoord + 0.5;
-            final EntityLiving var6 = (var2 instanceof EntityLiving) ? var2 : null;
-            var2.setLocationAndAngles(var3, var4, var5, this.worldObj.rand.nextFloat() * 360.0f, 0.0f);
-            var2.getAIAgent().homeX = this.xCoord;
-            var2.getAIAgent().homeY = this.yCoord;
-            var2.getAIAgent().homeZ = this.zCoord;
-            this.addToList(var2);
-            this.worldObj.spawnEntityInWorld((Entity) var2);
-            var2.onSpawnWithEgg(null);
-            var2.getAIAgent()
+            this.worldObj.spawnEntityInWorld((Entity) koa);
+            koa.onSpawnWithEgg(null);
+            koa.getAIAgent()
                 .spawnedOrNBTReloadedInit();
-            if (var6 == null) {
-                continue;
+            koa.spawnExplosionParticle();
+            if (hunter) {
+                ++this.hunters;
+            } else {
+                ++this.fishers;
             }
-            var6.spawnExplosionParticle();
+            --free;
         }
     }
 
-    public void addToList(final EntityKoaBase ent) {
+    /**
+     * @return true if the entity got a slot. False means the household is full, and the caller must not spawn it.
+     */
+    public boolean addToList(final EntityKoaBase ent) {
         for (int j = 0; j < this.entIDs.length; ++j) {
             if (this.entIDs[j] == -1) {
                 this.entIDs[j] = ent.getAIAgent().entID;
                 this.entRefs[j] = ent;
-                break;
+                return true;
             }
         }
+        return false;
     }
 
+    private int occupiedSlots() {
+        int occupied = 0;
+        for (final int entID : this.entIDs) {
+            if (entID != -1) {
+                ++occupied;
+            }
+        }
+        return occupied;
+    }
+
+    /**
+     * Refreshes {@link #entRefs} from {@link #entIDs}. A member that is simply not loaded keeps its slot: the only
+     * thing this can prove is that a <em>loaded</em> member is dead, and clearing slots for unloaded members is what
+     * made the chest spawn replacement pairs forever.
+     */
     public void updateList() {
         for (int j = 0; j < this.entIDs.length; ++j) {
+            if (this.entIDs[j] == -1) {
+                this.entRefs[j] = null;
+                continue;
+            }
             final Entity ent = OldUtil.getEntByPersistantID(this.worldObj, this.entIDs[j]);
             if (ent == null) {
-                this.entIDs[j] = -1;
                 this.entRefs[j] = null;
             } else if (ent.isDead) {
                 this.entIDs[j] = -1;
                 this.entRefs[j] = null;
+            } else if (ent instanceof EntityKoaBase) {
+                this.entRefs[j] = (EntityKoaBase) ent;
+            } else {
+                // A recycled id belonging to something else: not our member.
+                this.entIDs[j] = -1;
+                this.entRefs[j] = null;
             }
         }
     }
 
+    /**
+     * Counts the members of this chest that are currently loaded and nearby, and refreshes {@link #hunters} and
+     * {@link #fishers}. Note this is a <em>live</em> count: use {@link #occupiedSlots()} for the quota.
+     */
     public int getHomeKoaCount() {
         final float dist = 160.0f;
         final List<ICoroAI> ents = (List<ICoroAI>) this.worldObj.getEntitiesWithinAABB(
@@ -124,27 +166,36 @@ public class TileEntityKoaChest extends TileEntityChest implements IInventory {
         this.fishers = 0;
         int existing = 0;
         for (int i = 0; i < ents.size(); ++i) {
-            int j = 0;
-            while (j < this.entIDs.length) {
-                final Entity ent = (Entity) ents.get(i);
-                if (ent instanceof EntityKoaBase && ent != null
-                    && this.entIDs[j] == ((EntityKoaBase) ent).getAIAgent().entID
-                    && ((EntityKoaBase) ent).getAIAgent().entID != -1) {
-                    ++existing;
-                    if (ent instanceof EntityKoaHunter) {
-                        ++this.hunters;
-                    }
-                    if (ent instanceof EntityKoaFisher) {
-                        ++this.fishers;
-                        break;
-                    }
-                    break;
-                } else {
-                    ++j;
-                }
+            final Object candidate = ents.get(i);
+            if (!(candidate instanceof EntityKoaBase)) {
+                continue;
+            }
+            final EntityKoaBase ent = (EntityKoaBase) candidate;
+            if (!this.ownsMember(ent)) {
+                continue;
+            }
+            ++existing;
+            if (ent instanceof EntityKoaHunter) {
+                ++this.hunters;
+            }
+            if (ent instanceof EntityKoaFisher) {
+                ++this.fishers;
             }
         }
         return existing;
+    }
+
+    private boolean ownsMember(final EntityKoaBase ent) {
+        final int entID = ent.getAIAgent().entID;
+        if (entID == -1) {
+            return false;
+        }
+        for (final int slot : this.entIDs) {
+            if (slot == entID) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean getCanSpawnHere(final Entity ent) {
@@ -170,15 +221,7 @@ public class TileEntityKoaChest extends TileEntityChest implements IInventory {
         }
         if (this.delay > 0) {
             if (this.needListUpdate && this.delay < 20) {
-                for (int i = 0; i < this.entIDs.length; ++i) {
-                    final Entity ent = OldUtil.getEntByPersistantID(this.worldObj, this.entIDs[i]);
-                    if (ent instanceof EntityKoaBase) {
-                        this.entRefs[i] = (EntityKoaBase) ent;
-                    } else {
-                        this.entIDs[i] = -1;
-                        this.entRefs[i] = null;
-                    }
-                }
+                this.updateList();
                 this.needListUpdate = false;
             }
             --this.delay;
