@@ -7,6 +7,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.tropicraft.registry.TCCreativeTabRegistry;
+import net.tropicraft.util.TropicraftNames;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -20,15 +21,11 @@ public class ItemTropicraftTool extends ItemTool {
     }
 
     public String getUnlocalizedName() {
-        return String.format("item.%s%s", "tropicraft:", this.getActualName(super.getUnlocalizedName()));
+        return TropicraftNames.item(super.getUnlocalizedName());
     }
 
     public String getUnlocalizedName(final ItemStack itemStack) {
-        return String.format("item.%s%s", "tropicraft:", this.getActualName(super.getUnlocalizedName()));
-    }
-
-    protected String getActualName(final String unlocalizedName) {
-        return unlocalizedName.substring(unlocalizedName.indexOf(".") + 1);
+        return TropicraftNames.item(super.getUnlocalizedName());
     }
 
     @SideOnly(Side.CLIENT)

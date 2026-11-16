@@ -16,6 +16,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.tropicraft.info.TCNames;
 import net.tropicraft.registry.TCCreativeTabRegistry;
+import net.tropicraft.util.TropicraftNames;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -43,8 +44,8 @@ public class BlockPineapple extends BlockTallFlowers implements IGrowable {
     public void registerBlockIcons(final IIconRegister iconRegister) {
         this.topIcons = new IIcon[this.names.length];
         for (int i = 0; i < this.names.length; ++i) {
-            this.topIcons[i] = iconRegister
-                .registerIcon(this.getActualName(this.getFormattedTextureName()) + "_" + TCNames.pineappleNames[i]);
+            this.topIcons[i] = iconRegister.registerIcon(
+                TropicraftNames.afterFirstDot(this.getFormattedTextureName()) + "_" + TCNames.pineappleNames[i]);
         }
         this.bottomIcon = iconRegister.registerIcon("tropicraft:pineapple_lower");
     }
@@ -112,17 +113,12 @@ public class BlockPineapple extends BlockTallFlowers implements IGrowable {
     }
 
     protected String getFormattedTextureName() {
-        return String.format("tile.%s%s", "tropicraft:", this.getActualName(this.getTextureName()));
+        return TropicraftNames.block(this.getTextureName());
     }
 
     @Override
     public String getUnlocalizedName() {
-        return String.format("tile.%s%s", "tropicraft:", this.getActualName("tallFlower"));
-    }
-
-    @Override
-    protected String getActualName(final String unlocalizedName) {
-        return unlocalizedName.substring(unlocalizedName.indexOf(46) + 1);
+        return TropicraftNames.block("tallFlower");
     }
 
     @Override

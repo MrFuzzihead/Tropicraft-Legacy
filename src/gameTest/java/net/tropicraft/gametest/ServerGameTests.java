@@ -3,6 +3,7 @@ package net.tropicraft.gametest;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,8 @@ import java.util.Set;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
@@ -80,6 +83,8 @@ public final class ServerGameTests {
         entityIdsAreUniqueAndRoundTrip();
         koaChestKeepsItsHousehold();
         tropicalFishTicksWithoutItsSchoolPath();
+        itemNamesFollowTheRegisterConvention();
+        blockNamesFollowTheRegisterConvention();
         tropicsChunksGenerate();
         deferredDecorationFlushesWhenItsNeighbourhoodLoads();
         return failures;
@@ -506,6 +511,93 @@ public final class ServerGameTests {
             t.printStackTrace();
             fail("a tropical fish ticks", t.toString());
         }
+    }
+
+    private static final Set<String> ITEM_NAME_EXCEPTIONS = new HashSet<String>(
+        Arrays.asList("tropicraft:fishingRodTropical", "tropicraft:bucketTropicsWater"));
+
+    /**
+     * Every Tropicraft item's unlocalized name must be {@code item.<registry name>} - i.e. {@code
+     * item.tropicraft:flippers} for {@code tropicraft:flippers}. That is what the lang file and every
+     * {@code getUnlocalizedName} override in the mod have to agree on; the item-naming refactor moves the shared
+     * logic into one helper, so this pins the outcome.
+     * <p>
+     * Item blocks are excluded: their name belongs to the block ({@code tile.*}), which follows its own convention.
+     * </p>
+     */
+    private static void itemNamesFollowTheRegisterConvention() {
+        final List<String> wrong = new ArrayList<String>();
+        int counted = 0;
+        final Set<String> keys = Item.itemRegistry.getKeys();
+        for (final Object key : keys) {
+            final String name = (String) key;
+            if (!name.startsWith("tropicraft:")) {
+                continue;
+            }
+            final Object registered = Item.itemRegistry.getObject(name);
+            if (!(registered instanceof Item) || registered instanceof ItemBlock) {
+                continue;
+            }
+            ++counted;
+            final String expected = "item." + name;
+            final String actual = ((Item) registered).getUnlocalizedName();
+            // Two long-standing exceptions: both are registered by Tropicraft but report an un-namespaced unlocalized
+            // name, and their lang keys (item.fishingRodTropical.name, item.bucketTropicsWater.name) exist in that
+            // form. Renaming them would break every resource pack that overrides those two keys, so they stay.
+            if (ITEM_NAME_EXCEPTIONS.contains(name)) {
+                continue;
+            }
+            if (!expected.equals(actual)) {
+                wrong.add(name + " -> " + actual);
+            }
+        }
+        assertTrue(
+            "every Tropicraft item is named item.<registry name>",
+            counted > 50 && wrong.isEmpty(),
+            counted + " checked, wrong: " + wrong);
+    }
+
+    /**
+     * Blocks follow the same idea as items: the registry name is {@code tropicraft:tile.<n>} (see
+     * {@code TCBlockRegistry.registerBlock}'s {@code "tile." + name}) and the unlocalized name a Tropicraft block
+     * reports is {@code tile.tropicraft:<n>}. Blocks that do not override {@code getUnlocalizedName} at all are
+     * listed separately rather than failed: they are the ones that never joined the convention.
+     */
+    private static void blockNamesFollowTheRegisterConvention() {
+        final List<String> wrong = new ArrayList<String>();
+        final List<String> unconverted = new ArrayList<String>();
+        int counted = 0;
+        final Set<String> keys = Block.blockRegistry.getKeys();
+        for (final Object key : keys) {
+            final String registryName = (String) key;
+            if (!registryName.startsWith("tropicraft:tile.")) {
+                continue;
+            }
+            final Object registered = Block.blockRegistry.getObject(registryName);
+            if (!(registered instanceof Block)) {
+                continue;
+            }
+            ++counted;
+            final String expected = "tile.tropicraft:" + registryName.substring("tropicraft:tile.".length());
+            final String actual = ((Block) registered).getUnlocalizedName();
+            // The pineapple plant is part of the tall flower family and deliberately shares its naming scheme:
+            // the item appends "_Pineapple", giving the lang key tile.tropicraft:tallFlower_Pineapple.name.
+            if ("tropicraft:tile.pineapple".equals(registryName) && "tile.tropicraft:tallFlower".equals(actual)) {
+                continue;
+            }
+            if (expected.equals(actual)) {
+                continue;
+            }
+            if (("tile." + registryName.substring("tropicraft:tile.".length())).equals(actual)) {
+                unconverted.add(registryName);
+            } else {
+                wrong.add(registryName + " -> " + actual);
+            }
+        }
+        assertTrue(
+            "every Tropicraft block is named tile.tropicraft:<name>",
+            counted > 30 && wrong.isEmpty(),
+            counted + " checked, wrong: " + wrong + ", not using the convention: " + unconverted);
     }
 
     // ---------------------------------------------------------------------------------------------------------

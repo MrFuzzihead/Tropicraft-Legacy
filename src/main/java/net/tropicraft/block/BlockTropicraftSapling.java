@@ -17,6 +17,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
 import net.tropicraft.registry.TCBlockRegistry;
 import net.tropicraft.registry.TCCreativeTabRegistry;
+import net.tropicraft.util.TropicraftNames;
 import net.tropicraft.world.worldgen.TCGenBase;
 import net.tropicraft.world.worldgen.WorldGenTallTree;
 import net.tropicraft.world.worldgen.WorldGenTropicraftCurvedPalm;
@@ -159,11 +160,7 @@ public class BlockTropicraftSapling extends BlockSapling implements IGrowable {
     }
 
     public String getUnlocalizedName() {
-        return String.format("tile.%s%s", "tropicraft:", this.getActualName(super.getUnlocalizedName()));
-    }
-
-    protected String getActualName(final String unlocalizedName) {
-        return unlocalizedName.substring(unlocalizedName.indexOf(46) + 1);
+        return TropicraftNames.block(super.getUnlocalizedName());
     }
 
     @SideOnly(Side.CLIENT)

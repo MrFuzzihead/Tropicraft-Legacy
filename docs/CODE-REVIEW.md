@@ -530,6 +530,8 @@ a future refactor that hands the generator itself to `isAreaLoaded` silently dis
 
 ### R1. Collapse the three duplicated `doRender` implementations (−~400 LOC)
 
+**Status: open, deliberately.** See §17.4 — a renderer change cannot be verified by this harness.
+
 `RenderMarlin`, `RenderSeaTurtle` and `RenderWaterMob` each extend `RenderLiving` and then copy vanilla's
 `RenderLiving.doRender` almost verbatim (glint pass, `hurtTime` pass, `inheritRenderPass` loop,
 `catch (Exception) { printStackTrace(); }`) — three near-identical ~150-line blocks. Extract
@@ -538,6 +540,8 @@ copy actually changes and call `super.doRender` instead. As a bonus, the `catch 
 render pass hides every model bug; log once instead.
 
 ### R2. Unify `getUnlocalizedName` (−~60 LOC)
+
+**Status: done** — and it was ~35 classes, not 6. See §17.1.
 
 `ItemTropicraft` already implements the exact `getActualName` logic; `ItemTropicraftArmor`, `ItemFlippers`,
 `ItemSnorkel`, `ItemBambooChute`, `ItemTropicraftFood`, `ItemTropicraftLeafballNew` each copy it. Extract a
@@ -553,6 +557,8 @@ three plus the leafball should share one `EntityTropicraftThrowable`.
 
 ### R4. Registry tidy-up
 
+**Status: open.** See §17.4.
+
 * `TCItemRegistry` — one 300-line static initialiser; split into `initBlockItems()`, `initFood()`,
   `initTools()`, `initArmor()`, `initMisc()` for reviewability. Several entries are
   `(Item) new ItemX()` casts (R2-style cleanup).
@@ -564,12 +570,16 @@ three plus the leafball should share one `EntityTropicraftThrowable`.
 
 ### R5. `Encyclopedia` — `ItemStack` as a map key
 
+**Status: done.** See §17.2.
+
 `HashMap<ItemStack, List<ShapedRecipes>>` (`Encyclopedia:18`) relies on `ItemStack` not overriding
 `equals`/`hashCode` in 1.7.10, i.e. on identity. Every lookup therefore has to fall back to a linear
 `isItemEqual` scan over `keySet()` (three such scans, one per rendered page). Re-key on
 `(Item, damage)` or a small record and the scans disappear.
 
 ### R6. `ItemCocktail` / `ColorMixer`
+
+**Status: open.** See §17.4.
 
 Not audited in depth, but `ItemCocktail` (327 LOC) mixes colour-mixing, block placement, container
 replacement and NBT writing; `ColorMixer` (300 LOC) duplicates colour maths that `ColorHelper` already
@@ -1475,6 +1485,84 @@ they should be cleaned one file at a time with the pose logic in front of you - 
 | B15: `System.out`/`err`, blanket `printStackTrace`, empty `if`s, `new Random()` on hot paths | done (§13, §16.2) |
 | B15: alias locals | **deferred on purpose** (§16.3) |
 | B15: redundant `(Class)`/`(Item)`/`(Block)` casts, float literals written as doubles | deferred as noise; a mechanical sweep risks changing overload resolution and double rounding (§13.1) |
+
+---
+
+## 17. P2 batch 1 — naming and the encyclopedia index
+
+Both refactors were done with a characterization check in place first: the in-game suite grew assertions that pin
+the *observable outcome* (the names every item and block reports, and what a recipe lookup returns), the baseline was
+recorded, the code changed, and the same assertions had to stay green.
+
+### 17.1 R2: one naming helper instead of ~35 copies
+
+The review said six classes; `grep` found the `getUnlocalizedName()` + `getActualName(String)` pair copied into **35**
+classes - 19 blocks and 16 items. They were byte-identical apart from whether they build an `item.` or a `tile.` name
+and whether the source string is `super.getUnlocalizedName()` or a texture-name helper.
+
+`net.tropicraft.util.TropicraftNames` now holds the whole convention (`item(rawName)`, `block(rawName)`,
+`afterFirstDot(name)`), and every class delegates in one line. The note about the interface-with-a-default-method
+idea, for the record: it cannot work. `getUnlocalizedName` is declared by `Item`/`Block`, and a default method loses
+to an inherited class method, so it would never run.
+
+**How it was checked.** Two new in-game assertions, added *before* the change:
+
+| Check | Baseline | After |
+|---|---|---|
+| every Tropicraft item is named `item.<registry name>` | 75 checked, 2 exceptions | identical |
+| every Tropicraft block is named `tile.tropicraft:<name>` | 49 checked, 1 exception, 3 not converted | identical |
+
+The exceptions are real and pre-existing, and are now allowlisted *with their reason* rather than silently skipped:
+`tropicraft:fishingRodTropical` and `tropicraft:bucketTropicsWater` report an un-namespaced name (their lang keys
+exist in that form; renaming them would break every resource pack that overrides those two lines), and
+`tropicraft:tile.pineapple` deliberately shares the tall-flower naming scheme, because the item appends
+`_Pineapple` to build `tile.tropicraft:tallFlower_Pineapple.name`. Three blocks (`bambooDoor`, `tropicsWater`,
+`bambooMug`) never joined the convention at all; the check reports them separately instead of failing, so they stay
+visible without turning into noise.
+
+Unit tests cover the helper's own edge cases, including the one that matters: a name with no dot is returned
+unchanged (`indexOf` returns -1, so the old code took the whole string) - several texture paths depend on it.
+
+### 17.2 R5: the encyclopedia recipe index
+
+`HashMap<ItemStack, List<ShapedRecipes>>` relied on `ItemStack` not overriding `equals`/`hashCode` in 1.7.10, i.e. on
+identity. Every lookup therefore had to fall back to a linear `isItemEqual` scan over the key set - two per rendered
+recipe page - and `includeRecipe` could only append to an existing entry by scanning for it. A third identity-keyed
+collection (`HashSet<ItemStack>` for a recipe's ingredients) had the same problem from the other direction: each
+lookup had to scan it to deduplicate.
+
+Both are now keyed by a private `ItemKey` (item + damage, which is exactly what `isItemEqual` compares), so:
+
+* `includeRecipe` appends with one `map.get`;
+* `getRecipesForEntry` is one `map.get` per entry item instead of a scan per entry item;
+* the ingredient set is a `LinkedHashMap<ItemKey, ItemStack>`, which also preserves the order the ingredients are
+  first seen instead of hash order.
+
+Five unit tests pin the semantics, which are unchanged: an equal-but-not-identical stack finds the recipes (that is
+what the scans existed for), damage is part of the identity, different items never share recipes, a recipe with two
+ingredients is listed once for each of them (existing behaviour: `getRecipesForEntry` concatenates the recipes of
+every item the page shows), and a duplicate ingredient is indexed once.
+
+One accepted behaviour change: the order recipes are listed in can differ from before, because it used to be
+identity-hash order. The old order was arbitrary, not meaningful.
+
+### 17.3 What was verified
+
+`./gradlew check` (51 unit tests, coverage floors, spotless, licence) and `./gradlew gameTestServer` (26 in-game
+checks) are green; unit coverage went from 121 to 232 executed lines with the new tests. The naming checks are the
+important part: they are the only thing in this repository that would notice if a `getUnlocalizedName` refactor
+renamed an item.
+
+### 17.4 Still open, and why
+
+* **R1 (renderers)** needs a client. The three `doRender` copies only run on the client, and this harness is a
+  dedicated server: nothing in it can tell a correct `super.doRender` call from a subtly wrong one, so the "no
+  regressions" guarantee the rest of this work has would be missing. Do it in a branch that can be eyeballed in-game
+  (fish, turtles and marlins are all easy to spawn).
+* **R4 (registries)** is mechanical but large. `TCCraftingRegistry` helper extraction deserves a recipe
+  characterization check first (registered recipe count, plus the output of a handful of named recipes), which is
+  cheap to add and would make the extraction safe - next batch.
+* **R6 (cocktail/colour mixer)** needs the same treatment and is the least understood of the three.
 
 ---
 

@@ -10,6 +10,7 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.ISpecialArmor;
+import net.tropicraft.util.TropicraftNames;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -26,15 +27,11 @@ public class ItemTropicraftArmor extends ItemArmor implements ISpecialArmor {
     }
 
     public String getUnlocalizedName() {
-        return String.format("item.%s%s", "tropicraft:", this.getActualName(super.getUnlocalizedName()));
+        return TropicraftNames.item(super.getUnlocalizedName());
     }
 
     public String getUnlocalizedName(final ItemStack itemStack) {
-        return String.format("item.%s%s", "tropicraft:", this.getActualName(super.getUnlocalizedName()));
-    }
-
-    protected String getActualName(final String unlocalizedName) {
-        return unlocalizedName.substring(unlocalizedName.indexOf(".") + 1);
+        return TropicraftNames.item(super.getUnlocalizedName());
     }
 
     protected String getTexturePath(final String name) {

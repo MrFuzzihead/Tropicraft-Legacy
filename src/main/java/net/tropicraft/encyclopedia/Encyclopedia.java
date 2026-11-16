@@ -2,9 +2,9 @@ package net.tropicraft.encyclopedia;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -14,13 +14,55 @@ import net.minecraft.item.crafting.ShapedRecipes;
 
 public class Encyclopedia extends TropicalBook {
 
-    private HashMap<ItemStack, List<ShapedRecipes>> recipes;
-    private HashMap<String, List<ItemStack>> itemEntries;
+    /**
+     * Identity of an encyclopedia entry: the item plus its damage value, which is exactly what
+     * {@code ItemStack.isItemEqual} compares.
+     * <p>
+     * The recipe map used to be keyed by {@code ItemStack} itself. In 1.7.10 {@code ItemStack} does not override
+     * {@code equals}/{@code hashCode}, so every map and set that stored one was keyed by identity, and every lookup had
+     * to fall back to a linear {@code isItemEqual} scan over the keys (two of them per rendered recipe page) or key by
+     * an object that could never be found again.
+     * </p>
+     */
+    private static final class ItemKey {
+
+        private final Item item;
+        private final int damage;
+
+        private ItemKey(final Item item, final int damage) {
+            this.item = item;
+            this.damage = damage;
+        }
+
+        static ItemKey of(final ItemStack stack) {
+            return new ItemKey(stack.getItem(), stack.getItemDamage());
+        }
+
+        @Override
+        public boolean equals(final Object other) {
+            if (this == other) {
+                return true;
+            }
+            if (!(other instanceof ItemKey)) {
+                return false;
+            }
+            final ItemKey key = (ItemKey) other;
+            return this.item == key.item && this.damage == key.damage;
+        }
+
+        @Override
+        public int hashCode() {
+            return 31 * System.identityHashCode(this.item) + this.damage;
+        }
+    }
+
+    private final Map<ItemKey, List<ShapedRecipes>> recipes;
+    private final HashMap<String, List<ItemStack>> itemEntries;
 
     public Encyclopedia(final String savedDataFile, final String contentsFile, final String outsideTexture,
         final String insideTexture) {
         super(savedDataFile, contentsFile, outsideTexture, insideTexture);
-        this.recipes = new HashMap<ItemStack, List<ShapedRecipes>>();
+        this.recipes = new HashMap<ItemKey, List<ShapedRecipes>>();
         this.itemEntries = new HashMap<String, List<ItemStack>>();
     }
 
@@ -38,8 +80,8 @@ public class Encyclopedia extends TropicalBook {
     }
 
     public void includeRecipe(final ItemStack result, final Object[] aobj) {
-        final Set<ItemStack> recipeContents = new HashSet<ItemStack>();
-        this.addItemToRecipeContents(recipeContents, result);
+        final Map<ItemKey, ItemStack> recipeContents = new LinkedHashMap<ItemKey, ItemStack>();
+        addItemToRecipeContents(recipeContents, result);
         String recipeString = "";
         int i = 0;
         int width = 0;
@@ -72,7 +114,7 @@ public class Encyclopedia extends TropicalBook {
                 itemStack = (ItemStack) aobj[i + 1];
             }
             charMap.put(itemChar, itemStack);
-            this.addItemToRecipeContents(recipeContents, itemStack);
+            addItemToRecipeContents(recipeContents, itemStack);
             i += 2;
         }
         final ItemStack[] slotArray = new ItemStack[width * height];
@@ -86,21 +128,14 @@ public class Encyclopedia extends TropicalBook {
             }
         }
         final ShapedRecipes recipe = new ShapedRecipes(width, height, slotArray, result);
-        for (final ItemStack item : recipeContents) {
-            boolean foundKey = false;
-            for (final ItemStack key : this.recipes.keySet()) {
-                if (item.isItemEqual(key)) {
-                    foundKey = true;
-                    this.recipes.get(key)
-                        .add(recipe);
-                    break;
-                }
+        for (final ItemStack item : recipeContents.values()) {
+            final ItemKey key = ItemKey.of(item);
+            List<ShapedRecipes> recipesForItem = this.recipes.get(key);
+            if (recipesForItem == null) {
+                recipesForItem = new ArrayList<ShapedRecipes>();
+                this.recipes.put(key, recipesForItem);
             }
-            if (!foundKey) {
-                this.recipes.put(item, new ArrayList<ShapedRecipes>());
-                this.recipes.get(item)
-                    .add(recipe);
-            }
+            recipesForItem.add(recipe);
         }
     }
 
@@ -109,14 +144,9 @@ public class Encyclopedia extends TropicalBook {
         final List<ShapedRecipes> recipeList = new ArrayList<ShapedRecipes>();
         if (entryItems != null) {
             for (final ItemStack item : entryItems) {
-                for (final ItemStack recipeItem : this.recipes.keySet()) {
-                    if (recipeItem.isItemEqual(item)) {
-                        final List<ShapedRecipes> itemRecipes = this.recipes.get(recipeItem);
-                        if (itemRecipes == null) {
-                            continue;
-                        }
-                        recipeList.addAll(itemRecipes);
-                    }
+                final List<ShapedRecipes> recipesForItem = this.recipes.get(ItemKey.of(item));
+                if (recipesForItem != null) {
+                    recipeList.addAll(recipesForItem);
                 }
             }
         }
@@ -182,16 +212,14 @@ public class Encyclopedia extends TropicalBook {
         }
     }
 
-    private void addItemToRecipeContents(final Set<ItemStack> items, final ItemStack i) {
-        boolean shouldAdd = !items.contains(i);
-        for (final ItemStack listItem : items) {
-            if (listItem.isItemEqual(i)) {
-                shouldAdd = false;
-                break;
-            }
+    /** Adds the stack under its item/damage key, keeping the first stack seen (and its display name). */
+    private static void addItemToRecipeContents(final Map<ItemKey, ItemStack> contents, final ItemStack stack) {
+        if (stack == null) {
+            return;
         }
-        if (shouldAdd) {
-            items.add(i);
+        final ItemKey key = ItemKey.of(stack);
+        if (!contents.containsKey(key)) {
+            contents.put(key, stack);
         }
     }
 

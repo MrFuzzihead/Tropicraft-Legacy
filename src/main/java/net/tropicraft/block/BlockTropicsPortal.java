@@ -18,6 +18,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.BlockFluidClassic;
 import net.minecraftforge.fluids.Fluid;
 import net.tropicraft.registry.TCBlockRegistry;
+import net.tropicraft.util.TropicraftNames;
 import net.tropicraft.util.TropicraftWorldUtils;
 
 import cpw.mods.fml.relauncher.Side;
@@ -37,11 +38,7 @@ public class BlockTropicsPortal extends BlockFluidClassic {
     }
 
     public String getUnlocalizedName() {
-        return String.format("tile.%s%s", "tropicraft:", this.getActualName(super.getUnlocalizedName()));
-    }
-
-    protected String getActualName(final String unlocalizedName) {
-        return unlocalizedName.substring(unlocalizedName.indexOf(46) + 1);
+        return TropicraftNames.block(super.getUnlocalizedName());
     }
 
     public void onEntityCollidedWithBlock(final World world, final int i, final int j, final int k,
