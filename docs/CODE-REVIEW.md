@@ -86,6 +86,7 @@ Issue-tracker follow-ups (detail in §10):
 | B25 | P2 | #3 | Two duplicate lang keys; `tropiFrame` is labelled "Bamboo Item Frame" in game |
 | B26 | P2 | #3, #10 | 152 `TCNames` string constants are never referenced; `aqua*` names exist without any item |
 | B27 | P1 | #50 | Koa lose the creative-mode filter; `JobHunt.hookHit` retaliation bypasses `isEnemy`; peaceful handling only exists in `EntityCoroAI` |
+| B28 | P2 | worldgen | Coral and the decorative mineral sands are rolled **per chunk**, so they appear as 16×16 squares in the terrain (§4) |
 
 ---
 
@@ -509,6 +510,36 @@ a future refactor that hands the generator itself to `isAreaLoaded` silently dis
   (`TropicraftWorldUtils:17`, `ClientProxy` block handlers, `JobFish`, `JobTrade`).
 * **`Tropicraft.dbg()`** — `final boolean consoleDebug = true;` inside the method. Two call sites
   (`JobTrade`). Either delete it or route through `FMLLog.fine` behind a config key.
+
+### B28. (P2) Coral and the decorative mineral sands generate in single-chunk squares
+
+Both features key off a *per-chunk* random roll, so their output is bounded by chunk borders and reads as a 16×16
+checkerboard in the terrain. Reported after a play test: "coral and foamy sands spawn only in single chunks which
+makes them look very bad".
+
+**Mineral sands (Foamy Sands and friends).** `ChunkProviderTropicraft.replaceBlocksForBiome` rolls the decorative
+variant once per chunk:
+
+```java
+final int sandType = this.rand.nextInt(200);   // :324
+```
+
+0–3 pick `TCBlockRegistry.mineralSands` with metadata 0–3 (`Coral`, `Green` = "Foamy Sands", `Black`, `Mineral`),
+anything else is plain sand. Every beach and ocean column in that chunk is then filled from that single
+`sandBlock` / `sandMetadata`, so a chunk is either all one colour or none, and neighbouring chunks roll
+independently. At 2% of chunks per variant, beaches come out as scattered solid tiles of green/black/coral sand.
+
+**Coral.** `BiomeGenTropicsOcean.decorate` runs `new WorldGenCoral().generate(...)` at most once per chunk (1 in 5),
+anchored inside the chunk (`x + 6 + rand.nextInt(4)`); `WorldGenCoral` then makes 12 attempts within ±8 blocks of that
+point. So every reef is a single 12-block cluster pinned to one chunk. Note `BiomeGenTropicraft.decorate` (:99) runs
+the same roll when the biome at those coordinates is the ocean, so an ocean chunk actually gets two independent
+rolls.
+
+**Fix sketch.** Sands: roll the variant per column or per small cell, or derive it from a low-frequency noise so a
+patch is larger than a chunk and fades at the edges; the block and metadata already support it. Coral: take the reef
+centre from a coarse noise (or let `WorldGenCoral` spread its attempts over 32–48 blocks around the chunk origin) so
+a reef spans several chunks. Both are local changes to the decorate path, and both want a harness check
+("non-plain-sand blocks per chunk", "coral clusters per 4×4 chunk area") so the change can be verified.
 
 ---
 
