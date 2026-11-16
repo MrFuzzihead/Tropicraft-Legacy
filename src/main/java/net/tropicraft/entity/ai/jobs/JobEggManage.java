@@ -72,7 +72,7 @@ public class JobEggManage extends JobBase {
         if (this.ent.onGround && this.ent.getNavigator()
             .noPath() && this.eggs.size() < this.eggSpawnMax && this.eggSpawnCountdown == 0) {
             this.eggSpawnCountdown = this.eggSpawnCountdownMax;
-            final Random rand = new Random();
+            final Random rand = this.ent.worldObj.rand;
             Vec3 spawnCoords = null;
             if (this.eggs.size() == 0) {
                 spawnCoords = Vec3.createVectorHelper(this.ent.posX, this.ent.posY, this.ent.posZ);

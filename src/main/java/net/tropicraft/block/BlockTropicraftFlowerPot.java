@@ -11,7 +11,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.tropicraft.block.tileentity.TileEntityTropicraftFlowerPot;
-import net.tropicraft.factory.TileEntityFactory;
 import net.tropicraft.info.TCRenderIDs;
 import net.tropicraft.registry.TCBlockRegistry;
 import net.tropicraft.registry.TCCreativeTabRegistry;
@@ -222,6 +221,6 @@ public class BlockTropicraftFlowerPot extends BlockTropicraft implements ITileEn
     }
 
     public TileEntity createNewTileEntity(final World var1, final int var2) {
-        return TileEntityFactory.getFlowerPotTE();
+        return new TileEntityTropicraftFlowerPot();
     }
 }

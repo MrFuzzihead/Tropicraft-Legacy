@@ -7,7 +7,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.tropicraft.block.tileentity.TileEntityBambooChest;
-import net.tropicraft.factory.TileEntityFactory;
 import net.tropicraft.info.TCRenderIDs;
 import net.tropicraft.registry.TCCreativeTabRegistry;
 
@@ -28,7 +27,7 @@ public class BlockBambooChest extends BlockChest {
     }
 
     public TileEntity createNewTileEntity(final World world, final int i) {
-        return TileEntityFactory.getBambooChestTE();
+        return new TileEntityBambooChest();
     }
 
     public IIcon getIcon(final int i, final int j) {

@@ -15,6 +15,9 @@ import CoroUtil.componentAI.ICoroAI;
 
 public class TileEntityPurchasePlate extends TileEntity {
 
+    /** Only used to pick the cosmetic display angle and offset; one instance is plenty. */
+    private static final Random RANDOM = new Random();
+
     public int itemIndex;
     public float startOffset;
     public float angle;
@@ -39,9 +42,8 @@ public class TileEntityPurchasePlate extends TileEntity {
         this.toolTipWaitStartTime = 0L;
         this.showToolTip = false;
         this.watch_showToolTip = false;
-        final Random rand = new Random();
-        this.startOffset = (float) (Math.random() * 3.141592653589793 * 2.0);
-        this.angle = (float) rand.nextInt(360);
+        this.startOffset = (float) (RANDOM.nextDouble() * Math.PI * 2.0);
+        this.angle = (float) RANDOM.nextInt(360);
     }
 
     public void onClicked(final boolean rightClick) {
@@ -113,31 +115,23 @@ public class TileEntityPurchasePlate extends TileEntity {
     }
 
     public void readFromNBT(final NBTTagCompound par1NBTTagCompound) {
-        try {
-            super.readFromNBT(par1NBTTagCompound);
-            this.itemIndex = par1NBTTagCompound.getInteger("itemIndex");
-            if (this.itemIndex < 0 || this.itemIndex >= ItemValues.itemsBuyable.size()) {
-                // Stale or hand-edited save data: every consumer indexes itemsBuyable with this directly.
-                this.itemIndex = 0;
-            }
-            this.tradeState = par1NBTTagCompound.getInteger("tradeState");
-            this.credit = par1NBTTagCompound.getInteger("credit");
-            this.showToolTip = par1NBTTagCompound.getBoolean("showToolTip");
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        super.readFromNBT(par1NBTTagCompound);
+        this.itemIndex = par1NBTTagCompound.getInteger("itemIndex");
+        if (this.itemIndex < 0 || this.itemIndex >= ItemValues.itemsBuyable.size()) {
+            // Stale or hand-edited save data: every consumer indexes itemsBuyable with this directly.
+            this.itemIndex = 0;
         }
+        this.tradeState = par1NBTTagCompound.getInteger("tradeState");
+        this.credit = par1NBTTagCompound.getInteger("credit");
+        this.showToolTip = par1NBTTagCompound.getBoolean("showToolTip");
     }
 
     public void writeToNBT(final NBTTagCompound par1NBTTagCompound) {
-        try {
-            super.writeToNBT(par1NBTTagCompound);
-            par1NBTTagCompound.setInteger("itemIndex", this.itemIndex);
-            par1NBTTagCompound.setInteger("tradeState", this.tradeState);
-            par1NBTTagCompound.setInteger("credit", this.credit);
-            par1NBTTagCompound.setBoolean("showToolTip", this.showToolTip);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        super.writeToNBT(par1NBTTagCompound);
+        par1NBTTagCompound.setInteger("itemIndex", this.itemIndex);
+        par1NBTTagCompound.setInteger("tradeState", this.tradeState);
+        par1NBTTagCompound.setInteger("credit", this.credit);
+        par1NBTTagCompound.setBoolean("showToolTip", this.showToolTip);
     }
 
     public void onDataPacket(final NetworkManager net, final S35PacketUpdateTileEntity pkt) {

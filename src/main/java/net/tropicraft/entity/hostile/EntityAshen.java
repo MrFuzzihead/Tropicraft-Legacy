@@ -1,7 +1,5 @@
 package net.tropicraft.entity.hostile;
 
-import java.util.Random;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
@@ -33,7 +31,7 @@ public abstract class EntityAshen extends EntityMob implements IRangedAttackMob 
     public EntityAshen(final World par1World) {
         super(par1World);
         this.setSize(0.5f, 1.3f);
-        this.setMaskType(new Random().nextInt(7));
+        this.setMaskType(this.rand.nextInt(7));
         this.actionPicker = 0;
         this.tasks.addTask(1, (EntityAIBase) new EntityAISwimming((EntityLiving) this));
         this.tasks.addTask(2, (EntityAIBase) new AIAshenChaseAndPickupLostMask(this, 1.0));

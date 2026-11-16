@@ -102,9 +102,9 @@ public class EntityTropicalFish extends EntityTropicraftWaterMob {
         this.yOffset = 0.0f;
         this.setSize(original.width, original.height);
         do {
-            final double offsetX = new Random().nextDouble() * 3.0 - 1.5;
-            final double offsetY = new Random().nextDouble() * 2.0 + 1.0;
-            final double offsetZ = new Random().nextDouble() * 3.0 - 1.5;
+            final double offsetX = this.rand.nextDouble() * 3.0 - 1.5;
+            final double offsetY = this.rand.nextDouble() * 2.0 + 1.0;
+            final double offsetZ = this.rand.nextDouble() * 3.0 - 1.5;
             this.setLocationAndAngles(
                 original.posX + offsetX,
                 original.posY + offsetY,

@@ -13,7 +13,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.tropicraft.block.tileentity.TileEntityCurareBowl;
-import net.tropicraft.factory.TileEntityFactory;
 import net.tropicraft.registry.TCBlockRegistry;
 
 public class BlockCurareBowl extends BlockTropicraft implements ITileEntityProvider {
@@ -23,7 +22,7 @@ public class BlockCurareBowl extends BlockTropicraft implements ITileEntityProvi
     }
 
     public TileEntity createNewTileEntity(final World var1, final int var2) {
-        return TileEntityFactory.getCurareBowlTE();
+        return new TileEntityCurareBowl();
     }
 
     public void breakBlock(final World par1World, final int par2, final int par3, final int par4, final Block par5,

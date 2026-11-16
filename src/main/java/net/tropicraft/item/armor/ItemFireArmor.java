@@ -109,7 +109,7 @@ public class ItemFireArmor extends ItemTropicraftArmor {
         }
         float range = 0.2f;
         final float speed = 0.08f;
-        final Random rand = new Random();
+        final Random rand = player.worldObj.rand;
         final World worldRef = player.worldObj;
         int extraRand = 0;
         final double plSpeed = Math.sqrt(player.motionX * player.motionX + player.motionZ * player.motionZ);

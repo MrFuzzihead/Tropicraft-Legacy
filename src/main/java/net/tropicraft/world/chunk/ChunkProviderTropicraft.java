@@ -225,8 +225,6 @@ public class ChunkProviderTropicraft implements IChunkProvider {
             .generateNoiseOctaves(noise3, par2, par3, par4, par5, par6, par7, d0 / 80.0, d2 / 160.0, d0 / 80.0);
         noise4 = this.noiseGen4.generateNoiseOctaves(noise4, par2, par4, par5, par7, 1.121, 1.121, 0.5);
         noise5 = this.noiseGen5.generateNoiseOctaves(noise5, par2, par4, par5, par7, 200.0, 200.0, 0.5);
-        final boolean flag = false;
-        final boolean flag2 = false;
         int i2 = 0;
         int j2 = 0;
         for (int k2 = 0; k2 < par5; ++k2) {

@@ -468,14 +468,13 @@ a future refactor that hands the generator itself to `isAreaLoaded` silently dis
 
 ### B15–B20. Dead code & decompiler residue
 
-* **`TCInfo`** (`info/TCInfo.java`) — **completely unreferenced**, and `VERSION = "v6.0.5"` is stale
-  (gradle ships 6.2.x). Delete, or make it read `Tags.VERSION`.
+* **`TCInfo`** (`info/TCInfo.java`) — **deleted** (§13): unreferenced, and `VERSION = "v6.0.5"` was stale.
 * **`TCPacketEvents.onPacketFromClient`** — parses the packet then `if (packetCommand.equals("")) {}`.
   A registered, authenticated-reachable no-op handler. Delete it and stop registering the channel for
   client→server traffic. `getSelfUsername()` is unused. The client handler prints every packet command to
   stdout.
-* **`TCNames`** — 200 lines of `public static final String` plus arrays; nothing wrong with it, but it is
-  the only reason `info/` exists as a package. Consider `TropicraftNames` next to the registries.
+* **`TCNames`** — the 152 unused `String` constants are gone (§13); only the arrays remain, so the file is now
+  51 lines. `info/` still exists for it alone.
 * **`TileEntityFactory`** — every method is `return (TileEntity) new TileEntityX();` (redundant cast) and
   adds nothing over `new TileEntityX()`. Inline it.
 * **`java.util.Random` allocations on hot paths** — `TileEntityCurareBowl:97` (`new Random().nextInt(1)`,
@@ -1218,6 +1217,45 @@ correctly.
 
 ---
 
+## 13. Dead code & residue (batch 2)
+
+The mechanical half of P1: everything here is a deletion or a local simplification, no behaviour intended to
+change. `./gradlew check` and the 18-check in-game suite both pass.
+
+| Removed | Why |
+|---|---|
+| `info/TCInfo.java` | Zero references, and its `VERSION` still claimed `v6.0.5` while the build ships 6.2.x. A second source of truth for the mod id and the proxy class names that nothing read. |
+| `factory/TileEntityFactory.java` | Seven `return (TileEntity) new TileEntityX();` wrappers. Inlined at the seven call sites (`createNewTileEntity`), package deleted. |
+| `TCNames`' 152 constants | Every plain `String` in the file was unreferenced - the registries pass their own literals (`registerBlock(chunkOHead, "chunk")`). Only the `String[]` arrays are used, and they are all still there (`TCNames` went from 203 lines to 51). |
+| `TCPacketEvents.onPacketFromClient` | A registered handler for an authenticated client→server packet that parsed the payload and then did `if (packetCommand.equals("")) {}`. The channel stays registered for the server→client effect packets. |
+| `TCPacketEvents.getSelfUsername` | Unused. |
+| `System.out.println` of every packet command | Client log spam on every Tropicraft packet. |
+| `Tropicraft.dbg` | `final boolean consoleDebug = true;` inside the method, two call sites. |
+| request `new Random()` × 13 | Now `worldObj.rand` / `this.rand` / `itemRand`. The worst was `TileEntityCurareBowl`'s `new Random().nextInt(1)` (always 0) and `JobFish`'s per-tick allocation. `TileEntityPurchasePlate` keeps one static instance because its constructor runs before the TE has a world. |
+| `TileEntityKoaChest` dead locals | `j = 0; j = 0;`, `final int dsdf = 0;`, `if (j < this.entIDs.length) {}`, and the `b2` colliding-box computation that `getCanSpawnHere` never used. |
+| Empty `if` statements | `EntityDart` (P0 batch), `EntityTropicraftWaterMob.onFishingUpdate`, `JobTrade.onIdleTickAct`, `TileEntityKoaChest`, `ChunkProviderTropicraft` (`flag`/`flag2`), `RenderFishHook`, `BlockAirCompressor.updateTick` (the whole override), `EntityAIMeleeAndRangedAttack`. |
+| Blanket `catch (Exception) { printStackTrace(); }` around NBT getters/setters | `TileEntityKoaChest.read/writeFromNBT`, `TileEntityPurchasePlate.read/writeFromNBT`. `NBTTagCompound.getInteger` cannot throw; the catch only hid mistakes. |
+
+The sweep took `System.out`/`System.err` from 42 sites to 19, `printStackTrace()` from 21 to 10, and decompiler alias
+locals (`final X y2 = this.y;`) from 43 to 17.
+
+### 13.1 What is deliberately left
+
+* **Alias locals and `(Class)`/`(Block)`/`(Item)` casts.** 17 alias locals and a few hundred redundant casts remain.
+  They are noise, but rewriting them mechanically rewrites code that is otherwise fine, and the 1.7.10 generics are
+  weak enough that a "harmless" cast removal occasionally changes which overload is selected. Worth doing file by
+  file when touching a file for another reason, not as a sweep.
+* **Float literals written as doubles** (`0.10000000149011612` → `0.1`). Same reasoning: the literal *is* the exact
+  `(double)(float)` value, so shortening it changes the double and only stays equal after a float cast. Fine in a
+  motion multiplier, not something to change blindly.
+* **`BlockTropicraftOre.rand`.** One `Random` per ore block instance (three blocks) for `getExpDrop`, where the
+  vanilla signature only hands out an `IBlockAccess`. Not a hot path; left alone.
+* **B8's school-spawning loop.** Still empty (`EntityTropicalFish:212`, with `new Random()` inside the loop header).
+  Deleting the dead code would mean deleting the feature; it needs the real implementation and in-game tuning, which
+  is the next batch.
+
+---
+
 ## Appendix A — quick-win checklist
 
 - [x] Ship `koavillage.schematic` + `TCSchematics` extractor; fail loudly on a bad build (B1) — §11.1
@@ -1225,7 +1263,7 @@ correctly.
 - [ ] `dependencies.gradle`: `implementation` → `api` for coroutil (§8) — already `api`; the remaining item is
       keeping it `api` if the deobf path is ever cleaned up
 - [ ] `mcmod.info`: add `CoroAI`, `unimixins` dependencies; drop stale keys
-- [ ] Delete `info/TCInfo.java`, `TileEntityFactory` (`getTopWaterBlockY` is gone, §12)
+- [x] Delete `info/TCInfo.java`, `TileEntityFactory` (`getTopWaterBlockY` is gone, §12)
 - [x] Delete duplicate `registerEntity(EntityTropiCreeper…)`; convert entity IDs to literals (B9, §12)
 - [x] `ItemEntry.matchesItem`: reference → `getItem()` comparison; delete the empty `else if` (§11.4)
 - [x] `EntityDart`: `static final int[] POTIONS`, bounds-check `dartType`, delete the empty `if` (§11.2)
@@ -1234,9 +1272,9 @@ correctly.
 - [x] `JobFish`: `< 0.0f` → `<= 0.0f`, delete `rand.nextInt(1)`, use `worldObj.rand` (§12)
 - [x] `EffectHelper`: tick on one side only (§12)
 - [ ] `TropicalBook`: per-world save file, null-check the resource stream, try-with-resources
-- [ ] `Tropicraft.dbg`: delete or gate behind a config key
-- [ ] Replace the 42 `System.out/err` with `FMLLog` at appropriate levels
-- [ ] Replace `catch (Exception) { printStackTrace(); }` (20 sites) with scoped handling
+- [x] `Tropicraft.dbg`: delete or gate behind a config key (§13)
+- [ ] Replace the remaining 19 `System.out/err` with `FMLLog` at appropriate levels (was 42, §13)
+- [ ] Replace the remaining 10 `catch (Exception) { printStackTrace(); }` (was 21, §13)
 - [ ] Extract `RenderWaterMobBase` for the three duplicated `doRender`s (R1)
 - [ ] Extract `IUnlocalizedTropicraft` for the six duplicated `getUnlocalizedName`s (R2)
 - [x] `BlockRainforestLeaves.imageNames[1][0]` → `"leafMahogany"` and `[0][1]` → `"leafKapok"` (B24, #9, §12)

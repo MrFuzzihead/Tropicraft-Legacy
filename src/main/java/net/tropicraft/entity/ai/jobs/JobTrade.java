@@ -2,7 +2,6 @@ package net.tropicraft.entity.ai.jobs;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -13,7 +12,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.MathHelper;
-import net.tropicraft.Tropicraft;
 import net.tropicraft.block.tileentity.TileEntityPurchasePlate;
 import net.tropicraft.economy.ItemEntry;
 import net.tropicraft.economy.ItemValues;
@@ -174,7 +172,6 @@ public class JobTrade extends JobBase {
             this.tradePlate.credit = 0;
             this.tradePlate.activeTrader = null;
         }
-        Tropicraft.dbg("trade reset");
     }
 
     public void tradeTick() {
@@ -197,7 +194,6 @@ public class JobTrade extends JobBase {
             final int randZ = (int) this.ent.posZ + this.ent.worldObj.rand.nextInt(range) - range / 2;
             final Block foundID = this.ent.worldObj.getBlock(randX, randY, randZ);
             if (foundID == id) {
-                Tropicraft.dbg("found trade block");
                 return new ChunkCoordinates(randX, randY, randZ);
             }
         }
@@ -238,10 +234,9 @@ public class JobTrade extends JobBase {
     public void onIdleTickAct() {
         if (this.activeTrader != null) {
             this.ent.faceEntity((Entity) this.activeTrader, 15.0f, 15.0f);
-        } else if (this.tradeBlockPos != null) {}
+        }
         if (this.activeTrader == null && this.ent.getNavigator()
             .noPath()) {
-            final Random rand = new Random();
             if (this.tradeBlockPos != null && this.ent.worldObj.rand.nextInt(100) == 0) {
                 final int tryX = this.tradeBlockPos.posX;
                 final int tryZ = this.tradeBlockPos.posZ;

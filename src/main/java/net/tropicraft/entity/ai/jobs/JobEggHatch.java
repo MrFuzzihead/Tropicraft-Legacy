@@ -58,7 +58,7 @@ public class JobEggHatch extends JobBase {
             if (this.countdownHatch > 0) {
                 --this.countdownHatch;
                 if (this.countdownHatch == 0) {
-                    final Random rand = new Random();
+                    final Random rand = this.ent.worldObj.rand;
                     for (int spawnCount = rand.nextInt(3) + 2, i = 0; i < spawnCount; ++i) {
                         final SpiderChild spider = new SpiderChild(this.ent.worldObj);
                         spider.setPosition(this.ent.posX, this.ent.posY, this.ent.posZ);

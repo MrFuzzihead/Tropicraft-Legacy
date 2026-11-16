@@ -1,7 +1,6 @@
 package net.tropicraft.item;
 
 import java.util.List;
-import java.util.Random;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -135,8 +134,7 @@ public class ItemMobEgg extends ItemTropicraftMulti {
                 }
             }
             if (s.equals("Koa Man")) {
-                final Random rand = new Random();
-                final int choice = rand.nextInt(2);
+                final int choice = ItemMobEgg.itemRand.nextInt(2);
                 s = "KoaHunter";
                 if (choice == 1) {
                     s = "KoaFisher";

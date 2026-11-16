@@ -74,7 +74,6 @@ public class EntityAIMeleeAndRangedAttack extends EntityAIBase {
         } else {
             this.field_75318_f = 0;
         }
-        if (d0 > this.shootCutoffRangeSqr || this.field_75318_f >= 20) {}
         if (this.field_75318_f >= 20) {
             this.entityHost.getNavigator()
                 .tryMoveToEntityLiving((Entity) this.attackTarget, this.entityMoveSpeed);

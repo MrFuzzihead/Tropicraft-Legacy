@@ -1,7 +1,5 @@
 package net.tropicraft.block.tileentity;
 
-import java.util.Random;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -25,14 +23,12 @@ public class TileEntitySifter extends TileEntity {
     public static final int SIFT_TIME = 80;
     public boolean isSifting;
     public int currentSiftTime;
-    private Random rand;
     public double yaw;
     public double yaw2;
     public ItemStack siftItem;
 
     public TileEntitySifter() {
         this.yaw2 = 0.0;
-        this.rand = new Random();
         this.currentSiftTime = 80;
     }
 
@@ -78,12 +74,12 @@ public class TileEntitySifter extends TileEntity {
     }
 
     private void dumpBeachResults(final double x, final double y, final double z) {
-        int dumpCount = this.rand.nextInt(3) + 1;
+        int dumpCount = this.worldObj.rand.nextInt(3) + 1;
         this.spawn(new ItemStack((Block) TCBlockRegistry.purifiedSand), x, y, z);
         while (dumpCount > 0) {
             --dumpCount;
             ItemStack stack;
-            if (this.rand.nextInt(10) == 0) {
+            if (this.worldObj.rand.nextInt(10) == 0) {
                 stack = this.getRareItem();
             } else {
                 stack = this.getCommonItem();
@@ -102,7 +98,7 @@ public class TileEntitySifter extends TileEntity {
     }
 
     private ItemStack getCommonItem() {
-        final int dmg = this.rand.nextInt(8);
+        final int dmg = this.worldObj.rand.nextInt(8);
         switch (dmg) {
             case 0:
             case 1:
@@ -118,7 +114,7 @@ public class TileEntitySifter extends TileEntity {
     }
 
     private ItemStack getRareItem() {
-        final int dmg = this.rand.nextInt(8);
+        final int dmg = this.worldObj.rand.nextInt(8);
         switch (dmg) {
             case 0: {
                 return new ItemStack(TCItemRegistry.shells, 1, 3);

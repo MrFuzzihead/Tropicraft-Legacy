@@ -13,7 +13,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.tropicraft.block.tileentity.TileEntitySifter;
-import net.tropicraft.factory.TileEntityFactory;
 import net.tropicraft.registry.TCBlockRegistry;
 import net.tropicraft.registry.TCItemRegistry;
 
@@ -25,7 +24,7 @@ public class BlockSifter extends BlockTropicraft implements ITileEntityProvider 
     }
 
     public TileEntity createNewTileEntity(final World var1, final int var2) {
-        return TileEntityFactory.getSifterTE();
+        return new TileEntitySifter();
     }
 
     public int getRenderBlockPass() {

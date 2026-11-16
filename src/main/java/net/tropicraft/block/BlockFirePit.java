@@ -4,7 +4,7 @@ import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.tropicraft.factory.TileEntityFactory;
+import net.tropicraft.block.tileentity.TileEntityFirePit;
 
 public class BlockFirePit extends BlockTropicraft implements ITileEntityProvider {
 
@@ -29,6 +29,6 @@ public class BlockFirePit extends BlockTropicraft implements ITileEntityProvider
     }
 
     public TileEntity createNewTileEntity(final World var1, final int var2) {
-        return TileEntityFactory.getFirePitTE();
+        return new TileEntityFirePit();
     }
 }

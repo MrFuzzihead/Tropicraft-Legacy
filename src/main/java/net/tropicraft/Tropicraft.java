@@ -111,13 +111,6 @@ public class Tropicraft {
     @Mod.EventHandler
     public void handleIMCMessages(final FMLInterModComms.IMCEvent event) {}
 
-    public static void dbg(final Object obj) {
-        final boolean consoleDebug = true;
-        if (consoleDebug) {
-            System.out.println(obj);
-        }
-    }
-
     static {
         Tropicraft.eventChannelName = "tropicraft";
         eventChannel = NetworkRegistry.INSTANCE.newEventDrivenChannel(Tropicraft.eventChannelName);

@@ -120,7 +120,7 @@ public class BlockTropicraftSapling extends BlockSapling implements IGrowable {
     }
 
     private WorldGenerator randomRainforestTreeGen(final World world) {
-        final Random rand = new Random();
+        final Random rand = world.rand;
         final int type = rand.nextInt(4);
         switch (type) {
             case 0: {

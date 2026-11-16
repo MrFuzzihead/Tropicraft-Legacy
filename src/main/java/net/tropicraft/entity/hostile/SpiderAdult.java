@@ -55,7 +55,7 @@ public class SpiderAdult extends SpiderBase {
     }
 
     public IEntityLivingData onSpawnWithEgg(final IEntityLivingData par1EntityLivingBaseData) {
-        final Random rand = new Random();
+        final Random rand = this.rand;
         if (rand.nextInt(4) == 0) {
             this.isMother = true;
         }

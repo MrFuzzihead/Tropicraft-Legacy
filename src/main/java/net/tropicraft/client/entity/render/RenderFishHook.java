@@ -59,7 +59,6 @@ public class RenderFishHook extends Render {
                 + vec3d.yCoord;
             double d7 = entityfish.angler.prevPosZ + (entityfish.angler.posZ - entityfish.angler.prevPosZ) * f1
                 + vec3d.zCoord;
-            if (this.renderManager.options.thirdPersonView <= 0) {}
             final float f12 = (entityfish.angler.prevRenderYawOffset
                 + (entityfish.angler.renderYawOffset - entityfish.angler.prevRenderYawOffset) * f1) * 3.141593f
                 / 180.0f;

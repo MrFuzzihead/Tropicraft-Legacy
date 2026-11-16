@@ -125,7 +125,6 @@ public class TileEntityKoaChest extends TileEntityChest implements IInventory {
         int existing = 0;
         for (int i = 0; i < ents.size(); ++i) {
             int j = 0;
-            j = 0;
             while (j < this.entIDs.length) {
                 final Entity ent = (Entity) ents.get(i);
                 if (ent instanceof EntityKoaBase && ent != null
@@ -139,21 +138,17 @@ public class TileEntityKoaChest extends TileEntityChest implements IInventory {
                         ++this.fishers;
                         break;
                     }
-                    final int dsdf = 0;
                     break;
                 } else {
                     ++j;
                 }
             }
-            if (j < this.entIDs.length) {}
         }
         return existing;
     }
 
     public boolean getCanSpawnHere(final Entity ent) {
         final boolean b1 = !this.worldObj.checkBlockCollision(ent.boundingBox);
-        final boolean b2 = ent.worldObj.getCollidingBoundingBoxes(ent, ent.boundingBox)
-            .isEmpty();
         final boolean b3 = !ent.worldObj.isAnyLiquid(ent.boundingBox);
         return b1 && b3;
     }
@@ -244,12 +239,8 @@ public class TileEntityKoaChest extends TileEntityChest implements IInventory {
     public void readFromNBT(final NBTTagCompound nbttagcompound) {
         super.readFromNBT(nbttagcompound);
         this.unbreakable = nbttagcompound.getBoolean("unbreakable");
-        try {
-            for (int i = 0; i < this.entIDs.length; ++i) {
-                this.entIDs[i] = nbttagcompound.getInteger("entID_" + i);
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        for (int i = 0; i < this.entIDs.length; ++i) {
+            this.entIDs[i] = nbttagcompound.getInteger("entID_" + i);
         }
         this.needListUpdate = true;
     }
@@ -257,12 +248,8 @@ public class TileEntityKoaChest extends TileEntityChest implements IInventory {
     public void writeToNBT(final NBTTagCompound nbttagcompound) {
         super.writeToNBT(nbttagcompound);
         nbttagcompound.setBoolean("unbreakable", this.unbreakable);
-        try {
-            for (int i = 0; i < this.entIDs.length; ++i) {
-                nbttagcompound.setInteger("entID_" + i, this.entIDs[i]);
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        for (int i = 0; i < this.entIDs.length; ++i) {
+            nbttagcompound.setInteger("entID_" + i, this.entIDs[i]);
         }
     }
 

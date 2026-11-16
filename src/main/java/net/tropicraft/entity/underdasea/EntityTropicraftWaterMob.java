@@ -393,7 +393,6 @@ public abstract class EntityTropicraftWaterMob extends EntityWaterMob {
                     if (e.isDead) {
                         this.setHookID(-1);
                     }
-                    if (this.rand.nextInt(this.fishingBreakLineOdds) != 0 || !this.worldObj.isRemote) {}
                 }
             }
         }
