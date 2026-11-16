@@ -16,6 +16,7 @@ import net.tropicraft.entity.placeable.EntityChair;
 import net.tropicraft.util.EffectHelper;
 import net.tropicraft.util.TropicraftWorldUtils;
 import net.tropicraft.world.TCTimeAndWeatherData;
+import net.tropicraft.world.chunk.ChunkProviderTropicraft;
 
 import CoroUtil.forge.CoroAI;
 import CoroUtil.world.WorldDirector;
@@ -45,6 +46,16 @@ public class TCMiscEvents {
             FMLLog.warning(
                 "[Tropicraft] Could not give the Tropics their own time and weather - the mixins that detach them did not load at all. The Tropics will keep mirroring the overworld until this is sorted out.");
         }
+    }
+
+    /**
+     * Drops the chunk provider of a world that is going away. {@code ChunkProviderTropicraft} keeps a static set of
+     * live providers so the shutdown flush can reach them, and without this every world ever loaded - including
+     * those of a client that reconnected - would stay referenced and be flushed.
+     */
+    @SubscribeEvent
+    public void worldUnload(final WorldEvent.Unload event) {
+        ChunkProviderTropicraft.onWorldUnloaded(event.world);
     }
 
     @SideOnly(Side.CLIENT)

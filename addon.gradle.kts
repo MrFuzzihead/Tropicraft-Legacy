@@ -262,9 +262,16 @@ if (isGameTestRun) {
             // Captured as plain strings: a closure that reads a script property makes the task hold a reference to
             // the build script, which the configuration cache refuses to serialise.
             val reportPath = gameTestReportFile.get().asFile.absolutePath
+            val serverWorldPath = project
+                .file((findProperty("runServerWorkingDirectory") as String?) ?: "run/server")
+                .resolve("world")
+                .absolutePath
             systemProperty("tropicraft.gameTest.report", reportPath)
             // Clear any previous result before the game starts, so a run that dies early cannot read as a pass.
             doFirst { java.io.File(reportPath).delete() }
+            // Fresh world every run: the checks assert on worldgen state (a parked chunk, a chest's household), and
+            // a world left over from the previous run already has those chunks generated and decorated.
+            doFirst { java.io.File(serverWorldPath).deleteRecursively() }
             // A reused dev world can reference blocks from mods that are no longer installed; the game test is not
             // about that, so answer FML's "continue anyway?" prompt up front instead of blocking on stdin.
             systemProperty("fml.queryResult", "confirm")

@@ -56,6 +56,9 @@ Then:
 ./gradlew gameTestServer
 ```
 
+Each run starts from a fresh `run/server/world` (the task deletes it first): the checks assert on worldgen state,
+and chunks left over from a previous run are already generated and decorated.
+
 What the current checks cover - all of it needs the real game:
 
 | Check | Guards |
@@ -69,6 +72,8 @@ What the current checks cover - all of it needs the real game:
 | every Tropicraft entity has a unique network id and round-trips through the entity registry | accidental renumbering, duplicate registrations |
 | a Koa chest fills its household, replaces dead members, and does not re-spawn while its members are out of range | the chest spawning a fresh pair on every visit while the old pair was still alive |
 | a tropical fish ticks | the fish state machine after the dead school-spawn path was removed |
+| deferred decoration flushes when its neighbourhood loads | the deferred-decoration gate and the throttled sweep |
+| the shutdown flush decorates parked chunks | the shutdown decoration flush, through `ChunkProviderServer.loadChunk` |
 | the Tropicraft dimension generates | worldgen smoke test |
 
 To add a check, add a method to `ServerGameTests` and call it from `runAll()`; use the `assertTrue(name, condition,
@@ -104,8 +109,8 @@ to a single "covered by any test" number that two different class-id spaces allo
 ```
 jacoco coverage (executed source lines)
   unit tests : 88 (0.6%)
-  in-game    : 3533 (24.4%)
-  combined   : 3582 (24.7%) of 14487 measurable
+  in-game    : 3471 (23.7%)
+  combined   : 3520 (24.1%) of 14628 measurable
 ```
 
 The in-game run is most of the coverage because a dedicated server loads and touches a large part of the mod while

@@ -431,6 +431,8 @@ closed manually (no try-with-resources; a throw leaks the handle), `public stati
 
 ### B13. `ChunkProviderTropicraft.flushPending()` — per-tick sweep
 
+**Status: fixed** — see §15.1.
+
 ```java
 // :442 — called from unloadQueuedChunks(), i.e. every tick
 do {
@@ -451,6 +453,8 @@ when the count hits `(2r+1)²`. At minimum: keep the `ArrayList` allocation out 
 the loop early when nothing changed.
 
 ### B14. `flushAllPendingForSave()` writes into `ChunkProviderServer` internals
+
+**Status: fixed** — see §15.2.
 
 ```java
 // :517
@@ -1216,7 +1220,7 @@ correctly.
 | ~~B8 fish schools~~ | Done in §14.2. |
 | ~~B11 Koa chest quota~~ | Done in §14.1. |
 | **B12** encyclopedia save file | Changes the on-disk format and the render-path write frequency; needs a decision on where per-world client data should live. |
-| **B13 / B14** pending-decoration sweep and save flush | Both touch chunk loading; they want the cascade detector and a chunk-loading mod in the loop to verify. |
+| ~~B13 / B14~~ pending-decoration sweep and save flush | Done in §15. |
 | **B15–B20** dead code & residue | Big mechanical diff (TCNames, `TCInfo`, `TCPacketEvents`, `TileEntityFactory`, 43 alias locals). Better as one dedicated, no-behaviour-change commit. |
 
 ---
@@ -1326,6 +1330,75 @@ was a leader or had no leader. It now runs on the same 40-tick cadence the rest 
 
 An in-game check (`tropicalFishTicksWithoutItsSchoolPath`) drives `updateEntityActionState` twice through reflection
 so the remaining state machine stays honest.
+
+---
+
+## 15. P1 fixes applied (batch 4) — the deferred-decoration sweep
+
+### 15.1 B13: the per-tick sweep
+
+The old shape, called from `unloadQueuedChunks()` **every tick**:
+
+```java
+do {
+    progress = false;
+    for (final ChunkCoordIntPair key : new ArrayList<>(this.pendingDecoration)) {   // allocation
+        if (this.isAreaLoaded(key.chunkXPos, key.chunkZPos, DECOR_RADIUS)) {        // 81 lookups
+            ...
+        }
+    }
+} while (progress);                                                                  // O(n^2)
+```
+
+Three separate costs: a fresh `ArrayList` per pass, 81 `chunkExists` lookups per pending chunk per pass, and a
+full re-scan after every pass that decorated anything. With *n* pending chunks that is up to 81·n² lookups in a
+single tick.
+
+Now:
+
+* one sweep every `PENDING_SWEEP_INTERVAL` (5) ticks - `populate()` still flushes immediately when the chunk it was
+  called for is ready, so this throttle only delays the "the rest of the neighbourhood finished loading a moment
+  later" path, which is invisible at 20 tps;
+* one pass gathers the ready keys into a **reused** field, then decorates them, so no allocation and no
+  `ConcurrentModificationException` if decoration generates a chunk (the case the cascade detector reports);
+* at most `MAX_SWEEP_PASSES` (4) passes, so a chunk that frees more chunks cannot loop unbounded;
+* a `sweepingPending` guard so a nested `populate()` cannot re-enter the sweep.
+
+### 15.2 B14: the save flush
+
+```java
+final Chunk chunk = this.provideChunk(nx, nz);
+serverProvider.loadedChunkHashMap.add(ChunkCoordIntPair.chunkXZ2Int(nx, nz), chunk);
+serverProvider.loadedChunks.add(chunk);
+chunk.onChunkLoad();
+```
+
+now goes through `serverProvider.loadChunk(nx, nz)`: the chunk load event fires, the server's own bookkeeping runs,
+and chunk-loading mods (Chunk Pregenerator, Thermos forks) see a normal load. It is a once-per-shutdown path, so the
+extra cost does not matter. Each chunk is also wrapped in a `catch (Exception)` that logs and continues, so one bad
+chunk cannot abort the shutdown save.
+
+While there: the static `activeProviders` set had no removal path, so every provider ever created (including a
+client's after reconnecting) stayed referenced and would be flushed at the next shutdown. `WorldEvent.Unload` now
+calls `ChunkProviderTropicraft.onWorldUnloaded`, which drops the provider for that world.
+
+`chunkExists` also gained the comment the review asked for: it returns `true` always, so `isAreaLoaded` is only
+meaningful because it asks the `ChunkProviderServer` wrapper - pointing it at the generator itself would silently
+disable the entire gate.
+
+### 15.3 How this is covered
+
+These two are perf/robustness fixes, not user-visible bugs, so the checks are regression guards rather than repros
+(unlike §14.1):
+
+| Check | What it pins |
+|---|---|
+| deferred decoration flushes when its neighbourhood loads | a chunk whose 2x2 exists but 9x9 does not parks itself, and the throttled sweep decorates it once the ring is loaded |
+| the shutdown flush decorates parked chunks | `flushAllProvidersForSave()` forces the neighbourhood through `ChunkProviderServer.loadChunk` and decorates, without throwing |
+
+Both park their chunk deterministically by generating three neighbours *first* and the target last: vanilla's
+`Chunk.populateChunk` only runs `populate()` when the 2x2 neighbourhood already exists, which is exactly the state a
+player's chunk reaches in normal play.
 
 ---
 

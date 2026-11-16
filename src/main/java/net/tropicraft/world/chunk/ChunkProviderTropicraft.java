@@ -29,6 +29,8 @@ import net.tropicraft.world.mapgen.MapGenTropicsCaves;
 import net.tropicraft.world.mapgen.MapGenUndergroundGrove;
 import net.tropicraft.world.mapgen.MapGenVolcano;
 
+import cpw.mods.fml.common.FMLLog;
+
 public class ChunkProviderTropicraft implements IChunkProvider {
 
     private static final int CHUNK_SIZE_Y = 256;
@@ -58,8 +60,21 @@ public class ChunkProviderTropicraft implements IChunkProvider {
      * already-generated chunk, eliminating cascading chunk generation while keeping worldgen fully accurate.
      */
     private static final int DECOR_RADIUS = 4;
+    /**
+     * Ticks between neighbourhood sweeps. A sweep costs {@code (2 * DECOR_RADIUS + 1)^2} chunk lookups per pending
+     * chunk, which does not need to happen every tick: {@link #populate} already flushes immediately when a chunk is
+     * generated, so this is only the "the neighbourhood finished loading a moment later" path. Decoration being up
+     * to this many ticks late is invisible at 20 tps.
+     */
+    private static final int PENDING_SWEEP_INTERVAL = 5;
+    /** Upper bound on sweep passes per call, so one pass that frees more chunks cannot loop forever. */
+    private static final int MAX_SWEEP_PASSES = 4;
     /** Chunks whose terrain is generated but whose decorations are deferred until their neighborhood is loaded. */
     private final Set<ChunkCoordIntPair> pendingDecoration = new HashSet<>();
+    /** Scratch list for {@link #flushPending()}, reused so a sweep does not allocate. */
+    private final List<ChunkCoordIntPair> readyDecoration = new ArrayList<>();
+    private int pendingSweepCooldown;
+    private boolean sweepingPending;
     /** Debug: depth of nesting while decorations are being applied (detects cascading chunk generation). */
     private int decoratingDepth;
     /** Debug: the chunk currently being decorated (for cascade diagnostics). */
@@ -442,18 +457,42 @@ public class ChunkProviderTropicraft implements IChunkProvider {
         return true;
     }
 
+    /**
+     * Decorates every pending chunk whose neighbourhood is fully loaded.
+     * <p>
+     * The ready keys are gathered before any decoration runs, rather than removed while iterating: decoration code
+     * that generates a chunk - exactly what the deferred gate exists to prevent and what the cascade detector
+     * reports - would otherwise throw {@link java.util.ConcurrentModificationException} out of the world tick. The
+     * {@code sweepingPending} guard stops a nested {@link #populate} from re-entering.
+     * </p>
+     */
     private void flushPending() {
-        boolean progress;
-        do {
-            progress = false;
-            for (final ChunkCoordIntPair key : new ArrayList<>(this.pendingDecoration)) {
-                if (this.isAreaLoaded(key.chunkXPos, key.chunkZPos, DECOR_RADIUS)) {
-                    this.pendingDecoration.remove(key);
+        if (this.pendingDecoration.isEmpty() || this.sweepingPending) {
+            return;
+        }
+        this.sweepingPending = true;
+        try {
+            for (int pass = 0; pass < MAX_SWEEP_PASSES; ++pass) {
+                if (this.pendingDecoration.isEmpty()) {
+                    return;
+                }
+                this.readyDecoration.clear();
+                for (final ChunkCoordIntPair key : this.pendingDecoration) {
+                    if (this.isAreaLoaded(key.chunkXPos, key.chunkZPos, DECOR_RADIUS)) {
+                        this.readyDecoration.add(key);
+                    }
+                }
+                if (this.readyDecoration.isEmpty()) {
+                    return;
+                }
+                this.pendingDecoration.removeAll(this.readyDecoration);
+                for (final ChunkCoordIntPair key : this.readyDecoration) {
                     this.doPopulate(key.chunkXPos, key.chunkZPos);
-                    progress = true;
                 }
             }
-        } while (progress);
+        } finally {
+            this.sweepingPending = false;
+        }
     }
 
     public void generateOres(final int x, final int z) {
@@ -499,6 +538,22 @@ public class ChunkProviderTropicraft implements IChunkProvider {
         return "TropiLevelSource";
     }
 
+    /** @return true if this chunk's terrain exists but its decorations are still waiting for its neighbourhood. */
+    public boolean isDecorationPending(final int chunkX, final int chunkZ) {
+        return this.pendingDecoration.contains(new ChunkCoordIntPair(chunkX, chunkZ));
+    }
+
+    /** @return how many chunks are waiting for their neighbourhood before they can be decorated. Diagnostics. */
+    public int getPendingDecorationCount() {
+        return this.pendingDecoration.size();
+    }
+
+    /**
+     * Always true: a generator can produce any chunk on demand. Note this means {@link #isAreaLoaded} is only
+     * meaningful because it asks the <em>wrapper</em> ({@code worldObj.getChunkProvider()}) and not this generator -
+     * if it were ever pointed at the generator itself, every pending decoration would look ready and the whole
+     * deferral would silently switch off.
+     */
     public boolean chunkExists(final int x, final int z) {
         return true;
     }
@@ -512,11 +567,25 @@ public class ChunkProviderTropicraft implements IChunkProvider {
     }
 
     public boolean unloadQueuedChunks() {
-        // Normal tick: decorate any pending chunk whose neighborhood has finished generating.
-        this.flushPending();
+        // Normal tick: decorate any pending chunk whose neighborhood has finished generating, but not every tick -
+        // see PENDING_SWEEP_INTERVAL.
+        if (--this.pendingSweepCooldown <= 0) {
+            this.pendingSweepCooldown = PENDING_SWEEP_INTERVAL;
+            this.flushPending();
+        }
         return false;
     }
 
+    /**
+     * Decorates everything still pending, forcing its neighbourhood to exist first. Called once at server shutdown,
+     * before the final save, so no chunk is written with terrain but without its decorations.
+     * <p>
+     * The ring chunks are loaded through {@link ChunkProviderServer#loadChunk} instead of being inserted into
+     * {@code loadedChunkHashMap}/{@code loadedChunks} by hand: that path fires the chunk load event, runs the
+     * server's own accounting and respects chunk-loading mods. It costs a little more, which is fine for a
+     * once-per-shutdown path.
+     * </p>
+     */
     private void flushAllPendingForSave() {
         if (this.pendingDecoration.isEmpty()) {
             return;
@@ -529,21 +598,38 @@ public class ChunkProviderTropicraft implements IChunkProvider {
         final ChunkProviderServer serverProvider = (ChunkProviderServer) provider;
         for (final ChunkCoordIntPair key : new ArrayList<>(this.pendingDecoration)) {
             this.pendingDecoration.remove(key);
-            // Force-generate the decoration neighborhood as terrain-only chunks (no populate), then decorate.
-            // The terrain-only ring chunks are saved unpopulated and will be decorated normally on next load.
-            for (int dx = -DECOR_RADIUS; dx <= DECOR_RADIUS; ++dx) {
-                for (int dz = -DECOR_RADIUS; dz <= DECOR_RADIUS; ++dz) {
-                    final int nx = key.chunkXPos + dx;
-                    final int nz = key.chunkZPos + dz;
-                    if (!serverProvider.chunkExists(nx, nz)) {
-                        final Chunk chunk = this.provideChunk(nx, nz);
-                        serverProvider.loadedChunkHashMap.add(ChunkCoordIntPair.chunkXZ2Int(nx, nz), chunk);
-                        serverProvider.loadedChunks.add(chunk);
-                        chunk.onChunkLoad();
+            try {
+                // Force-generate the decoration neighbourhood as terrain-only chunks, then decorate.
+                // The ring chunks stay unpopulated in the save and are decorated normally on next load.
+                for (int dx = -DECOR_RADIUS; dx <= DECOR_RADIUS; ++dx) {
+                    for (int dz = -DECOR_RADIUS; dz <= DECOR_RADIUS; ++dz) {
+                        final int nx = key.chunkXPos + dx;
+                        final int nz = key.chunkZPos + dz;
+                        if (!serverProvider.chunkExists(nx, nz)) {
+                            serverProvider.loadChunk(nx, nz);
+                        }
                     }
                 }
+                this.doPopulate(key.chunkXPos, key.chunkZPos);
+            } catch (final Exception e) {
+                // A single bad chunk must not stop the shutdown save; that chunk stays undecorated.
+                FMLLog.severe(
+                    "[Tropicraft] Could not decorate chunk %d, %d during shutdown: %s",
+                    key.chunkXPos,
+                    key.chunkZPos,
+                    e);
             }
-            this.doPopulate(key.chunkXPos, key.chunkZPos);
+        }
+    }
+
+    /** Drops the provider of a world that is being unloaded, so the shutdown flush cannot touch it afterwards. */
+    public static void onWorldUnloaded(final World world) {
+        final IChunkProvider provider = world.getChunkProvider();
+        if (provider instanceof ChunkProviderServer) {
+            final IChunkProvider inner = ((ChunkProviderServer) provider).currentChunkProvider;
+            if (inner instanceof ChunkProviderTropicraft) {
+                ChunkProviderTropicraft.activeProviders.remove(inner);
+            }
         }
     }
 
