@@ -4,10 +4,12 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.zip.CRC32;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -15,6 +17,11 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.ShapedRecipes;
+import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
@@ -85,6 +92,7 @@ public final class ServerGameTests {
         tropicalFishTicksWithoutItsSchoolPath();
         itemNamesFollowTheRegisterConvention();
         blockNamesFollowTheRegisterConvention();
+        craftingAndSmeltingRecipesAreUnchanged();
         tropicsChunksGenerate();
         deferredDecorationFlushesWhenItsNeighbourhoodLoads();
         return failures;
@@ -513,6 +521,12 @@ public final class ServerGameTests {
         }
     }
 
+    /** Measured baseline of the recipe fingerprint; see craftingAndSmeltingRecipesAreUnchanged. */
+    private static final int CRAFTING_RECIPES = 139;
+    private static final String CRAFTING_RECIPES_CRC = "2e72ec27";
+    private static final int SMELTING_RECIPES = 6;
+    private static final String SMELTING_RECIPES_CRC = "4be27cea";
+
     private static final Set<String> ITEM_NAME_EXCEPTIONS = new HashSet<String>(
         Arrays.asList("tropicraft:fishingRodTropical", "tropicraft:bucketTropicsWater"));
 
@@ -598,6 +612,153 @@ public final class ServerGameTests {
             "every Tropicraft block is named tile.tropicraft:<name>",
             counted > 30 && wrong.isEmpty(),
             counted + " checked, wrong: " + wrong + ", not using the convention: " + unconverted);
+    }
+
+    // ---------------------------------------------------------------------------------------------------------
+    // Recipes
+    // ---------------------------------------------------------------------------------------------------------
+
+    /**
+     * A fingerprint of every crafting and smelting recipe that involves Tropicraft, printed as a count plus a CRC of
+     * the sorted listing. The registry refactor (R4) moves recipe registration around and introduces helpers for the
+     * repeated patterns; this is what proves the recipes themselves did not move, and a failure dumps the full listing
+     * to the report directory so a diff is possible.
+     */
+    private static void craftingAndSmeltingRecipesAreUnchanged() {
+        try {
+            final List<String> crafting = new ArrayList<String>();
+            for (final Object o : CraftingManager.getInstance()
+                .getRecipeList()) {
+                if (!(o instanceof IRecipe)) {
+                    continue;
+                }
+                final IRecipe recipe = (IRecipe) o;
+                final ItemStack output = recipe.getRecipeOutput();
+                if (output == null || output.getItem() == null) {
+                    continue;
+                }
+                final String signature = recipeSignature(recipe, output);
+                if (signature != null) {
+                    crafting.add(signature);
+                }
+            }
+            Collections.sort(crafting);
+            dumpToReport("recipes-crafting.txt", crafting);
+
+            final List<String> smelting = new ArrayList<String>();
+            for (final Object entry : FurnaceRecipes.smelting()
+                .getSmeltingList()
+                .entrySet()) {
+                final Map.Entry<?, ?> pair = (Map.Entry<?, ?>) entry;
+                final String input = nameOf((ItemStack) pair.getKey());
+                final String result = nameOf((ItemStack) pair.getValue());
+                if (input.startsWith("tropicraft:") || result.startsWith("tropicraft:")) {
+                    smelting.add(input + " -> " + result);
+                }
+            }
+            Collections.sort(smelting);
+            dumpToReport("recipes-smelting.txt", smelting);
+
+            assertTrue(
+                "the crafting recipes involving Tropicraft are unchanged",
+                crafting.size() == CRAFTING_RECIPES && CRAFTING_RECIPES_CRC.equals(crcOf(crafting)),
+                crafting.size() + " recipes, crc "
+                    + crcOf(crafting)
+                    + " (expected "
+                    + CRAFTING_RECIPES
+                    + ", crc "
+                    + CRAFTING_RECIPES_CRC
+                    + "; the listing is in build/gametest/recipes-crafting.txt)");
+            assertTrue(
+                "the smelting recipes involving Tropicraft are unchanged",
+                smelting.size() == SMELTING_RECIPES && SMELTING_RECIPES_CRC.equals(crcOf(smelting)),
+                smelting.size() + " recipes, crc "
+                    + crcOf(smelting)
+                    + " (expected "
+                    + SMELTING_RECIPES
+                    + ", crc "
+                    + SMELTING_RECIPES_CRC
+                    + "; the listing is in build/gametest/recipes-smelting.txt)");
+        } catch (final Throwable t) {
+            t.printStackTrace();
+            fail("the crafting recipes involving Tropicraft are unchanged", t.toString());
+        }
+    }
+
+    /** @return a stable description of a recipe, or null when it involves no Tropicraft item or is of unknown shape */
+    private static String recipeSignature(final IRecipe recipe, final ItemStack output) {
+        final String outName = nameOf(output);
+        final StringBuilder signature = new StringBuilder(outName).append(" x")
+            .append(output.stackSize);
+        boolean tropicraft = outName.startsWith("tropicraft:");
+        if (recipe instanceof ShapedRecipes) {
+            final ShapedRecipes shaped = (ShapedRecipes) recipe;
+            signature.append(" shaped ")
+                .append(shaped.recipeWidth)
+                .append('x')
+                .append(shaped.recipeHeight);
+            for (final ItemStack ingredient : shaped.recipeItems) {
+                final String name = nameOf(ingredient);
+                tropicraft |= name.startsWith("tropicraft:");
+                signature.append(" [")
+                    .append(name)
+                    .append(']');
+            }
+        } else if (recipe instanceof ShapelessRecipes) {
+            final List<String> ingredients = new ArrayList<String>();
+            for (final Object ingredient : ((ShapelessRecipes) recipe).recipeItems) {
+                final String name = nameOf((ItemStack) ingredient);
+                tropicraft |= name.startsWith("tropicraft:");
+                ingredients.add(name);
+            }
+            Collections.sort(ingredients);
+            signature.append(" shapeless ")
+                .append(ingredients);
+        } else {
+            return null;
+        }
+        return tropicraft ? signature.toString() : null;
+    }
+
+    private static String nameOf(final ItemStack stack) {
+        if (stack == null || stack.getItem() == null) {
+            return "-";
+        }
+        final Object name = Item.itemRegistry.getNameForObject(stack.getItem());
+        return (name == null ? "?" : name) + "@" + stack.getItemDamage();
+    }
+
+    private static String crcOf(final List<String> lines) {
+        try {
+            final CRC32 crc = new CRC32();
+            for (final String line : lines) {
+                crc.update(line.getBytes("UTF-8"));
+                crc.update(10);
+            }
+            return Long.toHexString(crc.getValue());
+        } catch (final java.io.UnsupportedEncodingException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    private static void dumpToReport(final String fileName, final List<String> lines) {
+        final String report = System.getProperty(GameTestMod.REPORT_PROPERTY);
+        if (report == null) {
+            return;
+        }
+        final File file = new File(new File(report).getParentFile(), fileName);
+        try {
+            final java.io.PrintWriter writer = new java.io.PrintWriter(file, "UTF-8");
+            try {
+                for (final String line : lines) {
+                    writer.println(line);
+                }
+            } finally {
+                writer.close();
+            }
+        } catch (final Throwable ignored) {
+            // best effort: the assertion message carries the numbers
+        }
     }
 
     // ---------------------------------------------------------------------------------------------------------

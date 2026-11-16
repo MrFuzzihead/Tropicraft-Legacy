@@ -557,7 +557,7 @@ three plus the leafball should share one `EntityTropicraftThrowable`.
 
 ### R4. Registry tidy-up
 
-**Status: open.** See §17.4.
+**Status: done** — see §18.
 
 * `TCItemRegistry` — one 300-line static initialiser; split into `initBlockItems()`, `initFood()`,
   `initTools()`, `initArmor()`, `initMisc()` for reviewability. Several entries are
@@ -1563,6 +1563,68 @@ renamed an item.
   characterization check first (registered recipe count, plus the output of a handful of named recipes), which is
   cheap to add and would make the extraction safe - next batch.
 * **R6 (cocktail/colour mixer)** needs the same treatment and is the least understood of the three.
+
+---
+
+## 18. P2 batch 2 — the recipe registry (R4)
+
+### 18.1 The check came first
+
+Before touching the registry, the in-game suite grew a recipe fingerprint: every crafting and smelting recipe that
+touches a Tropicraft item is reduced to a stable one-line description (output, count, shape, ingredients in slot
+order), the list is sorted, and the check asserts both the count and a CRC32 of the listing:
+
+```
+139 crafting recipes, crc 2e72ec27
+  6 smelting recipes, crc 4be27cea
+```
+
+The full listing is written to `build/gametest/recipes-crafting.txt` and `recipes-smelting.txt` on every run, so a
+failure can be diffed instead of guessed at. Both numbers were recorded before the refactor and are unchanged
+after it.
+
+That the check actually bites was verified by perturbing one recipe (dart output count `4` → `5`): the run failed
+with `crc f71d3c14 (expected 2e72ec27)` and the change reverted.
+
+(A caution from writing it: the first green-ish run *failed* with matching values because the strings were compared
+with `==`. The failure message prints both values, which is what made that visible in one look - worth the couple of
+extra lines in the message.)
+
+### 18.2 What changed in `TCCraftingRegistry`
+
+* **A `recipe(output, pattern...)` shorthand** for what 86 call sites were spelling out as
+  `createRecipe(true, output, new Object[] { ... })`. The script that rewrote them parsed balanced parentheses and
+  asserted the first argument was the literal `true` (the "also add to the encyclopedia" flag), so the flag cannot
+  have changed by accident.
+* **The dead `isServer` flag.** `createRecipe(boolean isServer, boolean addToEncyclopedia, ...)` ignored `isServer`
+  and was byte-identical to the three-argument overload; `initDartRecipes(boolean isServer)` passed it down. Both
+  gone.
+* **61 redundant `(Item)`/`(Block)` casts** removed from `TCItemRegistry` (the fields have concrete types, so the
+  overload resolution is unchanged - the recipe fingerprint and the item-name check both confirm it).
+
+`TCCraftingRegistry` went from 670 to 432 lines, and the recipe bodies are now one line each instead of four.
+
+### 18.3 What was deliberately not done
+
+* **Splitting `TCItemRegistry.init()` into `initFood()`/`initTools()`/…** The review asked for it "for
+  reviewability", but the list is not grouped by category - splitting it either reorders the registrations (which
+  changes the `Item.itemRegistry` id order every other mod sees at startup) or produces arbitrary contiguous blocks
+  that are harder to follow than the list. Instead the method documents the ordering contract, which is the part a
+  reviewer actually needs to know.
+* **`ringRecipe`/`toolsRecipe`/`storageRecipe` helpers.** The repetition in the registry is not actually shaped like
+  those patterns: recipes differ in ingredient, shape *and* result count, so the "helpers" would take as many
+  arguments as the recipe itself and only hide the shape. The one honest repetition - the four-line `createRecipe`
+  wrapper - is what `recipe(...)` removes. If a future pass wants those helpers, the fingerprint above makes it
+  safe.
+
+`TCRenderIDs` got the "assigned once in preInit, meaningless on a dedicated server" contract documented, which was
+the last item in R4.
+
+### 18.4 Verification
+
+`check` green (51 unit tests, coverage floors, spotless, licence) and `gameTestServer` green with **28** checks,
+including the two new recipe fingerprints. In-game coverage rose from 3127 to 3293 executed lines because the check
+itself walks the recipe list; the recipe registry refactor removed ~240 lines from the mod.
 
 ---
 

@@ -28,7 +28,7 @@ public class TCCraftingRegistry {
     public static void init() {
         addRecipes();
         initCurareMixes();
-        initDartRecipes(true);
+        initDartRecipes();
     }
 
     private static void initCurareMixes() {
@@ -63,44 +63,68 @@ public class TCCraftingRegistry {
         return new ItemStack((Block) TCBlockRegistry.flowers, 1, damage);
     }
 
-    private static void initDartRecipes(final boolean isServer) {
-        createRecipe(
-            isServer,
-            true,
-            new ItemStack((Item) TCItemRegistry.blowGun, 1, 0),
-            new Object[] { "X  ", " I ", "  X", 'X', TCItemRegistry.bambooStick, 'I',
-                new ItemStack((Item) TCItemRegistry.curare, 1, 0) });
-        createRecipe(
-            isServer,
-            true,
-            new ItemStack((Item) TCItemRegistry.dart, 4),
-            new Object[] { "XI", " C", 'X', Items.iron_ingot, 'I', TCItemRegistry.poisonFrogSkin, 'C', Items.feather });
-        createRecipe(
-            isServer,
-            true,
-            new ItemStack((Item) TCItemRegistry.dart, 4),
-            new Object[] { "X ", "IC", 'X', Items.iron_ingot, 'I', TCItemRegistry.poisonFrogSkin, 'C', Items.feather });
+    private static void initDartRecipes() {
+        recipe(
+            new ItemStack(TCItemRegistry.blowGun, 1, 0),
+            "X  ",
+            " I ",
+            "  X",
+            'X',
+            TCItemRegistry.bambooStick,
+            'I',
+            new ItemStack(TCItemRegistry.curare, 1, 0));
+        recipe(
+            new ItemStack(TCItemRegistry.dart, 4),
+            "XI",
+            " C",
+            'X',
+            Items.iron_ingot,
+            'I',
+            TCItemRegistry.poisonFrogSkin,
+            'C',
+            Items.feather);
+        recipe(
+            new ItemStack(TCItemRegistry.dart, 4),
+            "X ",
+            "IC",
+            'X',
+            Items.iron_ingot,
+            'I',
+            TCItemRegistry.poisonFrogSkin,
+            'C',
+            Items.feather);
         for (int damage = 0; damage < ItemCurare.effectNames.length; ++damage) {
-            createRecipe(
-                isServer,
-                true,
-                new ItemStack((Item) TCItemRegistry.dart, 4, damage),
-                new Object[] { "XI", " C", 'X', Items.iron_ingot, 'I',
-                    new ItemStack((Item) TCItemRegistry.curare, 1, damage), 'C', Items.feather });
-            createRecipe(
-                isServer,
-                true,
-                new ItemStack((Item) TCItemRegistry.dart, 4, damage),
-                new Object[] { "X ", "IC", 'X', Items.iron_ingot, 'I',
-                    new ItemStack((Item) TCItemRegistry.curare, 1, damage), 'C', Items.feather });
+            recipe(
+                new ItemStack(TCItemRegistry.dart, 4, damage),
+                "XI",
+                " C",
+                'X',
+                Items.iron_ingot,
+                'I',
+                new ItemStack(TCItemRegistry.curare, 1, damage),
+                'C',
+                Items.feather);
+            recipe(
+                new ItemStack(TCItemRegistry.dart, 4, damage),
+                "X ",
+                "IC",
+                'X',
+                Items.iron_ingot,
+                'I',
+                new ItemStack(TCItemRegistry.curare, 1, damage),
+                'C',
+                Items.feather);
         }
     }
 
     private static void createOreBlockRecipe(final int i, final int j) {
-        createRecipe(
-            true,
+        recipe(
             new ItemStack((Block) TCBlockRegistry.oreBlocks, 1, i),
-            new Object[] { "%%%", "%%%", "%%%", '%', new ItemStack((Item) TCItemRegistry.ore, 1, j) });
+            "%%%",
+            "%%%",
+            "%%%",
+            '%',
+            new ItemStack((Item) TCItemRegistry.ore, 1, j));
     }
 
     @SideOnly(Side.CLIENT)
@@ -108,16 +132,15 @@ public class TCCraftingRegistry {
         Tropicraft.encyclopedia.includeRecipe(itemstack, obj);
     }
 
-    public static void createRecipe(final boolean addToEncyclopedia, final ItemStack itemstack, final Object[] obj) {
-        if (addToEncyclopedia && FMLCommonHandler.instance()
-            .getSide() == Side.CLIENT) {
-            addToEncyclopedia(itemstack, obj);
-        }
-        GameRegistry.addRecipe(itemstack, obj);
+    /**
+     * Shorthand for the common case: a shaped recipe that also goes into the encyclopedia. Was 86 repetitions of
+     * {@code createRecipe(true, output, new Object[] { ... })} spread over 400 lines.
+     */
+    private static void recipe(final ItemStack output, final Object... pattern) {
+        createRecipe(true, output, pattern);
     }
 
-    public static void createRecipe(final boolean isServer, final boolean addToEncyclopedia, final ItemStack itemstack,
-        final Object[] obj) {
+    public static void createRecipe(final boolean addToEncyclopedia, final ItemStack itemstack, final Object[] obj) {
         if (addToEncyclopedia && FMLCommonHandler.instance()
             .getSide() == Side.CLIENT) {
             addToEncyclopedia(itemstack, obj);
@@ -252,382 +275,498 @@ public class TCCraftingRegistry {
     }
 
     public static void addRecipes() {
-        createRecipe(
-            true,
-            new ItemStack((Block) TCBlockRegistry.thatchBundle, 1, 0),
-            new Object[] { "XX", "XX", 'X', Items.reeds });
-        createRecipe(
-            true,
-            new ItemStack((Block) TCBlockRegistry.bambooBundle, 1),
-            new Object[] { "XX", "XX", 'X', TCItemRegistry.bambooChute });
-        createRecipe(
-            true,
-            new ItemStack((Block) TCBlockRegistry.thatchStairs, 1),
-            new Object[] { "X ", "XX", 'X', Items.reeds });
-        createRecipe(
-            true,
+        recipe(new ItemStack((Block) TCBlockRegistry.thatchBundle, 1, 0), "XX", "XX", 'X', Items.reeds);
+        recipe(new ItemStack((Block) TCBlockRegistry.bambooBundle, 1), "XX", "XX", 'X', TCItemRegistry.bambooChute);
+        recipe(new ItemStack((Block) TCBlockRegistry.thatchStairs, 1), "X ", "XX", 'X', Items.reeds);
+        recipe(
             new ItemStack((Block) TCBlockRegistry.thatchStairs, 4),
-            new Object[] { "X ", "XX", 'X', new ItemStack((Block) TCBlockRegistry.thatchBundle, 1, 0) });
-        createRecipe(
-            true,
-            new ItemStack((Block) TCBlockRegistry.bambooStairs, 1),
-            new Object[] { "X ", "XX", 'X', TCItemRegistry.bambooChute });
-        createRecipe(
-            true,
-            new ItemStack((Block) TCBlockRegistry.bambooStairs, 4),
-            new Object[] { "X ", "XX", 'X', TCBlockRegistry.bambooBundle });
-        createRecipe(
-            true,
+            "X ",
+            "XX",
+            'X',
+            new ItemStack((Block) TCBlockRegistry.thatchBundle, 1, 0));
+        recipe(new ItemStack((Block) TCBlockRegistry.bambooStairs, 1), "X ", "XX", 'X', TCItemRegistry.bambooChute);
+        recipe(new ItemStack((Block) TCBlockRegistry.bambooStairs, 4), "X ", "XX", 'X', TCBlockRegistry.bambooBundle);
+        recipe(new ItemStack((Block) TCBlockRegistry.singleSlabs, 1, 1), "XX", 'X', Items.reeds);
+        recipe(
             new ItemStack((Block) TCBlockRegistry.singleSlabs, 1, 1),
-            new Object[] { "XX", 'X', Items.reeds });
-        createRecipe(
-            true,
-            new ItemStack((Block) TCBlockRegistry.singleSlabs, 1, 1),
-            new Object[] { "X", 'X', new ItemStack((Block) TCBlockRegistry.thatchBundle, 1, 0) });
-        createRecipe(
-            true,
-            new ItemStack((Block) TCBlockRegistry.singleSlabs, 1, 0),
-            new Object[] { "XX", 'X', TCItemRegistry.bambooChute });
-        createRecipe(
-            true,
-            new ItemStack((Block) TCBlockRegistry.singleSlabs, 2, 0),
-            new Object[] { "X", 'X', TCBlockRegistry.bambooBundle });
-        createRecipe(
-            true,
+            "X",
+            'X',
+            new ItemStack((Block) TCBlockRegistry.thatchBundle, 1, 0));
+        recipe(new ItemStack((Block) TCBlockRegistry.singleSlabs, 1, 0), "XX", 'X', TCItemRegistry.bambooChute);
+        recipe(new ItemStack((Block) TCBlockRegistry.singleSlabs, 2, 0), "X", 'X', TCBlockRegistry.bambooBundle);
+        recipe(
             new ItemStack((Block) TCBlockRegistry.planks, 4, 0),
-            new Object[] { "#", '#', new ItemStack((Block) TCBlockRegistry.logs, 1, 0) });
-        createRecipe(
-            true,
-            new ItemStack(TCItemRegistry.bambooMug, 1),
-            new Object[] { "X X", "X X", "XXX", 'X', TCItemRegistry.bambooChute });
-        createRecipe(
-            true,
+            "#",
+            '#',
+            new ItemStack((Block) TCBlockRegistry.logs, 1, 0));
+        recipe(new ItemStack(TCItemRegistry.bambooMug, 1), "X X", "X X", "XXX", 'X', TCItemRegistry.bambooChute);
+        recipe(
             MixerRecipes.getItemStack(Drink.pinaColada),
-            new Object[] { "X", "Y", "Z", 'X', TCItemRegistry.coconutChunk, 'Y',
-                new ItemStack((Block) TCBlockRegistry.pineapple, 1, 8).getItem(), 'Z', TCItemRegistry.bambooMug });
-        createRecipe(
-            true,
+            "X",
+            "Y",
+            "Z",
+            'X',
+            TCItemRegistry.coconutChunk,
+            'Y',
+            new ItemStack((Block) TCBlockRegistry.pineapple, 1, 8).getItem(),
+            'Z',
+            TCItemRegistry.bambooMug);
+        recipe(
             MixerRecipes.getItemStack(Drink.pinaColada),
-            new Object[] { "Y", "X", "Z", 'X', TCItemRegistry.coconutChunk, 'Y',
-                new ItemStack((Block) TCBlockRegistry.pineapple, 1, 8).getItem(), 'Z', TCItemRegistry.bambooMug });
-        createRecipe(
-            true,
-            new ItemStack((Item) TCItemRegistry.scaleHelmet, 1),
-            new Object[] { "XXX", "X X", 'X', TCItemRegistry.scale });
-        createRecipe(
-            true,
-            new ItemStack((Item) TCItemRegistry.scaleChestplate, 1),
-            new Object[] { "X X", "XXX", "XXX", 'X', TCItemRegistry.scale });
-        createRecipe(
-            true,
-            new ItemStack((Item) TCItemRegistry.scaleLeggings, 1),
-            new Object[] { "XXX", "X X", "X X", 'X', TCItemRegistry.scale });
-        createRecipe(
-            true,
-            new ItemStack((Item) TCItemRegistry.scaleBoots, 1),
-            new Object[] { "X X", "X X", 'X', TCItemRegistry.scale });
-        createRecipe(
-            true,
+            "Y",
+            "X",
+            "Z",
+            'X',
+            TCItemRegistry.coconutChunk,
+            'Y',
+            new ItemStack((Block) TCBlockRegistry.pineapple, 1, 8).getItem(),
+            'Z',
+            TCItemRegistry.bambooMug);
+        recipe(new ItemStack((Item) TCItemRegistry.scaleHelmet, 1), "XXX", "X X", 'X', TCItemRegistry.scale);
+        recipe(new ItemStack((Item) TCItemRegistry.scaleChestplate, 1), "X X", "XXX", "XXX", 'X', TCItemRegistry.scale);
+        recipe(new ItemStack((Item) TCItemRegistry.scaleLeggings, 1), "XXX", "X X", "X X", 'X', TCItemRegistry.scale);
+        recipe(new ItemStack((Item) TCItemRegistry.scaleBoots, 1), "X X", "X X", 'X', TCItemRegistry.scale);
+        recipe(
             new ItemStack((Item) TCItemRegistry.coconutBomb, 1),
-            new Object[] { " X ", "XYX", " X ", 'X', Items.gunpowder, 'Y', TCBlockRegistry.coconut });
-        createRecipe(
-            true,
+            " X ",
+            "XYX",
+            " X ",
+            'X',
+            Items.gunpowder,
+            'Y',
+            TCBlockRegistry.coconut);
+        recipe(
             new ItemStack((Item) TCItemRegistry.tikiTorch, 2),
-            new Object[] { "Y  ", " X ", "  X", 'Y', Items.coal, 'X', TCItemRegistry.bambooStick });
+            "Y  ",
+            " X ",
+            "  X",
+            'Y',
+            Items.coal,
+            'X',
+            TCItemRegistry.bambooStick);
         createRecipe(
             false,
             new ItemStack((Item) TCItemRegistry.tikiTorch, 2),
             new Object[] { "Y  ", " X ", "  X", 'Y', new ItemStack(Items.coal, 1, 1), 'X',
                 TCItemRegistry.bambooStick });
-        createRecipe(
-            true,
-            new ItemStack((Block) TCBlockRegistry.bambooFence, 2),
-            new Object[] { "XXX", "XXX", 'X', TCItemRegistry.bambooStick });
-        createRecipe(
-            true,
+        recipe(new ItemStack((Block) TCBlockRegistry.bambooFence, 2), "XXX", "XXX", 'X', TCItemRegistry.bambooStick);
+        recipe(
             new ItemStack((Block) TCBlockRegistry.bambooFenceGate, 1),
-            new Object[] { "XIX", "XIX", 'X', TCItemRegistry.bambooStick, 'I', TCBlockRegistry.bambooBundle });
-        createRecipe(
-            true,
-            new ItemStack(TCItemRegistry.bambooSpear, 1),
-            new Object[] { "X ", " X", 'X', TCItemRegistry.bambooStick });
+            "XIX",
+            "XIX",
+            'X',
+            TCItemRegistry.bambooStick,
+            'I',
+            TCBlockRegistry.bambooBundle);
+        recipe(new ItemStack(TCItemRegistry.bambooSpear, 1), "X ", " X", 'X', TCItemRegistry.bambooStick);
         for (int i = 0; i < 16; ++i) {
-            createRecipe(
-                true,
+            recipe(
                 new ItemStack((Item) TCItemRegistry.chair, 1, BlockColored.func_150031_c(i)),
-                new Object[] { "XIX", "XIX", "XIX", 'X', TCItemRegistry.bambooStick, 'I',
-                    new ItemStack(Blocks.wool, 1, i) });
-            createRecipe(
-                true,
+                "XIX",
+                "XIX",
+                "XIX",
+                'X',
+                TCItemRegistry.bambooStick,
+                'I',
+                new ItemStack(Blocks.wool, 1, i));
+            recipe(
                 new ItemStack((Item) TCItemRegistry.umbrella, 1, BlockColored.func_150031_c(i)),
-                new Object[] { "XXX", " I ", " I ", 'X', new ItemStack(Blocks.wool, 1, i), 'I',
-                    TCItemRegistry.bambooStick });
+                "XXX",
+                " I ",
+                " I ",
+                'X',
+                new ItemStack(Blocks.wool, 1, i),
+                'I',
+                TCItemRegistry.bambooStick);
         }
-        createRecipe(
-            true,
-            new ItemStack((Block) TCBlockRegistry.singleSlabs, 2, 2),
-            new Object[] { "X", 'X', TCBlockRegistry.chunkOHead });
-        createRecipe(
-            true,
+        recipe(new ItemStack((Block) TCBlockRegistry.singleSlabs, 2, 2), "X", 'X', TCBlockRegistry.chunkOHead);
+        recipe(
             new ItemStack((Block) TCBlockRegistry.chunkStairs, 4),
-            new Object[] { "X  ", "XX ", "XXX", 'X', TCBlockRegistry.chunkOHead });
-        createRecipe(
-            true,
+            "X  ",
+            "XX ",
+            "XXX",
+            'X',
+            TCBlockRegistry.chunkOHead);
+        recipe(
             new ItemStack((Block) TCBlockRegistry.singleSlabs, 2, 3),
-            new Object[] { "X", 'X', new ItemStack((Block) TCBlockRegistry.planks, 1, 0) });
-        createRecipe(
-            true,
+            "X",
+            'X',
+            new ItemStack((Block) TCBlockRegistry.planks, 1, 0));
+        recipe(
             new ItemStack((Block) TCBlockRegistry.palmStairs, 4),
-            new Object[] { "X  ", "XX ", "XXX", 'X', new ItemStack((Block) TCBlockRegistry.planks, 1, 0) });
-        createRecipe(
-            true,
+            "X  ",
+            "XX ",
+            "XXX",
+            'X',
+            new ItemStack((Block) TCBlockRegistry.planks, 1, 0));
+        recipe(
             new ItemStack(Blocks.crafting_table, 1),
-            new Object[] { "II", "II", 'I', new ItemStack((Block) TCBlockRegistry.planks, 1, 0) });
-        createRecipe(
-            true,
+            "II",
+            "II",
+            'I',
+            new ItemStack((Block) TCBlockRegistry.planks, 1, 0));
+        recipe(
             new ItemStack(Blocks.crafting_table, 1),
-            new Object[] { "II", "II", 'I', new ItemStack((Block) TCBlockRegistry.planks, 1, 1) });
-        createRecipe(
-            true,
-            new ItemStack((Item) TCItemRegistry.pearl, 1, 0),
-            new Object[] { "I", 'I', new ItemStack(TCItemRegistry.shells, 1, 0) });
-        createRecipe(
-            true,
-            new ItemStack((Item) TCItemRegistry.pearl, 1, 1),
-            new Object[] { "I", 'I', new ItemStack(TCItemRegistry.shells, 1, 1) });
-        createRecipe(
-            true,
+            "II",
+            "II",
+            'I',
+            new ItemStack((Block) TCBlockRegistry.planks, 1, 1));
+        recipe(new ItemStack((Item) TCItemRegistry.pearl, 1, 0), "I", 'I', new ItemStack(TCItemRegistry.shells, 1, 0));
+        recipe(new ItemStack((Item) TCItemRegistry.pearl, 1, 1), "I", 'I', new ItemStack(TCItemRegistry.shells, 1, 1));
+        recipe(
             new ItemStack((Item) TCItemRegistry.pickaxeZircon),
-            new Object[] { "XXX", " I ", " I ", 'X', new ItemStack((Item) TCItemRegistry.ore, 1, 1), 'I',
-                TCItemRegistry.bambooStick });
-        createRecipe(
-            true,
+            "XXX",
+            " I ",
+            " I ",
+            'X',
+            new ItemStack((Item) TCItemRegistry.ore, 1, 1),
+            'I',
+            TCItemRegistry.bambooStick);
+        recipe(
             new ItemStack((Item) TCItemRegistry.axeZircon),
-            new Object[] { "XX", "XI ", " I", 'X', new ItemStack((Item) TCItemRegistry.ore, 1, 1), 'I',
-                TCItemRegistry.bambooStick });
-        createRecipe(
-            true,
+            "XX",
+            "XI ",
+            " I",
+            'X',
+            new ItemStack((Item) TCItemRegistry.ore, 1, 1),
+            'I',
+            TCItemRegistry.bambooStick);
+        recipe(
             new ItemStack((Item) TCItemRegistry.hoeZircon),
-            new Object[] { "XX", " I", " I", 'X', new ItemStack((Item) TCItemRegistry.ore, 1, 1), 'I',
-                TCItemRegistry.bambooStick });
-        createRecipe(
-            true,
+            "XX",
+            " I",
+            " I",
+            'X',
+            new ItemStack((Item) TCItemRegistry.ore, 1, 1),
+            'I',
+            TCItemRegistry.bambooStick);
+        recipe(
             new ItemStack((Item) TCItemRegistry.swordZircon),
-            new Object[] { "X", "X", "I", 'X', new ItemStack((Item) TCItemRegistry.ore, 1, 1), 'I',
-                TCItemRegistry.bambooStick });
-        createRecipe(
-            true,
+            "X",
+            "X",
+            "I",
+            'X',
+            new ItemStack((Item) TCItemRegistry.ore, 1, 1),
+            'I',
+            TCItemRegistry.bambooStick);
+        recipe(
             new ItemStack((Item) TCItemRegistry.shovelZircon),
-            new Object[] { "X", "I", "I", 'X', new ItemStack((Item) TCItemRegistry.ore, 1, 1), 'I',
-                TCItemRegistry.bambooStick });
-        createRecipe(
-            true,
+            "X",
+            "I",
+            "I",
+            'X',
+            new ItemStack((Item) TCItemRegistry.ore, 1, 1),
+            'I',
+            TCItemRegistry.bambooStick);
+        recipe(
             new ItemStack((Item) TCItemRegistry.pickaxeZirconium),
-            new Object[] { "XXX", " I ", " I ", 'X', new ItemStack((Item) TCItemRegistry.ore, 1, 3), 'I',
-                TCItemRegistry.bambooStick });
-        createRecipe(
-            true,
-            new ItemStack((Item) TCItemRegistry.axeZirconium),
-            new Object[] { "XX", "XI", " I", 'X', new ItemStack((Item) TCItemRegistry.ore, 1, 3), 'I',
-                TCItemRegistry.bambooStick });
-        createRecipe(
-            true,
-            new ItemStack((Item) TCItemRegistry.hoeZirconium),
-            new Object[] { "XX", " I", " I", 'X', new ItemStack((Item) TCItemRegistry.ore, 1, 3), 'I',
-                TCItemRegistry.bambooStick });
-        createRecipe(
-            true,
-            new ItemStack((Item) TCItemRegistry.swordZirconium),
-            new Object[] { "X", "X", "I", 'X', new ItemStack((Item) TCItemRegistry.ore, 1, 3), 'I',
-                TCItemRegistry.bambooStick });
-        createRecipe(
-            true,
-            new ItemStack((Item) TCItemRegistry.shovelZirconium),
-            new Object[] { "X", "I", "I", 'X', new ItemStack((Item) TCItemRegistry.ore, 1, 3), 'I',
-                TCItemRegistry.bambooStick });
-        createRecipe(
-            true,
-            new ItemStack((Item) TCItemRegistry.pickaxeEudialyte),
-            new Object[] { "XXX", " I ", " I ", 'X', new ItemStack((Item) TCItemRegistry.ore, 1, 0), 'I',
-                TCItemRegistry.bambooStick });
-        createRecipe(
-            true,
-            new ItemStack((Item) TCItemRegistry.axeEudialyte),
-            new Object[] { "XX", "XI", " I", 'X', new ItemStack((Item) TCItemRegistry.ore, 1, 0), 'I',
-                TCItemRegistry.bambooStick });
-        createRecipe(
-            true,
-            new ItemStack((Item) TCItemRegistry.hoeEudialyte),
-            new Object[] { "XX", " I", " I", 'X', new ItemStack((Item) TCItemRegistry.ore, 1, 0), 'I',
-                TCItemRegistry.bambooStick });
-        createRecipe(
-            true,
-            new ItemStack((Item) TCItemRegistry.swordEudialyte),
-            new Object[] { "X", "X", "I", 'X', new ItemStack((Item) TCItemRegistry.ore, 1, 0), 'I',
-                TCItemRegistry.bambooStick });
-        createRecipe(
-            true,
-            new ItemStack((Item) TCItemRegistry.shovelEudialyte),
-            new Object[] { "X", "I", "I", 'X', new ItemStack((Item) TCItemRegistry.ore, 1, 0), 'I',
-                TCItemRegistry.bambooStick });
-        createRecipe(
-            true,
-            new ItemStack((Item) TCItemRegistry.pineappleCubes),
-            new Object[] { "X", 'X', new ItemStack((Block) TCBlockRegistry.tallFlowers, 1, 9) });
-        createRecipe(
-            true,
-            new ItemStack(TCItemRegistry.flippers),
-            new Object[] { "XIX", "X X", 'X', Items.leather, 'I', new ItemStack(Items.dye, 1, 4) });
-        createRecipe(
-            true,
-            new ItemStack(TCItemRegistry.snorkel),
-            new Object[] { "X  ", "XII", 'X', TCItemRegistry.bambooChute, 'I', Blocks.glass_pane });
-        createRecipe(
-            true,
-            new ItemStack((Block) TCBlockRegistry.sifter),
-            new Object[] { "XXX", "XIX", "XXX", 'X', Blocks.planks, 'I', Blocks.glass_pane });
-        createRecipe(
-            true,
-            new ItemStack(TCItemRegistry.dagger),
-            new Object[] { "X", "X", "I", 'X', TCBlockRegistry.chunkOHead, 'I',
-                new ItemStack((Block) TCBlockRegistry.planks, 1, 0) });
-        createRecipe(
-            true,
-            new ItemStack((Item) TCItemRegistry.fishingNet),
-            new Object[] { "  X", " XI", "XII", 'X', TCItemRegistry.bambooChute, 'I', Items.string });
-        createRecipe(
-            true,
-            new ItemStack((Item) TCItemRegistry.fertilizer, 3),
-            new Object[] { "XI", 'X', new ItemStack((Block) TCBlockRegistry.flowers, 1, 7), 'I',
-                new ItemStack((Block) TCBlockRegistry.flowers, 1, 10) });
-        createRecipe(
-            true,
-            new ItemStack(Items.dye, 4, 5),
-            new Object[] { "X", 'X', new ItemStack((Block) TCBlockRegistry.tallFlowers, 1, 15) });
-        createRecipe(
-            true,
-            new ItemStack(Items.dye, 2, 1),
-            new Object[] { "X", 'X', new ItemStack((Block) TCBlockRegistry.flowers, 1, 6) });
-        createRecipe(
-            true,
-            new ItemStack(Items.dye, 2, 14),
-            new Object[] { "X", 'X', new ItemStack((Block) TCBlockRegistry.flowers, 1, 5) });
-        createRecipe(
-            true,
-            new ItemStack(Items.dye, 2, 12),
-            new Object[] { "X", 'X', new ItemStack((Block) TCBlockRegistry.flowers, 1, 0) });
-        createRecipe(
-            true,
-            new ItemStack(Items.dye, 2, 2),
-            new Object[] { "X", 'X', new ItemStack((Block) TCBlockRegistry.flowers, 1, 12) });
-        createRecipe(
-            true,
-            new ItemStack(Items.dye, 2, 11),
-            new Object[] { "X", 'X', new ItemStack((Block) TCBlockRegistry.flowers, 1, 3) });
-        createRecipe(
-            true,
-            new ItemStack((Block) TCBlockRegistry.bambooChest, 1),
-            new Object[] { "XXX", "X X", "XXX", 'X', TCItemRegistry.bambooChute });
-        createRecipe(
-            true,
-            new ItemStack(Items.stick, 4),
-            new Object[] { "#", "#", '#', new ItemStack((Block) TCBlockRegistry.planks, 1, 0) });
-        createRecipe(
-            true,
-            new ItemStack(Items.wooden_pickaxe),
-            new Object[] { "XXX", " # ", " # ", 'X', new ItemStack((Block) TCBlockRegistry.planks, 1, 0), '#',
-                Items.stick });
-        createRecipe(
-            true,
-            new ItemStack(Items.wooden_shovel),
-            new Object[] { "X", "#", "#", 'X', new ItemStack((Block) TCBlockRegistry.planks, 1, 0), '#', Items.stick });
-        createRecipe(
-            true,
-            new ItemStack(Items.wooden_axe),
-            new Object[] { "XX", "X#", " #", 'X', new ItemStack((Block) TCBlockRegistry.planks, 1, 0), '#',
-                Items.stick });
-        createRecipe(
-            true,
-            new ItemStack(Items.wooden_hoe),
-            new Object[] { "XX", " #", " #", 'X', new ItemStack((Block) TCBlockRegistry.planks, 1, 0), '#',
-                Items.stick });
-        createRecipe(
-            true,
-            new ItemStack(Items.wooden_sword),
-            new Object[] { "X", "X", "#", 'X', new ItemStack((Block) TCBlockRegistry.planks, 1, 0), '#', Items.stick });
-        createRecipe(
-            true,
-            new ItemStack(Blocks.planks, 4, 3),
-            new Object[] { "#", '#', new ItemStack((Block) TCBlockRegistry.logs, 1, 1) });
-        createRecipe(
-            true,
-            new ItemStack(TCItemRegistry.encTropica, 1),
-            new Object[] { "###", "#$#", "###", '#', TCItemRegistry.bambooChute, '$', Items.book });
-        createRecipe(
-            true,
-            new ItemStack(Items.wooden_door, 1),
-            new Object[] { "XX", "XX", "XX", 'X', new ItemStack((Block) TCBlockRegistry.planks, 1, 0) });
-        createRecipe(
-            true,
-            new ItemStack(Blocks.trapdoor, 2),
-            new Object[] { "XXX", "XXX", 'X', new ItemStack((Block) TCBlockRegistry.planks, 1, 0) });
-        createRecipe(
-            true,
-            new ItemStack((Item) TCItemRegistry.bambooDoor),
-            new Object[] { "XX", "YY", "XX", 'X', TCBlockRegistry.bambooBundle, 'Y', TCBlockRegistry.thatchBundle });
-        createRecipe(
-            true,
-            new ItemStack((Item) TCItemRegistry.waterWand),
-            new Object[] { "  X", " Y ", "Y  ", 'X', new ItemStack((Item) TCItemRegistry.ore, 1, 2), 'Y',
-                Items.gold_ingot });
-        createRecipe(
-            true,
-            new ItemStack(TCItemRegistry.snareTrap),
-            new Object[] { "  X", "XX ", "XX ", 'X', Items.string });
-        createRecipe(
-            true,
-            new ItemStack(Item.getItemFromBlock(TCBlockRegistry.flowerPot)),
-            new Object[] { "# #", " # ", '#', TCItemRegistry.bambooChute });
-        createRecipe(
-            true,
-            new ItemStack((Item) TCItemRegistry.coffeeBean, 1, 0),
-            new Object[] { "X", 'X', new ItemStack((Item) TCItemRegistry.coffeeBean, 0, 2) });
-        createRecipe(
-            true,
-            new ItemStack(TCItemRegistry.tropiFrame, 1),
-            new Object[] { "###", "#X#", "###", '#', TCItemRegistry.bambooChute, 'X', Items.leather });
-        createRecipe(
-            true,
-            new ItemStack(TCItemRegistry.portalEnchanter, 1),
-            new Object[] { "%@#", "#@%", " @ ", '@', TCItemRegistry.bambooStick, '#',
-                new ItemStack((Item) TCItemRegistry.ore, 1, 2), '%', new ItemStack((Item) TCItemRegistry.ore, 1, 3) });
-        createRecipe(
-            true,
-            new ItemStack(TCItemRegistry.portalEnchanter, 1),
-            new Object[] { "#@%", "%@#", " @ ", '@', TCItemRegistry.bambooStick, '#',
-                new ItemStack((Item) TCItemRegistry.ore, 1, 2), '%', new ItemStack((Item) TCItemRegistry.ore, 1, 3) });
-        createRecipe(
-            true,
-            new ItemStack((Item) TCItemRegistry.bambooStick, 4),
-            new Object[] { "#", "#", '#', TCItemRegistry.bambooChute });
-        createRecipe(
-            true,
+            "XXX",
+            " I ",
+            " I ",
+            'X',
             new ItemStack((Item) TCItemRegistry.ore, 1, 3),
-            new Object[] { "###", "#$#", "###", '$', Items.diamond, '#',
-                new ItemStack((Item) TCItemRegistry.ore, 1, 4) });
-        createRecipe(
-            true,
+            'I',
+            TCItemRegistry.bambooStick);
+        recipe(
+            new ItemStack((Item) TCItemRegistry.axeZirconium),
+            "XX",
+            "XI",
+            " I",
+            'X',
+            new ItemStack((Item) TCItemRegistry.ore, 1, 3),
+            'I',
+            TCItemRegistry.bambooStick);
+        recipe(
+            new ItemStack((Item) TCItemRegistry.hoeZirconium),
+            "XX",
+            " I",
+            " I",
+            'X',
+            new ItemStack((Item) TCItemRegistry.ore, 1, 3),
+            'I',
+            TCItemRegistry.bambooStick);
+        recipe(
+            new ItemStack((Item) TCItemRegistry.swordZirconium),
+            "X",
+            "X",
+            "I",
+            'X',
+            new ItemStack((Item) TCItemRegistry.ore, 1, 3),
+            'I',
+            TCItemRegistry.bambooStick);
+        recipe(
+            new ItemStack((Item) TCItemRegistry.shovelZirconium),
+            "X",
+            "I",
+            "I",
+            'X',
+            new ItemStack((Item) TCItemRegistry.ore, 1, 3),
+            'I',
+            TCItemRegistry.bambooStick);
+        recipe(
+            new ItemStack((Item) TCItemRegistry.pickaxeEudialyte),
+            "XXX",
+            " I ",
+            " I ",
+            'X',
+            new ItemStack((Item) TCItemRegistry.ore, 1, 0),
+            'I',
+            TCItemRegistry.bambooStick);
+        recipe(
+            new ItemStack((Item) TCItemRegistry.axeEudialyte),
+            "XX",
+            "XI",
+            " I",
+            'X',
+            new ItemStack((Item) TCItemRegistry.ore, 1, 0),
+            'I',
+            TCItemRegistry.bambooStick);
+        recipe(
+            new ItemStack((Item) TCItemRegistry.hoeEudialyte),
+            "XX",
+            " I",
+            " I",
+            'X',
+            new ItemStack((Item) TCItemRegistry.ore, 1, 0),
+            'I',
+            TCItemRegistry.bambooStick);
+        recipe(
+            new ItemStack((Item) TCItemRegistry.swordEudialyte),
+            "X",
+            "X",
+            "I",
+            'X',
+            new ItemStack((Item) TCItemRegistry.ore, 1, 0),
+            'I',
+            TCItemRegistry.bambooStick);
+        recipe(
+            new ItemStack((Item) TCItemRegistry.shovelEudialyte),
+            "X",
+            "I",
+            "I",
+            'X',
+            new ItemStack((Item) TCItemRegistry.ore, 1, 0),
+            'I',
+            TCItemRegistry.bambooStick);
+        recipe(
+            new ItemStack((Item) TCItemRegistry.pineappleCubes),
+            "X",
+            'X',
+            new ItemStack((Block) TCBlockRegistry.tallFlowers, 1, 9));
+        recipe(
+            new ItemStack(TCItemRegistry.flippers),
+            "XIX",
+            "X X",
+            'X',
+            Items.leather,
+            'I',
+            new ItemStack(Items.dye, 1, 4));
+        recipe(
+            new ItemStack(TCItemRegistry.snorkel),
+            "X  ",
+            "XII",
+            'X',
+            TCItemRegistry.bambooChute,
+            'I',
+            Blocks.glass_pane);
+        recipe(
+            new ItemStack((Block) TCBlockRegistry.sifter),
+            "XXX",
+            "XIX",
+            "XXX",
+            'X',
+            Blocks.planks,
+            'I',
+            Blocks.glass_pane);
+        recipe(
+            new ItemStack(TCItemRegistry.dagger),
+            "X",
+            "X",
+            "I",
+            'X',
+            TCBlockRegistry.chunkOHead,
+            'I',
+            new ItemStack((Block) TCBlockRegistry.planks, 1, 0));
+        recipe(
+            new ItemStack((Item) TCItemRegistry.fishingNet),
+            "  X",
+            " XI",
+            "XII",
+            'X',
+            TCItemRegistry.bambooChute,
+            'I',
+            Items.string);
+        recipe(
+            new ItemStack((Item) TCItemRegistry.fertilizer, 3),
+            "XI",
+            'X',
+            new ItemStack((Block) TCBlockRegistry.flowers, 1, 7),
+            'I',
+            new ItemStack((Block) TCBlockRegistry.flowers, 1, 10));
+        recipe(new ItemStack(Items.dye, 4, 5), "X", 'X', new ItemStack((Block) TCBlockRegistry.tallFlowers, 1, 15));
+        recipe(new ItemStack(Items.dye, 2, 1), "X", 'X', new ItemStack((Block) TCBlockRegistry.flowers, 1, 6));
+        recipe(new ItemStack(Items.dye, 2, 14), "X", 'X', new ItemStack((Block) TCBlockRegistry.flowers, 1, 5));
+        recipe(new ItemStack(Items.dye, 2, 12), "X", 'X', new ItemStack((Block) TCBlockRegistry.flowers, 1, 0));
+        recipe(new ItemStack(Items.dye, 2, 2), "X", 'X', new ItemStack((Block) TCBlockRegistry.flowers, 1, 12));
+        recipe(new ItemStack(Items.dye, 2, 11), "X", 'X', new ItemStack((Block) TCBlockRegistry.flowers, 1, 3));
+        recipe(
+            new ItemStack((Block) TCBlockRegistry.bambooChest, 1),
+            "XXX",
+            "X X",
+            "XXX",
+            'X',
+            TCItemRegistry.bambooChute);
+        recipe(new ItemStack(Items.stick, 4), "#", "#", '#', new ItemStack((Block) TCBlockRegistry.planks, 1, 0));
+        recipe(
+            new ItemStack(Items.wooden_pickaxe),
+            "XXX",
+            " # ",
+            " # ",
+            'X',
+            new ItemStack((Block) TCBlockRegistry.planks, 1, 0),
+            '#',
+            Items.stick);
+        recipe(
+            new ItemStack(Items.wooden_shovel),
+            "X",
+            "#",
+            "#",
+            'X',
+            new ItemStack((Block) TCBlockRegistry.planks, 1, 0),
+            '#',
+            Items.stick);
+        recipe(
+            new ItemStack(Items.wooden_axe),
+            "XX",
+            "X#",
+            " #",
+            'X',
+            new ItemStack((Block) TCBlockRegistry.planks, 1, 0),
+            '#',
+            Items.stick);
+        recipe(
+            new ItemStack(Items.wooden_hoe),
+            "XX",
+            " #",
+            " #",
+            'X',
+            new ItemStack((Block) TCBlockRegistry.planks, 1, 0),
+            '#',
+            Items.stick);
+        recipe(
+            new ItemStack(Items.wooden_sword),
+            "X",
+            "X",
+            "#",
+            'X',
+            new ItemStack((Block) TCBlockRegistry.planks, 1, 0),
+            '#',
+            Items.stick);
+        recipe(new ItemStack(Blocks.planks, 4, 3), "#", '#', new ItemStack((Block) TCBlockRegistry.logs, 1, 1));
+        recipe(
+            new ItemStack(TCItemRegistry.encTropica, 1),
+            "###",
+            "#$#",
+            "###",
+            '#',
+            TCItemRegistry.bambooChute,
+            '$',
+            Items.book);
+        recipe(
+            new ItemStack(Items.wooden_door, 1),
+            "XX",
+            "XX",
+            "XX",
+            'X',
+            new ItemStack((Block) TCBlockRegistry.planks, 1, 0));
+        recipe(
+            new ItemStack(Blocks.trapdoor, 2),
+            "XXX",
+            "XXX",
+            'X',
+            new ItemStack((Block) TCBlockRegistry.planks, 1, 0));
+        recipe(
+            new ItemStack((Item) TCItemRegistry.bambooDoor),
+            "XX",
+            "YY",
+            "XX",
+            'X',
+            TCBlockRegistry.bambooBundle,
+            'Y',
+            TCBlockRegistry.thatchBundle);
+        recipe(
+            new ItemStack((Item) TCItemRegistry.waterWand),
+            "  X",
+            " Y ",
+            "Y  ",
+            'X',
+            new ItemStack((Item) TCItemRegistry.ore, 1, 2),
+            'Y',
+            Items.gold_ingot);
+        recipe(new ItemStack(TCItemRegistry.snareTrap), "  X", "XX ", "XX ", 'X', Items.string);
+        recipe(
+            new ItemStack(Item.getItemFromBlock(TCBlockRegistry.flowerPot)),
+            "# #",
+            " # ",
+            '#',
+            TCItemRegistry.bambooChute);
+        recipe(
+            new ItemStack((Item) TCItemRegistry.coffeeBean, 1, 0),
+            "X",
+            'X',
+            new ItemStack((Item) TCItemRegistry.coffeeBean, 0, 2));
+        recipe(
+            new ItemStack(TCItemRegistry.tropiFrame, 1),
+            "###",
+            "#X#",
+            "###",
+            '#',
+            TCItemRegistry.bambooChute,
+            'X',
+            Items.leather);
+        recipe(
+            new ItemStack(TCItemRegistry.portalEnchanter, 1),
+            "%@#",
+            "#@%",
+            " @ ",
+            '@',
+            TCItemRegistry.bambooStick,
+            '#',
+            new ItemStack((Item) TCItemRegistry.ore, 1, 2),
+            '%',
+            new ItemStack((Item) TCItemRegistry.ore, 1, 3));
+        recipe(
+            new ItemStack(TCItemRegistry.portalEnchanter, 1),
+            "#@%",
+            "%@#",
+            " @ ",
+            '@',
+            TCItemRegistry.bambooStick,
+            '#',
+            new ItemStack((Item) TCItemRegistry.ore, 1, 2),
+            '%',
+            new ItemStack((Item) TCItemRegistry.ore, 1, 3));
+        recipe(new ItemStack((Item) TCItemRegistry.bambooStick, 4), "#", "#", '#', TCItemRegistry.bambooChute);
+        recipe(
+            new ItemStack((Item) TCItemRegistry.ore, 1, 3),
+            "###",
+            "#$#",
+            "###",
+            '$',
+            Items.diamond,
+            '#',
+            new ItemStack((Item) TCItemRegistry.ore, 1, 4));
+        recipe(
             new ItemStack((Block) TCBlockRegistry.koaChest, 1),
-            new Object[] { "###", "#X#", "###", '#', new ItemStack((Item) TCItemRegistry.ore, 1, 3), 'X',
-                TCBlockRegistry.bambooChest });
-        createRecipe(
-            true,
-            new ItemStack((Block) TCBlockRegistry.eihMixer),
-            new Object[] { "XXX", "X X", "XXX", 'X', TCBlockRegistry.chunkOHead });
-        createRecipe(
-            true,
-            new ItemStack((Block) TCBlockRegistry.curareBowl),
-            new Object[] { "X X", " X ", 'X', TCBlockRegistry.chunkOHead });
+            "###",
+            "#X#",
+            "###",
+            '#',
+            new ItemStack((Item) TCItemRegistry.ore, 1, 3),
+            'X',
+            TCBlockRegistry.bambooChest);
+        recipe(new ItemStack((Block) TCBlockRegistry.eihMixer), "XXX", "X X", "XXX", 'X', TCBlockRegistry.chunkOHead);
+        recipe(new ItemStack((Block) TCBlockRegistry.curareBowl), "X X", " X ", 'X', TCBlockRegistry.chunkOHead);
         createOreBlockRecipe(2, 0);
         createOreBlockRecipe(3, 1);
         createOreBlockRecipe(4, 2);

@@ -73,6 +73,7 @@ What the current checks cover - all of it needs the real game:
 | a Koa chest fills its household, replaces dead members, and does not re-spawn while its members are out of range | the chest spawning a fresh pair on every visit while the old pair was still alive |
 | a tropical fish ticks | the fish state machine after the dead school-spawn path was removed |
 | every Tropicraft item/block is named `item.tropicraft:*` / `tile.tropicraft:*` | the item/block naming convention, i.e. every `getUnlocalizedName` in the mod |
+| the crafting/smelting recipes involving Tropicraft are unchanged | a count + CRC32 fingerprint of every such recipe, listed in `build/gametest/recipes-*.txt` |
 | deferred decoration flushes when its neighbourhood loads | the deferred-decoration gate and the throttled sweep |
 | the shutdown flush decorates parked chunks | the shutdown decoration flush, through `ChunkProviderServer.loadChunk` |
 | the Tropicraft dimension generates | worldgen smoke test |
@@ -110,8 +111,8 @@ to a single "covered by any test" number that two different class-id spaces allo
 ```
 jacoco coverage (executed source lines)
   unit tests : 232 (1.5%)
-  in-game    : 3127 (20.6%)
-  combined   : 3317 (21.9%) of 15166 measurable
+  in-game    : 3293 (21.7%)
+  combined   : 3483 (22.9%) of 15185 measurable
 ```
 
 The in-game run is most of the coverage because a dedicated server loads and touches a large part of the mod while

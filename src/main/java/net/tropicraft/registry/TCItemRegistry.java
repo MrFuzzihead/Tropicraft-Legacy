@@ -1,6 +1,5 @@
 package net.tropicraft.registry;
 
-import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemHoe;
@@ -139,61 +138,69 @@ public class TCItemRegistry {
     public static Item encTropica;
     public static Item mobEgg;
 
+    /**
+     * Registers every item, in this order.
+     * <p>
+     * The order is the {@code Item.itemRegistry} id order, so new items belong at the end unless the change is
+     * deliberate: item ids are not persisted in 1.7.10 saves (stacks are written by name), but a reorder still
+     * reshuffles the ids every other mod sees during startup.
+     * </p>
+     */
     public static void init() {
-        registerItem((Item) TCItemRegistry.frogLeg, "frogLeg");
-        registerItem((Item) TCItemRegistry.cookedFrogLeg, "cookedFrogLeg");
-        registerItem((Item) TCItemRegistry.poisonFrogSkin, "poisonFrogSkin");
-        registerItem((Item) TCItemRegistry.freshMarlin, "freshMarlin");
-        registerItem((Item) TCItemRegistry.searedMarlin, "searedMarlin");
-        registerItem((Item) TCItemRegistry.grapefruit, "grapefruit");
-        registerItem((Item) TCItemRegistry.lemon, "lemon");
-        registerItem((Item) TCItemRegistry.lime, "lime");
-        registerItem((Item) TCItemRegistry.orange, "orange");
-        registerItem((Item) TCItemRegistry.scale, "scale");
-        registerItem((Item) TCItemRegistry.coconutChunk, "coconutChunk");
-        registerItem((Item) TCItemRegistry.pineappleCubes, "pineappleCubes");
-        registerItem((Item) TCItemRegistry.bambooStick, "bambooStick");
-        registerItem((Item) TCItemRegistry.seaUrchinRoe, "seaUrchinRoe");
-        registerItem((Item) TCItemRegistry.pearl, "pearl");
-        registerItem((Item) TCItemRegistry.ore, "ore");
-        registerItem((Item) TCItemRegistry.waterWand, "waterWand");
-        registerItem((Item) TCItemRegistry.fishingNet, "fishingNet");
-        registerItem((Item) TCItemRegistry.coffeeBean, "coffeeBean");
-        registerItem((Item) TCItemRegistry.scaleBoots, "scaleBoots");
-        registerItem((Item) TCItemRegistry.scaleLeggings, "scaleLeggings");
-        registerItem((Item) TCItemRegistry.scaleChestplate, "scaleChestplate");
-        registerItem((Item) TCItemRegistry.scaleHelmet, "scaleHelmet");
-        registerItem((Item) TCItemRegistry.fireBoots, "fireBoots");
-        registerItem((Item) TCItemRegistry.fireLeggings, "fireLeggings");
-        registerItem((Item) TCItemRegistry.fireChestplate, "fireChestplate");
-        registerItem((Item) TCItemRegistry.fireHelmet, "fireHelmet");
-        registerItem((Item) TCItemRegistry.axeEudialyte, "axeEudialyte");
-        registerItem((Item) TCItemRegistry.hoeEudialyte, "hoeEudialyte");
-        registerItem((Item) TCItemRegistry.pickaxeEudialyte, "pickaxeEudialyte");
-        registerItem((Item) TCItemRegistry.shovelEudialyte, "shovelEudialyte");
-        registerItem((Item) TCItemRegistry.swordEudialyte, "swordEudialyte");
-        registerItem((Item) TCItemRegistry.axeZircon, "axeZircon");
-        registerItem((Item) TCItemRegistry.hoeZircon, "hoeZircon");
-        registerItem((Item) TCItemRegistry.pickaxeZircon, "pickaxeZircon");
-        registerItem((Item) TCItemRegistry.shovelZircon, "shovelZircon");
-        registerItem((Item) TCItemRegistry.swordZircon, "swordZircon");
-        registerItem((Item) TCItemRegistry.tikiTorch, "tikiTorch");
-        registerItem((Item) TCItemRegistry.bambooDoor, "bambooDoor");
-        registerItem((Item) TCItemRegistry.bucketTropicsWater, "bucketTropicsWater");
-        registerItem((Item) TCItemRegistry.chair, "chair");
-        registerItem((Item) TCItemRegistry.umbrella, "umbrella");
-        registerItem((Item) TCItemRegistry.fertilizer, "fertilizer");
-        registerItem((Item) TCItemRegistry.curare, "curare");
-        registerItem((Item) TCItemRegistry.dart, "dart");
-        registerItem((Item) TCItemRegistry.blowGun, "blowGun");
-        registerItem((Item) TCItemRegistry.axeZirconium, "axeZirconium");
-        registerItem((Item) TCItemRegistry.hoeZirconium, "hoeZirconium");
-        registerItem((Item) TCItemRegistry.pickaxeZirconium, "pickaxeZirconium");
-        registerItem((Item) TCItemRegistry.shovelZirconium, "shovelZirconium");
-        registerItem((Item) TCItemRegistry.swordZirconium, "swordZirconium");
+        registerItem(TCItemRegistry.frogLeg, "frogLeg");
+        registerItem(TCItemRegistry.cookedFrogLeg, "cookedFrogLeg");
+        registerItem(TCItemRegistry.poisonFrogSkin, "poisonFrogSkin");
+        registerItem(TCItemRegistry.freshMarlin, "freshMarlin");
+        registerItem(TCItemRegistry.searedMarlin, "searedMarlin");
+        registerItem(TCItemRegistry.grapefruit, "grapefruit");
+        registerItem(TCItemRegistry.lemon, "lemon");
+        registerItem(TCItemRegistry.lime, "lime");
+        registerItem(TCItemRegistry.orange, "orange");
+        registerItem(TCItemRegistry.scale, "scale");
+        registerItem(TCItemRegistry.coconutChunk, "coconutChunk");
+        registerItem(TCItemRegistry.pineappleCubes, "pineappleCubes");
+        registerItem(TCItemRegistry.bambooStick, "bambooStick");
+        registerItem(TCItemRegistry.seaUrchinRoe, "seaUrchinRoe");
+        registerItem(TCItemRegistry.pearl, "pearl");
+        registerItem(TCItemRegistry.ore, "ore");
+        registerItem(TCItemRegistry.waterWand, "waterWand");
+        registerItem(TCItemRegistry.fishingNet, "fishingNet");
+        registerItem(TCItemRegistry.coffeeBean, "coffeeBean");
+        registerItem(TCItemRegistry.scaleBoots, "scaleBoots");
+        registerItem(TCItemRegistry.scaleLeggings, "scaleLeggings");
+        registerItem(TCItemRegistry.scaleChestplate, "scaleChestplate");
+        registerItem(TCItemRegistry.scaleHelmet, "scaleHelmet");
+        registerItem(TCItemRegistry.fireBoots, "fireBoots");
+        registerItem(TCItemRegistry.fireLeggings, "fireLeggings");
+        registerItem(TCItemRegistry.fireChestplate, "fireChestplate");
+        registerItem(TCItemRegistry.fireHelmet, "fireHelmet");
+        registerItem(TCItemRegistry.axeEudialyte, "axeEudialyte");
+        registerItem(TCItemRegistry.hoeEudialyte, "hoeEudialyte");
+        registerItem(TCItemRegistry.pickaxeEudialyte, "pickaxeEudialyte");
+        registerItem(TCItemRegistry.shovelEudialyte, "shovelEudialyte");
+        registerItem(TCItemRegistry.swordEudialyte, "swordEudialyte");
+        registerItem(TCItemRegistry.axeZircon, "axeZircon");
+        registerItem(TCItemRegistry.hoeZircon, "hoeZircon");
+        registerItem(TCItemRegistry.pickaxeZircon, "pickaxeZircon");
+        registerItem(TCItemRegistry.shovelZircon, "shovelZircon");
+        registerItem(TCItemRegistry.swordZircon, "swordZircon");
+        registerItem(TCItemRegistry.tikiTorch, "tikiTorch");
+        registerItem(TCItemRegistry.bambooDoor, "bambooDoor");
+        registerItem(TCItemRegistry.bucketTropicsWater, "bucketTropicsWater");
+        registerItem(TCItemRegistry.chair, "chair");
+        registerItem(TCItemRegistry.umbrella, "umbrella");
+        registerItem(TCItemRegistry.fertilizer, "fertilizer");
+        registerItem(TCItemRegistry.curare, "curare");
+        registerItem(TCItemRegistry.dart, "dart");
+        registerItem(TCItemRegistry.blowGun, "blowGun");
+        registerItem(TCItemRegistry.axeZirconium, "axeZirconium");
+        registerItem(TCItemRegistry.hoeZirconium, "hoeZirconium");
+        registerItem(TCItemRegistry.pickaxeZirconium, "pickaxeZirconium");
+        registerItem(TCItemRegistry.shovelZirconium, "shovelZirconium");
+        registerItem(TCItemRegistry.swordZirconium, "swordZirconium");
         registerItem(TCItemRegistry.shells, "shell");
         registerItem(TCItemRegistry.bambooSpear, "bambooSpear");
-        registerItem((Item) TCItemRegistry.coconutBomb, "coconutBomb");
+        registerItem(TCItemRegistry.coconutBomb, "coconutBomb");
         registerItem(TCItemRegistry.bambooChute, "bambooChute");
         registerItem(TCItemRegistry.snorkel, "snorkel");
         registerItem(TCItemRegistry.flippers, "flippers");
@@ -211,7 +218,7 @@ public class TCItemRegistry {
         registerItem(TCItemRegistry.koaFrame, "koaFrame");
         registerItem(TCItemRegistry.cocktail, "cocktail");
         registerItem(TCItemRegistry.leafBall, "leafBall");
-        registerItem((Item) TCItemRegistry.fishBucket, "fishBucket");
+        registerItem(TCItemRegistry.fishBucket, "fishBucket");
         registerItem(TCItemRegistry.snareTrap, "snareTrap");
         registerItem(TCItemRegistry.encTropica, "encTropica");
         registerItem(TCItemRegistry.mobEgg, "egg");
@@ -321,18 +328,17 @@ public class TCItemRegistry {
         curare = new ItemCurare();
         dart = new ItemDart();
         blowGun = new ItemDartGun();
-        shells = (Item) new ItemShell(TCNames.shellNames);
+        shells = new ItemShell(TCNames.shellNames);
         TCItemRegistry.materialBambooTools = EnumHelper.addToolMaterial("bamboo", 1, 110, 1.2f, 1.0f, 6);
-        bambooSpear = (Item) new ItemTropicraftSword(TCItemRegistry.materialBambooTools, "bambooSpear");
+        bambooSpear = new ItemTropicraftSword(TCItemRegistry.materialBambooTools, "bambooSpear");
         TCItemRegistry.leafBall = new ItemTropicraftLeafballNew().setUnlocalizedName("leaf_green")
             .setCreativeTab(TCCreativeTabRegistry.tabCombat);
         TCItemRegistry.dagger = new ItemDagger(TCItemRegistry.materialZirconTools).setUnlocalizedName("dagger");
         TCItemRegistry.fishingRodTropical = new ItemTropicalFishingRod().setUnlocalizedName("FishingRodTropical");
-        TCItemRegistry.bambooChute = new ItemBambooChute((Block) TCBlockRegistry.bambooChute)
-            .setUnlocalizedName("BambooChute");
+        TCItemRegistry.bambooChute = new ItemBambooChute(TCBlockRegistry.bambooChute).setUnlocalizedName("BambooChute");
         materialSnorkelGear = EnumHelper.addArmorMaterial("watergear", 40, new int[] { 2, 4, 5, 6 }, 9);
-        TCItemRegistry.flippers = (Item) new ItemFlippers(TCItemRegistry.materialSnorkelGear, 0, 3);
-        TCItemRegistry.snorkel = (Item) new ItemSnorkel(TCItemRegistry.materialSnorkelGear, 0, 0);
+        TCItemRegistry.flippers = new ItemFlippers(TCItemRegistry.materialSnorkelGear, 0, 3);
+        TCItemRegistry.snorkel = new ItemSnorkel(TCItemRegistry.materialSnorkelGear, 0, 0);
         TCItemRegistry.recordBuriedTreasure = new ItemTropicraftMusicDisk(
             "buriedtreasure",
             "buriedtreasure",
@@ -347,15 +353,15 @@ public class TCItemRegistry {
             .setUnlocalizedName("The Tribe");
         TCItemRegistry.recordTradeWinds = new ItemTropicraftMusicDisk("tradewinds", "tradewinds", "Frox")
             .setUnlocalizedName("Trade Winds");
-        TCItemRegistry.portalEnchanter = (Item) new ItemPortalEnchanter();
+        TCItemRegistry.portalEnchanter = new ItemPortalEnchanter();
         TCItemRegistry.bambooMug = new ItemTropicraft().setMaxStackSize(16);
         TCItemRegistry.tropiFrame = new ItemTCItemFrame((Class) EntityTCItemFrame.class, true)
             .setUnlocalizedName("tropiFrame");
         TCItemRegistry.koaFrame = new ItemTCItemFrame((Class) EntityTCItemFrame.class, false)
             .setUnlocalizedName("koaFrame");
-        TCItemRegistry.cocktail = (Item) new ItemCocktail(TCCreativeTabRegistry.tabFood);
+        TCItemRegistry.cocktail = new ItemCocktail(TCCreativeTabRegistry.tabFood);
         TCItemRegistry.snareTrap = new ItemSnareTrap().setUnlocalizedName("snareTrap");
         TCItemRegistry.encTropica = new ItemTropBook("encTropica").setUnlocalizedName("encTropica");
-        TCItemRegistry.mobEgg = (Item) new ItemMobEgg(TCNames.eggTextureNames);
+        TCItemRegistry.mobEgg = new ItemMobEgg(TCNames.eggTextureNames);
     }
 }
