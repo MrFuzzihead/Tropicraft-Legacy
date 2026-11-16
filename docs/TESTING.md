@@ -79,6 +79,7 @@ What the current checks cover - all of it needs the real game:
 | hostile mobs do not survive peaceful | the peaceful rule across all four hostile mob families |
 | mineral sands blend across chunks | the decorative sand field: patches wider than a chunk with dithered edges |
 | coral reefs span chunks | the reef generator's spread, so a reef is not one 12-block patch |
+| mineral sands blend across chunks | (unchanged, but now sweeps several locations so it holds for any world seed) |
 | deferred decoration flushes when its neighbourhood loads | the deferred-decoration gate and the throttled sweep |
 | the shutdown flush decorates parked chunks | the shutdown decoration flush, through `ChunkProviderServer.loadChunk` |
 | the Tropicraft dimension generates | worldgen smoke test |
@@ -115,9 +116,9 @@ to a single "covered by any test" number that two different class-id spaces allo
 
 ```
 jacoco coverage (executed source lines)
-  unit tests : 233 (1.5%)
-  in-game    : 3046 (19.4%)
-  combined   : 3223 (20.5%) of 15691 measurable
+  unit tests : 363 (2.3%)
+  in-game    : 3033 (19.3%)
+  combined   : 3299 (21.0%) of 15703 measurable
 
 Note: nothing in this harness renders anything. Renderer changes (`RenderWaterMobBase`) and model/animation changes
 (`ModelKoaMan`, `ModelTropiCreeper`, `ModelAshen`) are verified by hand in a client; the checklist for the last such

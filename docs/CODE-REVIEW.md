@@ -647,7 +647,8 @@ three plus the leafball should share one `EntityTropicraftThrowable`.
 
 ### R6. `ItemCocktail` / `ColorMixer`
 
-**Status: open.** See §17.4.
+**Status: done.** See §22.2 — the colour utility was 300 lines of colour-space
+conversion of which one method was called; that method moved into `ColorHelper` and the rest is gone.
 
 Not audited in depth, but `ItemCocktail` (327 LOC) mixes colour-mixing, block placement, container
 replacement and NBT writing; `ColorMixer` (300 LOC) duplicates colour maths that `ColorHelper` already
@@ -665,8 +666,7 @@ Ordered by value/effort for a 1.7.10 legacy fork:
 3. **Config for dimension id + meteor/volcano toggles** — dimension id in §19.2, volcano toggle in §21.3 (there is
    no meteor feature in the mod).
 4. **`/tc time` observability** — `get` / `set <time>` / `sync` in §21.2.
-5. **Book/encyclopedia**: per-world progress done (§16.1); the "recipes I can make now" filter is **still open**
-   (client GUI work, needs a visual check).
+5. **Book/encyclopedia**: per-world progress done (§16.1), the "recipes I can make now" filter in §22.1.
 6. **`/tc version`** — done, §21.2.
 7. **Scuba/armour**: the reflection was the real problem and is gone (§21.3); the damage-type handling turned out to
    be fine.
@@ -1835,6 +1835,10 @@ between - the exact trap that made the earlier sweep wrong.
 
 ### 20.4 Manual verification checklist
 
+**Verified in game** (fish, marlin, sea turtle, hurt flash, Koa leaves/headband, creeper hats, Ashen arms) — nothing
+looked different from 6.2.5, which is also what confirmed that the alias inlining and the shared render body preserved
+the models.
+
 The unit and in-game suites say nothing about pixels, so this is the part that needs eyes. Nothing here should look
 different from 6.2.5:
 
@@ -1922,6 +1926,52 @@ NPE without one; both now return null / report cleanly.
 
 Coverage for all of this: eleven mock-sender unit tests (`CommandTest`) covering the new commands' messages, usage,
 tab completion, permission levels and failure paths, plus the worldgen tests above.
+
+---
+
+## 22. Encyclopedia filter, and R6
+
+### 22.1 "Recipes I can make now"
+
+`Encyclopedia.getRecipesForEntry` already returns the recipes for a page, so the filter is a display concern and lives
+in the GUI:
+
+* **`CraftingAvailability.canCraft(recipe, inventory)`** (new, pure): counts the player's main inventory against the
+  recipe's ingredients, matching with `ItemStack.isItemEqual` so a recipe for a red dart is not satisfied by a plain
+  one, and consuming each matched stack so two of an item really does need two. Eight unit tests, including the
+  count, damage and null cases.
+* **`GuiTropicalBook`** keeps a `visibleRecipes` list, rebuilt when the page, the content mode or the filter changes -
+  not per frame, since the player cannot touch their inventory while the book is open. Paging uses the filtered count
+  (`contentPageCount()`), so the arrows cannot walk off the end.
+* The toggle is a **label** ("All recipes" / "Craftable only") rather than a button, because the book's buttons are
+  11×22 icon slices of the page texture, not text; clicking the label flips it and plays the page-flip sound. With the
+  filter on and nothing matching, the page says so instead of being blank.
+
+Needs a visual check: open the encyclopedia, go to a recipe page, click the label.
+
+### 22.2 R6 — the colour utility and the duplicated cocktail builder
+
+`drinks/ColorMixer` was 300 lines of RGB/CMYK/RYB conversion machinery. Grepping for uses found exactly one:
+`alphaBlendRGBA`, called twice from `ItemCocktail`. That method moved to `ColorHelper.alphaBlend` (built on the
+`getRed`/`getGreen`/`getBlue`/`getColor` helpers already there), `ItemCocktail` calls it, and `ColorMixer` is deleted.
+Five unit tests pin the blend, including that the result carries no alpha channel.
+
+The other half of R6 was real duplication rather than mixed concerns: the two `ItemCocktail.makeCocktail` overloads
+carried the same forty lines (walk the ingredients, build the tag list, blend the colour, store it), differing only in
+the drink id and where the ingredients came from. They now both delegate to one private method.
+
+### 22.3 Two flaky checks, found by running the suite repeatedly
+
+Both of the checks added in §21 needed loosening, and it is worth recording why:
+
+* **`mineral sands blend across chunks`** depended on the world seed: it sampled one fixed run of 12 chunks, and for
+  some seeds that run is entirely plain sand (the gametest world is regenerated each run, so the seed is new every
+  time). It now sweeps up to 16 unrelated runs and requires the structure to appear in one of them.
+* **`a seahorse swims`** used a 1.5 block threshold, and the seahorse is a slow drifter that can land at 1.45. The
+  failure the check exists for - the eagle ray - moves 0.00, so the bar is now 0.75.
+
+Moral: a worldgen or AI assertion with a numeric threshold needs to hold for *any* seed, not the one that happened to
+be generated while it was written.
 
 ---
 
