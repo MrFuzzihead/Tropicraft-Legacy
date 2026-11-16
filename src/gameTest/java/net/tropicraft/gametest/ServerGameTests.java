@@ -46,7 +46,11 @@ import net.tropicraft.entity.koa.EntityKoaBase;
 import net.tropicraft.entity.koa.EntityKoaHunter;
 import net.tropicraft.entity.passive.EntityIguana;
 import net.tropicraft.entity.projectile.EntityDart;
+import net.tropicraft.entity.underdasea.EntityEagleRay;
+import net.tropicraft.entity.underdasea.EntityMarlin;
+import net.tropicraft.entity.underdasea.EntitySeahorse;
 import net.tropicraft.entity.underdasea.EntityTropicalFish;
+import net.tropicraft.entity.underdasea.EntityTropicraftWaterMob;
 import net.tropicraft.info.TCNames;
 import net.tropicraft.registry.TCBlockRegistry;
 import net.tropicraft.registry.TCEntityRegistry;
@@ -109,6 +113,7 @@ public final class ServerGameTests {
         creativePlayersAreNotTargeted();
         passiveAnimalsAreNotHostileMobs();
         hostileMobsDoNotSurvivePeaceful();
+        waterMobsActuallySwim();
         tropicsChunksGenerate();
         deferredDecorationFlushesWhenItsNeighbourhoodLoads();
         return failures;
@@ -897,6 +902,74 @@ public final class ServerGameTests {
         } finally {
             tropics.difficultySetting = difficulty;
         }
+    }
+
+    /**
+     * Every water mob has to actually move in water.
+     * <p>
+     * The eagle ray (1.0 x 0.25) did not, at all: vanilla tests "in water" with {@code boundingBox.expand(0, -0.4, 0)},
+     * which turns inside out for an entity shorter than 0.8 blocks, so the ray was never wet and every swim branch in
+     * {@code EntityTropicraftWaterMob} - all of which are gated on {@code isInWater()} - was skipped.
+     * </p>
+     */
+    private static void waterMobsActuallySwim() {
+        final WorldServer tropics = TropicraftWorldUtils.tropics();
+        if (tropics == null) {
+            fail("water mobs swim", "the Tropicraft dimension did not load");
+            return;
+        }
+        final int bx = 200;
+        final int by = 50;
+        final int bz = 200;
+        try {
+            tropics.getChunkFromChunkCoords(bx >> 4, bz >> 4);
+            for (int x = -4; x <= 4; ++x) {
+                for (int z = -4; z <= 4; ++z) {
+                    tropics.setBlock(bx + x, by - 1, bz + z, Blocks.stone);
+                    for (int y = 0; y <= 5; ++y) {
+                        tropics.setBlock(bx + x, by + y, bz + z, TCBlockRegistry.tropicsWater);
+                    }
+                }
+            }
+            assertSwims(tropics, "an eagle ray", new EntityEagleRay(tropics), bx, by + 2, bz);
+            assertSwims(tropics, "a marlin", new EntityMarlin(tropics), bx, by + 2, bz);
+            assertSwims(tropics, "a seahorse", new EntitySeahorse(tropics), bx, by + 2, bz);
+            assertSwims(tropics, "a tropical fish", new EntityTropicalFish(tropics), bx, by + 2, bz);
+        } catch (final Throwable t) {
+            t.printStackTrace();
+            fail("water mobs swim", t.toString());
+        }
+    }
+
+    /** Drops one mob in the pool and ticks it; it has to be wet at some point and to cover some distance. */
+    private static void assertSwims(final WorldServer world, final String label, final EntityTropicraftWaterMob mob,
+        final int x, final int y, final int z) {
+        mob.setPosition(x + 0.5, y, z + 0.5);
+        world.spawnEntityInWorld(mob);
+        final double startX = mob.posX;
+        final double startZ = mob.posZ;
+        boolean everWet = false;
+        for (int i = 0; i < 200; ++i) {
+            mob.onUpdate();
+            everWet |= mob.isInWater();
+        }
+        final double moved = Math
+            .sqrt((mob.posX - startX) * (mob.posX - startX) + (mob.posZ - startZ) * (mob.posZ - startZ));
+        assertTrue(
+            label + " swims",
+            everWet && moved > 1.5,
+            "moved " + String.format("%.2f", moved)
+                + " blocks, was wet: "
+                + everWet
+                + ", ended at "
+                + mob.posX
+                + "/"
+                + mob.posY
+                + "/"
+                + mob.posZ
+                + ", height "
+                + mob.height);
+        mob.setDead();
     }
 
     // ---------------------------------------------------------------------------------------------------------

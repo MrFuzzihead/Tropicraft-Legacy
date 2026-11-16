@@ -87,6 +87,7 @@ Issue-tracker follow-ups (detail in §10):
 | B26 | P2 | #3, #10 | 152 `TCNames` string constants are never referenced; `aqua*` names exist without any item |
 | B27 | P1 | #50 | Koa lose the creative-mode filter; `JobHunt.hookHit` retaliation bypasses `isEnemy`; peaceful handling only exists in `EntityCoroAI` |
 | B28 | P2 | worldgen | Coral and the decorative mineral sands are rolled **per chunk**, so they appear as 16×16 squares in the terrain (§4) |
+| B29 | P1 | entity | The eagle ray never moves: its 0.25-block height breaks vanilla's "am I in water" test (§4) |
 
 ---
 
@@ -540,6 +541,39 @@ patch is larger than a chunk and fades at the edges; the block and metadata alre
 centre from a coarse noise (or let `WorldGenCoral` spread its attempts over 32–48 blocks around the chunk origin) so
 a reef spans several chunks. Both are local changes to the decorate path, and both want a harness check
 ("non-plain-sand blocks per chunk", "coral clusters per 4×4 chunk area") so the change can be verified.
+
+### B29. The eagle ray never swims — a 0.25-block hitbox defeats vanilla's water test
+
+Reported from a play test: "stingrays don't swim, they just idle in the water". Not expected, and the cause is
+vanilla geometry rather than the ray's AI.
+
+`Entity.handleWaterMovement` decides wetness with
+
+```java
+this.worldObj.handleMaterialAcceleration(this.boundingBox.expand(0.0, -0.4000000059604645D, 0.0D).contract(...),
+    Material.water, this);
+```
+
+and `AxisAlignedBB.expand` is **symmetric**: for a negative argument it moves `minY` *up* and `maxY` *down*. For any
+entity shorter than 0.8 blocks the box therefore turns inside out (`minY` ends up above `maxY`), and
+`World.isMaterialInBB` then iterates an empty y range and reports no water.
+
+`EntityEagleRay` is 1.0 × **0.25** (`setSize(1.0f, 0.25f)`), so it is never wet. Every swim branch in
+`EntityTropicraftWaterMob` is gated on `isInWater()` (the motion assignment, the dive/surface logic, the
+out-of-water flop), so the ray does literally nothing - it hangs in the water exactly where it spawned.
+
+Worth noting the failure is *position dependent*, which is why it looks like a dead AI rather than a geometry bug:
+the tropical fish is 0.60 tall and also gets an inside-out box, but its inverted box still floors into the same block
+row, so the query happens to find water. The ray's does not. The invariant is "an entity shorter than 0.8 blocks has a
+broken water test, and whether it bites depends on where it is standing".
+
+**Fix.** `EntityTropicraftWaterMob.handleWaterMovement` now falls back to the unexpanded box when vanilla says no,
+setting `inWater`/`fallDistance` itself. Only reached when the vanilla test failed, so the normal case is untouched
+and the fluid push cannot be applied twice.
+
+**Coverage.** Four in-game checks ("an eagle ray / a marlin / a seahorse / a tropical fish swims"): each mob is
+dropped into a built pool and ticked 200 times; it has to be wet at some point and to cover more than 1.5 blocks.
+The ray's check fails on the old code with `moved 0.00 blocks, was wet: false, height 0.25`.
 
 ---
 

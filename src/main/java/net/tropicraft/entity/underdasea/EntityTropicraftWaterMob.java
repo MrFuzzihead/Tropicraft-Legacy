@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -317,6 +318,29 @@ public abstract class EntityTropicraftWaterMob extends EntityWaterMob {
 
     public boolean isInWater() {
         return super.isInWater();
+    }
+
+    /**
+     * Vanilla decides "am I in water" by testing {@code boundingBox.expand(0, -0.4, 0)}, which shrinks the box by
+     * 0.4 in both directions. For an entity shorter than 0.8 blocks that box turns inside out, and once its top has
+     * been pushed into the block below its bottom the material query finds nothing - so the entity is never wet.
+     * <p>
+     * That is what kept the eagle ray (1.0 x 0.25) perfectly still: every swim branch in this class is gated on
+     * {@code isInWater()}, so none of them ever ran. Falling back to the unexpanded box only when vanilla says no
+     * keeps the normal case identical and cannot double-apply the fluid push.
+     * </p>
+     */
+    @Override
+    public boolean handleWaterMovement() {
+        if (super.handleWaterMovement()) {
+            return true;
+        }
+        if (this.worldObj != null && this.worldObj.isMaterialInBB(this.boundingBox, Material.water)) {
+            this.inWater = true;
+            this.fallDistance = 0.0f;
+            return true;
+        }
+        return false;
     }
 
     public boolean getCanSpawnHere() {
