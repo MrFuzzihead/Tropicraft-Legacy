@@ -49,8 +49,9 @@ public class TropicraftWorldUtils {
      * The Tropicraft dimension, loading it if the server has not needed it until now.
      */
     public static WorldServer tropics() {
-        return MinecraftServer.getServer()
-            .worldServerForDimension(TROPICS_DIMENSION_ID);
+        final MinecraftServer server = MinecraftServer.getServer();
+        // Null before a server is running (and in tests); callers treat null as "the Tropics are not loaded".
+        return server == null ? null : server.worldServerForDimension(TROPICS_DIMENSION_ID);
     }
 
     public static void teleportPlayer(final EntityPlayerMP player) {

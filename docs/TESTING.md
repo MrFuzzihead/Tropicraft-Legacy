@@ -77,6 +77,8 @@ What the current checks cover - all of it needs the real game:
 | a creative player's hit does not become a Koa's target / a creative player is not an enemy | target acquisition, including CoroUtil's retaliation path (#50) |
 | a passive animal is not a hostile mob | `IMob` classification (spawn caps, peaceful handling) |
 | hostile mobs do not survive peaceful | the peaceful rule across all four hostile mob families |
+| mineral sands blend across chunks | the decorative sand field: patches wider than a chunk with dithered edges |
+| coral reefs span chunks | the reef generator's spread, so a reef is not one 12-block patch |
 | deferred decoration flushes when its neighbourhood loads | the deferred-decoration gate and the throttled sweep |
 | the shutdown flush decorates parked chunks | the shutdown decoration flush, through `ChunkProviderServer.loadChunk` |
 | the Tropicraft dimension generates | worldgen smoke test |

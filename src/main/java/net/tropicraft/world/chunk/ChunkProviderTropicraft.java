@@ -23,6 +23,7 @@ import net.minecraft.world.gen.ChunkProviderServer;
 import net.minecraft.world.gen.NoiseGeneratorOctaves;
 import net.minecraft.world.gen.feature.WorldGenMinable;
 import net.minecraft.world.gen.feature.WorldGenerator;
+import net.tropicraft.config.ConfigGenRates;
 import net.tropicraft.registry.TCBlockRegistry;
 import net.tropicraft.world.biomes.BiomeGenTropicraft;
 import net.tropicraft.world.mapgen.MapGenTropicsCaves;
@@ -144,7 +145,9 @@ public class ChunkProviderTropicraft implements IChunkProvider {
             metas,
             this.biomesForGeneration = this.worldObj.getWorldChunkManager()
                 .loadBlockGeneratorData(this.biomesForGeneration, x * 16, z * 16, 16, 16));
-        this.volcanoGen.generate(x, z, blocks, metas);
+        if (ConfigGenRates.genVolcanoes) {
+            this.volcanoGen.generate(x, z, blocks, metas);
+        }
         this.groveGen.generate(x, z, blocks, metas);
         this.caveGenerator.generate((IChunkProvider) this, this.worldObj, x, z, blocks);
         final Chunk chunk = new Chunk(this.worldObj, blocks, metas, x, z);
@@ -321,36 +324,9 @@ public class ChunkProviderTropicraft implements IChunkProvider {
 
     public void replaceBlocksForBiome(final int x, final int z, final Block[] blocks, final byte[] metas,
         final BiomeGenBase[] biomes) {
-        final int sandType = this.rand.nextInt(200);
-        final Block sandBlock;
-        final short sandMetadata;
-        switch (sandType) {
-            case 0: {
-                sandBlock = TCBlockRegistry.mineralSands;
-                sandMetadata = 0;
-                break;
-            }
-            case 1: {
-                sandBlock = TCBlockRegistry.mineralSands;
-                sandMetadata = 1;
-                break;
-            }
-            case 2: {
-                sandBlock = TCBlockRegistry.mineralSands;
-                sandMetadata = 2;
-                break;
-            }
-            case 3: {
-                sandBlock = TCBlockRegistry.mineralSands;
-                sandMetadata = 3;
-                break;
-            }
-            default: {
-                sandBlock = Blocks.sand;
-                sandMetadata = 0;
-                break;
-            }
-        }
+        // The decorative sand is a function of the world coordinates (see MineralSandField): patches are several
+        // chunks across and fade at their edges. It used to be one rand.nextInt(200) per chunk, which made every
+        // 16x16 chunk one flat colour and changed it exactly on the chunk border - a checkerboard of squares.
         for (int l = 0; l < 16; ++l) {
             for (int i1 = 0; i1 < 16; ++i1) {
                 final BiomeGenTropicraft biome = (BiomeGenTropicraft) biomes[i1 + l * 16];
@@ -358,9 +334,10 @@ public class ChunkProviderTropicraft implements IChunkProvider {
                 final Block filler = biome.fillerBlock;
                 // Per-column state. Vanilla ChunkProviderGenerate declares both of these inside the column loop;
                 // hoisting them to the chunk loop made each column inherit the previous column's "below sea level"
-                // decision and permanently reset the mineral sand variant, so beach sand leaked inland and got saved.
-                Block btop = sandBlock;
-                short columnSandMetadata = sandMetadata;
+                // decision, so beach sand leaked inland and got saved.
+                final int variant = MineralSandField.variantAt(this.seed, x * 16 + i1, z * 16 + l);
+                Block btop = variant == MineralSandField.PLAIN_SAND ? Blocks.sand : TCBlockRegistry.mineralSands;
+                short columnSandMetadata = (short) (variant == MineralSandField.PLAIN_SAND ? 0 : variant);
                 int a = -1;
                 boolean flag = false;
                 if (biome == BiomeGenTropicraft.tropicsOcean) {

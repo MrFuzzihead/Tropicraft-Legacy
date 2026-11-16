@@ -31,7 +31,6 @@ import net.tropicraft.entity.underdasea.EntityStarfish;
 import net.tropicraft.entity.underdasea.EntityTropicalFish;
 import net.tropicraft.registry.TCBlockRegistry;
 import net.tropicraft.world.worldgen.WorldGenBamboo;
-import net.tropicraft.world.worldgen.WorldGenCoral;
 import net.tropicraft.world.worldgen.WorldGenEIH;
 import net.tropicraft.world.worldgen.WorldGenSunkenShip;
 import net.tropicraft.world.worldgen.WorldGenTallFlower;
@@ -95,9 +94,8 @@ public class BiomeGenTropicraft extends BiomeGenBase {
         int i;
         int k;
 
-        if (biome == BiomeGenTropicraft.tropicsOcean && rand.nextInt(5) == 0) {
-            new WorldGenCoral().generate(world, rand, x + 6 + rand.nextInt(4), 64, z + 6 + rand.nextInt(4));
-        }
+        // No coral roll here: BiomeGenTropicsOcean does its own, and this check fired for the same ocean chunks on top
+        // of that one, so every ocean chunk rolled for a reef twice.
 
         i = this.randCoord(rand, x, 16);
         k = this.randCoord(rand, z, 16);

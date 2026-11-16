@@ -81,25 +81,32 @@ public class ItemFireArmor extends ItemTropicraftArmor {
         return new ISpecialArmor.ArmorProperties(10, 0.15, Integer.MAX_VALUE);
     }
 
+    /**
+     * Finds the particle layers of the client's effect renderer.
+     * <p>
+     * This used to look the field up by name ({@code "fxLayers"}), which is the development name: in a release jar the
+     * field is {@code field_78477_e}, so the lookup failed, {@code fxLayers} stayed null and the chestplate's particle
+     * redirection silently never ran. It is now found by type - the renderer has exactly one {@code List[]} - and the
+     * duplicated catch (both branches were the same code) is gone.
+     * </p>
+     */
     @SideOnly(Side.CLIENT)
     public static void getFXLayers() {
-        Field field = null;
         try {
-            field = EffectRenderer.class.getDeclaredField("fxLayers");
-            field.setAccessible(true);
-            ItemFireArmor.fxLayers = (List[]) field.get(
-                FMLClientHandler.instance()
-                    .getClient().effectRenderer);
-        } catch (Exception ex3) {
-            try {
-                field = EffectRenderer.class.getDeclaredField("fxLayers");
-                field.setAccessible(true);
-                ItemFireArmor.fxLayers = (List[]) field.get(
-                    FMLClientHandler.instance()
-                        .getClient().effectRenderer);
-            } catch (Exception ex2) {
-                FMLLog.severe("[Tropicraft] Could not reach the effect renderer for the fire armour: %s", ex2);
+            final EffectRenderer renderer = FMLClientHandler.instance()
+                .getClient().effectRenderer;
+            for (final Field field : EffectRenderer.class.getDeclaredFields()) {
+                if (field.getType() == List[].class) {
+                    field.setAccessible(true);
+                    ItemTropicraftArmor.fxLayers = (List[]) field.get(renderer);
+                    return;
+                }
             }
+            FMLLog.severe(
+                "[Tropicraft] The effect renderer has no particle layer array; fire armour particles will not be "
+                    + "redirected.");
+        } catch (final Exception e) {
+            FMLLog.severe("[Tropicraft] Could not read the effect renderer's particle layers: %s", e);
         }
     }
 
@@ -248,7 +255,6 @@ public class ItemFireArmor extends ItemTropicraftArmor {
                         final EntityFX entity1 = (EntityFX) ItemFireArmor.fxLayers[layer].get(j);
                         if (entity1 instanceof EntityFlameFX && player.getDistanceToEntity((Entity) entity1) < 4.0f
                             && entity1.posY > player.posY) {
-                            if (player.getDistanceToEntity((Entity) entity1) < 2.0f) {}
                             if (player.getDistanceToEntity((Entity) entity1) < 2.0f || rand.nextInt(5) == 0) {
                                 this.moveEnt((Entity) entity1, (Entity) player, false);
                             }

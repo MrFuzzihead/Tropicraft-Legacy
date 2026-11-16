@@ -13,7 +13,9 @@ public class BiomeGenTropicsOcean extends BiomeGenTropicraft {
 
     public void decorate(final World world, final Random rand, final int x, final int z) {
         if (rand.nextInt(5) == 0) {
-            new WorldGenCoral().generate(world, rand, x + 6 + rand.nextInt(4), 64, z + 6 + rand.nextInt(4));
+            // A reef has to reach past its own chunk or it reads as a 12-block patch, so the spread is 24 blocks and
+            // the anchor is the chunk centre rather than a point inside it.
+            new WorldGenCoral(24, 6).generate(world, rand, x + 8, 64, z + 8);
         }
         super.decorate(world, rand, x, z);
     }

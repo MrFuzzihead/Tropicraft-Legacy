@@ -514,6 +514,9 @@ a future refactor that hands the generator itself to `isAreaLoaded` silently dis
 
 ### B28. (P2) Coral and the decorative mineral sands generate in single-chunk squares
 
+**Status: fixed** — see §21.1 (sands now come from a coordinate noise with dithered edges, reefs spread across
+chunks).
+
 Both features key off a *per-chunk* random roll, so their output is bounded by chunk borders and reads as a 16×16
 checkerboard in the terrain. Reported after a play test: "coral and foamy sands spawn only in single chunks which
 makes them look very bad".
@@ -656,19 +659,17 @@ provides (`getRed/getGreen/getBlue/getColor`). Worth one consolidation pass.
 
 Ordered by value/effort for a 1.7.10 legacy fork:
 
-1. **Village fix + regeneration command** (`/tc village locate`, `/tc village respawn`) — B1 is the
-   highest-visibility bug; a command makes it testable.
-2. **Trade UI fix** (B4) — the Koa economy is a headline feature and currently inert.
-3. **Config for dimension id + meteor/volcano toggles** (P3; `ConfigBiomes`/`ConfigGenRates` already
-   exist, so this is a 30-minute job).
-4. **`/tc time` observability** — the new command prints every loaded dimension's clock; extend it with
-   a `get` for other dimensions and a `sync` to copy the overworld's weather (useful for pack devs
-   migrating existing worlds).
-5. **Book/encyclopedia**: per-world progress (B12) and a "recipes I can make now" filter — the data is
-   already in `Encyclopedia.getRecipesForEntry`.
-6. **`/tc version`** echoing `Tags.VERSION` — one line, and it makes bug reports actionable.
-7. **Scuba/armour**: `ItemFireArmor` (330 LOC) has a reflective damage-type path; verify it against
-   `DamageSource` subclasses and consider replacing reflection with a small registry.
+1. **Village fix + regeneration command** — the fix landed in §11.1; the commands came back as `/tc village
+   locate|list|try|regen` in §21.2.
+2. ~~Trade UI fix (B4)~~ — done, §11.4.
+3. **Config for dimension id + meteor/volcano toggles** — dimension id in §19.2, volcano toggle in §21.3 (there is
+   no meteor feature in the mod).
+4. **`/tc time` observability** — `get` / `set <time>` / `sync` in §21.2.
+5. **Book/encyclopedia**: per-world progress done (§16.1); the "recipes I can make now" filter is **still open**
+   (client GUI work, needs a visual check).
+6. **`/tc version`** — done, §21.2.
+7. **Scuba/armour**: the reflection was the real problem and is gone (§21.3); the damage-type handling turned out to
+   be fine.
 
 ---
 
@@ -1857,6 +1858,70 @@ git checkout cb73bf6 -- src/main/java/net/tropicraft/client/entity/render/
 # models only (the Koa / creeper / Ashen rows)
 git checkout cb73bf6 -- src/main/java/net/tropicraft/client/entity/model/
 ```
+
+---
+
+## 21. Play-test batch: blended sands, reefs, and the §7 features
+
+### 21.1 B28 — blending the decorative worldgen
+
+The two problems were independent, so they got independent fixes.
+
+**Mineral sands.** The variant was one `rand.nextInt(200)` per chunk applied to every beach and ocean column of that
+chunk. It is now `MineralSandField.variantAt(seed, x, z)` - a pure function of the world coordinates:
+
+* a low frequency *patch* field (40-block lattice) decides where mineral sand may appear at all, so a patch is a few
+  chunks across;
+* the outer band of the patch is dithered per column, so the edge speckles into ordinary sand instead of ending on a
+  line;
+* inside a patch a finer *variant* field (14-block lattice) picks which of the four sands, so a patch is mottled
+  rather than one flat colour.
+
+The patch field lands roughly 20% of beach columns on mineral sand (the old per-chunk roll averaged 8%), spread over
+a few hundred blocks of coast, with the four variants in an uneven but all-present mix.
+
+**Reefs.** `WorldGenCoral` took its spread as a constant ±8 blocks around a point inside one chunk, so a reef could
+not leave that chunk; `BiomeGenTropicsOcean` now asks for a ±24 block spread anchored at the chunk centre. While
+there: the base `BiomeGenTropicraft.decorate` ran the same 1-in-5 coral roll *as well* for ocean chunks, so every
+ocean chunk rolled for a reef twice - that duplicate is gone.
+
+**Coverage.** Seven unit tests on `MineralSandField` (deterministic, clustered rather than speckled, all variants
+present, patch edges exist, plain sand still dominant) plus the one that pins the actual regression:
+`aChunkBorderIsNotSpecial` - the rate at which neighbouring columns differ across a chunk border must match the rate
+inside a chunk. With the old per-chunk roll that test is 0 inside a chunk and 1 at the border. In game:
+`mineral sands blend across chunks` (a synthetic beach through the real `replaceBlocksForBiome` over 12 chunks, which
+must show a mix inside at least one chunk) and `coral reefs span chunks` (a built sea floor, coral has to land in more
+than one chunk).
+
+### 21.2 The §7 commands
+
+* **`/tc version`** — prints `Tropicraft <Tags.VERSION> (Minecraft 1.7.10, server)`. Level 0, because a version string
+  is not privileged.
+* **`/tc time [get|set <time>|sync]`** — `get` prints the listing as before, `set` moves only the Tropics clock, and
+  `sync` copies the overworld's clock and weather into the Tropics, for a pack dev migrating a world that predates
+  separate clocks.
+* **`/tc village <locate|list|try|regen>`** — the issue #49 tools, rebuilt rather than restored: `list` and `locate`
+  describe the villages the world director is simulating, `try` runs `TownKoaVillageGenHelper.hookTryGenVillage` at
+  your feet (the harness #34 needs), and `regen` re-queues the nearest village's structure. They check operator
+  permission themselves at level 4, because `/tc` as a whole only requires 2 and a sub-command cannot rely on the
+  root's check. `village_clear` and `village_repopulate` are deliberately **not** back: the first removed every
+  ticking location in the dimension, the second was an empty loop.
+
+While wiring these: `TropicraftWorldUtils.tropics()` and the `sync` path both assumed a running server and threw an
+NPE without one; both now return null / report cleanly.
+
+### 21.3 The rest of §7
+
+* **Volcano toggle** — `ConfigGenRates.genVolcanoes` (default on) gates `MapGenVolcano`. There is no meteor feature in
+  the mod, so that half of the review's item was a guess.
+* **`ItemFireArmor`** — the review worried about the damage-type handling, which turned out to be fine; the *reflection*
+  was the bug. `getFXLayers` looked the field up by the name `"fxLayers"`, which is the **development** name: in a
+  release jar it is `field_78477_e`, so the lookup failed, the list stayed null and the chestplate's particle
+  redirection silently never ran in production. It now finds the renderer's one `List[]` field by type, which cannot
+  be obfuscated away, and the identical double `try/catch` plus an empty `if` are gone.
+
+Coverage for all of this: eleven mock-sender unit tests (`CommandTest`) covering the new commands' messages, usage,
+tab completion, permission levels and failure paths, plus the worldgen tests above.
 
 ---
 

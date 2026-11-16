@@ -61,6 +61,7 @@ import net.tropicraft.util.TropicraftWorldUtils;
 import net.tropicraft.world.biomes.BiomeGenTropicraft;
 import net.tropicraft.world.chunk.ChunkProviderTropicraft;
 import net.tropicraft.world.location.TownKoaVillage;
+import net.tropicraft.world.worldgen.WorldGenCoral;
 
 import com.mojang.authlib.GameProfile;
 
@@ -114,6 +115,8 @@ public final class ServerGameTests {
         passiveAnimalsAreNotHostileMobs();
         hostileMobsDoNotSurvivePeaceful();
         waterMobsActuallySwim();
+        mineralSandsBlendAcrossChunks();
+        coralReefsSpanChunks();
         tropicsChunksGenerate();
         deferredDecorationFlushesWhenItsNeighbourhoodLoads();
         return failures;
@@ -970,6 +973,135 @@ public final class ServerGameTests {
                 + ", height "
                 + mob.height);
         mob.setDead();
+    }
+
+    /**
+     * The decorative mineral sands have to blend, not come in 16×16 squares (B28). Generates a synthetic beach through
+     * the real {@code replaceBlocksForBiome} for a run of chunks and checks that the run contains more than one value
+     * (a patch edge somewhere) and that at least one chunk mixes values internally (a fade).
+     */
+    private static void mineralSandsBlendAcrossChunks() {
+        final WorldServer tropics = TropicraftWorldUtils.tropics();
+        if (tropics == null) {
+            fail("mineral sands blend across chunks", "the Tropicraft dimension did not load");
+            return;
+        }
+        try {
+            final ChunkProviderTropicraft provider = providerOf(tropics);
+            if (provider == null) {
+                fail("mineral sands blend across chunks", "no Tropicraft chunk provider");
+                return;
+            }
+            final BiomeGenBase beach = BiomeGenTropicraft.tropicsBeach;
+            final Block[] blocks = new Block[65536];
+            final byte[] metas = new byte[65536];
+            final BiomeGenBase[] biomes = new BiomeGenBase[256];
+            for (int i = 0; i < biomes.length; ++i) {
+                biomes[i] = beach;
+            }
+
+            boolean sawMix = false;
+            final java.util.Set<Integer> seen = new java.util.HashSet<Integer>();
+            final StringBuilder trace = new StringBuilder();
+            // A run of chunks along x, so a patch cannot stay inside one chunk and the run must cross an edge.
+            for (int chunk = 0; chunk < 12; ++chunk) {
+                buildBeach(blocks);
+                provider.replaceBlocksForBiome(1000 + chunk, 1000, blocks, metas, biomes);
+                final java.util.Set<Integer> valuesInChunk = new java.util.HashSet<Integer>();
+                for (int x = 0; x < 16; ++x) {
+                    for (int z = 0; z < 16; ++z) {
+                        // topBlock is left alone on the surface; the sand fill sits just under it.
+                        final int index = x * 256 * 16 | z * 256 | 62;
+                        valuesInChunk.add((int) metas[index]);
+                    }
+                }
+                seen.addAll(valuesInChunk);
+                if (valuesInChunk.size() > 1) {
+                    sawMix = true;
+                }
+                trace.append(" [")
+                    .append(chunk)
+                    .append(':')
+                    .append(valuesInChunk)
+                    .append(']');
+            }
+            assertTrue(
+                "mineral sands blend across chunks",
+                seen.size() > 1 && sawMix,
+                "values seen across 12 chunks: " + seen + ", any chunk mixing: " + sawMix + trace);
+        } catch (final Throwable t) {
+            t.printStackTrace();
+            fail("mineral sands blend across chunks", t.toString());
+        }
+    }
+
+    /** A flat sand beach: stone below y=60, sand at 60..63, air above. */
+    private static void buildBeach(final Block[] blocks) {
+        for (int x = 0; x < 16; ++x) {
+            for (int z = 0; z < 16; ++z) {
+                for (int y = 0; y < 128; ++y) {
+                    final Block block;
+                    if (y <= 60) {
+                        block = Blocks.stone;
+                    } else if (y <= 63) {
+                        block = Blocks.sand;
+                    } else {
+                        block = Blocks.air;
+                    }
+                    blocks[x * 256 * 16 | z * 256 | y] = block;
+                }
+            }
+        }
+    }
+
+    /**
+     * A reef has to reach outside the chunk it was rolled in; a generator pinned to ±8 blocks around a point inside one
+     * chunk produced single-chunk clusters.
+     */
+    private static void coralReefsSpanChunks() {
+        final WorldServer tropics = TropicraftWorldUtils.tropics();
+        if (tropics == null) {
+            fail("coral reefs span chunks", "the Tropicraft dimension did not load");
+            return;
+        }
+        final int chunkX = 64;
+        final int chunkZ = 64;
+        try {
+            // A flat sea floor with a deep enough water column for coral's canBlockStay (water above and below).
+            for (int x = -24; x <= 24; ++x) {
+                for (int z = -24; z <= 24; ++z) {
+                    final int worldX = chunkX * 16 + x;
+                    final int worldZ = chunkZ * 16 + z;
+                    tropics.setBlock(worldX, 62, worldZ, Blocks.sand);
+                    for (int y = 63; y <= 66; ++y) {
+                        tropics.setBlock(worldX, y, worldZ, TCBlockRegistry.tropicsWater);
+                    }
+                }
+            }
+            final java.util.Random rand = new java.util.Random(1234L);
+            for (int attempt = 0; attempt < 40; ++attempt) {
+                new WorldGenCoral(24, 6).generate(tropics, rand, chunkX * 16 + 8, 64, chunkZ * 16 + 8);
+            }
+            final java.util.Set<Long> chunksWithCoral = new java.util.HashSet<Long>();
+            for (int x = -24; x <= 24; ++x) {
+                for (int z = -24; z <= 24; ++z) {
+                    for (int y = 61; y <= 66; ++y) {
+                        final int worldX = chunkX * 16 + x;
+                        final int worldZ = chunkZ * 16 + z;
+                        if (tropics.getBlock(worldX, y, worldZ) == TCBlockRegistry.coral) {
+                            chunksWithCoral.add((long) (worldX >> 4) * 1000L + (worldZ >> 4));
+                        }
+                    }
+                }
+            }
+            assertTrue(
+                "coral reefs span chunks",
+                chunksWithCoral.size() > 1,
+                "coral appeared in " + chunksWithCoral.size() + " chunk(s)");
+        } catch (final Throwable t) {
+            t.printStackTrace();
+            fail("coral reefs span chunks", t.toString());
+        }
     }
 
     // ---------------------------------------------------------------------------------------------------------
