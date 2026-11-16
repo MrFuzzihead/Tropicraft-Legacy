@@ -323,7 +323,6 @@ public class EntityChair extends Entity {
             return true;
         }
         if (!this.worldObj.isRemote) {
-            System.out.println("mount");
             player.mountEntity(this);
         }
         return true;

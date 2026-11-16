@@ -50,7 +50,6 @@ public class TCBlockEvents {
             ? (world.rand.nextInt(3) + 2)
             : 1;
         if (meta == 8) {
-            System.out.println("meta 8" + drop.getDisplayName());
             world.setBlockMetadataWithNotify(x, y - 1, z, 0, 3);
             world.setBlockToAir(x, y, z);
             for (int i = 0; i < numDrops; ++i) {

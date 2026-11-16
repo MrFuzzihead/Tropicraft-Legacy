@@ -21,11 +21,15 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiTropicalBook extends GuiScreen {
+
+    /** The recipe page is drawn every frame; one failed recipe must not fill the log. */
+    private static boolean recipeFailureLogged;
 
     private TropicalBook book;
     private int indexPage;
@@ -123,7 +127,7 @@ public class GuiTropicalBook extends GuiScreen {
             int indexPosition = 0;
             for (int entry = this.indexPage * this.book.entriesPerIndexPage(); entry
                 < (this.indexPage + 1) * this.book.entriesPerIndexPage() && entry < this.book.getPageCount(); ++entry) {
-                String pageTitle = this.book.getPageTitleNotVisible(entry);
+                String pageTitle = this.book.getHiddenPageTitle();
                 int color = 4456448;
                 if (this.book.isPageVisible(entry)) {
                     pageTitle = this.book.getPageTitleByIndex(entry);
@@ -353,7 +357,10 @@ public class GuiTropicalBook extends GuiScreen {
                     try {
                         this.printRecipes();
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        if (!recipeFailureLogged) {
+                            recipeFailureLogged = true;
+                            FMLLog.warning("[Tropicraft] Could not draw an encyclopedia recipe page: %s", e);
+                        }
                     }
                     break;
                 }

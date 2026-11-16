@@ -205,7 +205,6 @@ public class TileEntityEIHMixer extends TileEntity {
             if (ingredient.getItem() != TCItemRegistry.cocktail) {
                 final Ingredient i = findMatchingIngredient(ingredient);
                 if (i == null || !i.isPrimary()) {
-                    System.err.println("fail");
                     return false;
                 }
             }

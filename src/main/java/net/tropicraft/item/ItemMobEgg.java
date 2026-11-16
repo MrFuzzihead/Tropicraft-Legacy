@@ -16,6 +16,7 @@ import net.minecraft.world.World;
 import net.tropicraft.entity.underdasea.EntityTropicalFish;
 import net.tropicraft.registry.TCCreativeTabRegistry;
 
+import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -164,7 +165,7 @@ public class ItemMobEgg extends ItemTropicraftMulti {
                     world.spawnEntityInWorld(entity);
                 }
             } else {
-                System.out.println("Error spawning: " + s);
+                FMLLog.warning("[Tropicraft] Error spawning mob egg entity: %s", s);
             }
         }
         return true;

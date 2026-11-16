@@ -15,6 +15,7 @@ import net.tropicraft.info.TCRenderIDs;
 import net.tropicraft.registry.TCBlockRegistry;
 import net.tropicraft.registry.TCCreativeTabRegistry;
 
+import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -59,9 +60,11 @@ public class BlockTropicraftFlowerPot extends BlockTropicraft implements ITileEn
             final TileEntityTropicraftFlowerPot pot = (TileEntityTropicraftFlowerPot) par1World
                 .getTileEntity(par2, par3, par4);
             if (pot == null) {
-                System.out.println("Flower pot was null!");
+                // Used to print a warning and then dereference the null anyway.
+                FMLLog.warning("[Tropicraft] No flower pot tile entity at %d, %d, %d", par2, par3, par4);
+            } else {
+                pot.setFlowerID((short) var11);
             }
-            pot.setFlowerID((short) var11);
             par1World.setBlockMetadataWithNotify(par2, par3, par4, var11, 2);
             par1World.markBlockForUpdate(par2, par3, par4);
             if (!par5EntityPlayer.capabilities.isCreativeMode) {

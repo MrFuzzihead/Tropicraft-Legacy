@@ -196,16 +196,7 @@ public class Encyclopedia extends TropicalBook {
     }
 
     public RecipeEntry getFormattedRecipe(final ShapedRecipes recipe) {
-        try {
-            final int width = recipe.recipeWidth;
-            final int height = recipe.recipeHeight;
-            final ItemStack[] items = recipe.recipeItems;
-            final ItemStack output = recipe.getRecipeOutput();
-            return new RecipeEntry(width, height, items, output);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
+        return new RecipeEntry(recipe.recipeWidth, recipe.recipeHeight, recipe.recipeItems, recipe.getRecipeOutput());
     }
 
     public class RecipeEntry {

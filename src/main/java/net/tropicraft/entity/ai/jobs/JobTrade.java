@@ -68,14 +68,14 @@ public class JobTrade extends JobBase {
 
     public int returnCredit() {
         final int value = 0;
-        try {
-            for (int i = 0; i < this.offeredItems.size(); ++i) {
-                this.activeTrader.inventory.addItemStackToInventory((ItemStack) this.offeredItems.get(i));
-            }
-            this.offeredItems.clear();
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        if (this.activeTrader == null) {
+            // Nobody to hand the offerings back to; keep them rather than dropping them on the floor.
+            return value;
         }
+        for (int i = 0; i < this.offeredItems.size(); ++i) {
+            this.activeTrader.inventory.addItemStackToInventory((ItemStack) this.offeredItems.get(i));
+        }
+        this.offeredItems.clear();
         return value;
     }
 
@@ -265,7 +265,6 @@ public class JobTrade extends JobBase {
                 this.offeredItems.add(is);
                 if (this.tradePlate != null) {
                     this.tradePlate.credit = this.getOfferedItemsValue();
-                    System.out.println("VERIFY THIS CODE IN hookInteract()");
                     MinecraftServer.getServer()
                         .getConfigurationManager()
                         .sendPacketToAllPlayers(this.tradePlate.getDescriptionPacket());

@@ -123,15 +123,14 @@ public class ChunkProviderTropicraft implements IChunkProvider {
             // should never happen; log it loudly so it can be fixed.
             ++this.cascadesDetected;
             if (this.cascadesDetected == 1L || this.cascadesDetected % 100L == 0L) {
-                System.err.println(
-                    "[Tropicraft] CASCADING CHUNK GENERATION DETECTED during decoration! count=" + this.cascadesDetected
-                        + " at chunk "
-                        + x
-                        + ","
-                        + z
-                        + " while decorating "
-                        + this.decoratingChunk);
-                new Throwable("cascade trace").printStackTrace();
+                FMLLog.severe(
+                    "[Tropicraft] CASCADING CHUNK GENERATION DETECTED during decoration! count=%d at chunk %d,%d "
+                        + "while decorating %s",
+                    this.cascadesDetected,
+                    x,
+                    z,
+                    this.decoratingChunk,
+                    new Throwable("cascade trace"));
             }
         }
         this.rand.setSeed(x * 341873128712L + z * 132897987541L);

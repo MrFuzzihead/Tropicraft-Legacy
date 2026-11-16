@@ -8,6 +8,8 @@ import net.tropicraft.world.worldgen.WorldGenTropicraftFlowers;
 import net.tropicraft.world.worldgen.WorldGenTropicraftFruitTrees;
 import net.tropicraft.world.worldgen.WorldGenTropicsTreasure;
 
+import cpw.mods.fml.common.FMLLog;
+
 public class BiomeGenTropics extends BiomeGenTropicraft {
 
     private static final int FRUIT_TREE_CHANCE = 2;
@@ -19,7 +21,7 @@ public class BiomeGenTropics extends BiomeGenTropicraft {
 
     public void decorate(final World world, final Random rand, final int x, final int z) {
         if (BiomeGenTropics.DISABLEDECORATION) {
-            System.out.println("decoration disabled via BiomeGenTropics.DISABLEDECORATION, " + this);
+            FMLLog.info("[Tropicraft] Decoration disabled for %s via BiomeGenTropics.DISABLEDECORATION", this);
             return;
         }
 

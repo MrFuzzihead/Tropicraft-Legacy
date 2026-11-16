@@ -28,7 +28,6 @@ public class ItemTropBook extends ItemTropicraft {
 
     public ItemStack onItemRightClick(final ItemStack itemstack, final World world, final EntityPlayer entityplayer) {
         if (world.isRemote && this.getTropBook() != null) {
-            System.err.println("Gui");
             this.getTropBook()
                 .updatePagesFromInventory(entityplayer.inventory);
             FMLCommonHandler.instance()

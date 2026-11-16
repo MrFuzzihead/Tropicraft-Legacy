@@ -6,6 +6,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.tropicraft.util.EffectHelper;
 
 import CoroUtil.packet.PacketHelper;
+import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -26,7 +27,7 @@ public class TCPacketEvents {
                 EffectHelper.removeEntry((EntityLivingBase) Minecraft.getMinecraft().thePlayer);
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            FMLLog.warning("[Tropicraft] Could not read a packet from the server: %s", ex);
         }
     }
 }

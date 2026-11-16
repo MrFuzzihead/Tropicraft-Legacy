@@ -112,9 +112,6 @@ public class TileEntityPurchasePlateRenderer extends TileEntitySpecialRenderer {
                     .getClient().thePlayer,
                 is,
                 0);
-        } else {
-            System.out.println(
-                "tropicraft tradeblock renderable item is null, bug? itemindex: " + par1TileEntityMobSpawner.itemIndex);
         }
         GL11.glPopMatrix();
     }

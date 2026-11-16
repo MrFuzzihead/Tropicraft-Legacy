@@ -170,8 +170,6 @@ public class TileEntitySifter extends TileEntity {
         if (this.siftItem.getItem() == TCItemRegistry.ore) {
             this.getTagCompound(this.siftItem)
                 .setFloat("AmtRefined", refined);
-        } else {
-            System.err.println("stack is null : (");
         }
         this.sync();
     }

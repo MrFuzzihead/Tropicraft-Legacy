@@ -15,6 +15,8 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.common.FMLLog;
+
 public abstract class EntityTropicraftWaterMob extends EntityWaterMob {
 
     protected WaterMobType type;
@@ -406,7 +408,7 @@ public abstract class EntityTropicraftWaterMob extends EntityWaterMob {
                 if (this.fishingLog.contains(out)) {
                     return;
                 }
-                System.out.println(out);
+                FMLLog.info("%s", out);
                 this.fishingLog.add(out);
             }
         } catch (Exception ex) {}

@@ -21,6 +21,7 @@ import net.minecraftforge.common.ISpecialArmor;
 import net.tropicraft.registry.TCItemRegistry;
 
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -97,7 +98,7 @@ public class ItemFireArmor extends ItemTropicraftArmor {
                     FMLClientHandler.instance()
                         .getClient().effectRenderer);
             } catch (Exception ex2) {
-                ex2.printStackTrace();
+                FMLLog.severe("[Tropicraft] Could not reach the effect renderer for the fire armour: %s", ex2);
             }
         }
     }

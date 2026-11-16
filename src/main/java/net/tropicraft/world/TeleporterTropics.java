@@ -20,6 +20,8 @@ import net.tropicraft.block.tileentity.TileEntityBambooChest;
 import net.tropicraft.registry.TCBlockRegistry;
 import net.tropicraft.registry.TCItemRegistry;
 
+import cpw.mods.fml.common.FMLLog;
+
 public class TeleporterTropics extends Teleporter {
 
     private static Block PORTAL_WALL_BLOCK;
@@ -46,9 +48,7 @@ public class TeleporterTropics extends Teleporter {
             this.placeInExistingPortal(entity, d, d2, d3, f);
         }
         final long finishTime = System.currentTimeMillis();
-        System.out.printf(
-            "It took %f seconds for TeleporterTropics.placeInPortal to complete\n",
-            (finishTime - startTime) / 1000.0f);
+        FMLLog.fine("TeleporterTropics.placeInPortal took {} ms", finishTime - startTime);
     }
 
     public boolean placeInExistingPortal(final Entity entity, final double d, final double d2, final double d3,

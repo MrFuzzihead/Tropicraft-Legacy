@@ -55,7 +55,6 @@ public class JobAttackTargetShare extends JobBase {
                 final EntityLivingBase entN = notifyList.get(i);
                 if (!this.ent.isDead && this.ent instanceof ICoroAI
                     && ((ICoroAI) this.ent).getAIAgent().entityToAttack == null) {
-                    System.out.println("sharing targetting");
                     ((ICoroAI) this.ent).getAIAgent().entityToAttack = target;
                 }
             }

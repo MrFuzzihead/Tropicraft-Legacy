@@ -11,6 +11,8 @@ import net.tropicraft.world.worldgen.WorldGenTallTree;
 import net.tropicraft.world.worldgen.WorldGenTualang;
 import net.tropicraft.world.worldgen.WorldGenUpTree;
 
+import cpw.mods.fml.common.FMLLog;
+
 public class BiomeGenRainforest extends BiomeGenTropicraft {
 
     private static final int COFFEE_PLANT_AMOUNT = 2;
@@ -29,7 +31,7 @@ public class BiomeGenRainforest extends BiomeGenTropicraft {
     @Override
     public void decorate(final World world, final Random rand, final int x, final int z) {
         if (BiomeGenRainforest.DISABLEDECORATION) {
-            System.out.println("decoration disabled via BiomeGenTropics.DISABLEDECORATION, " + this);
+            FMLLog.info("[Tropicraft] Decoration disabled for %s via BiomeGenTropics.DISABLEDECORATION", this);
             return;
         }
         if (rand.nextInt(80) == 0) {

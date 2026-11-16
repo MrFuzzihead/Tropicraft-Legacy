@@ -107,7 +107,7 @@ public class TownKoaVillage extends TownObject implements ICustomGen {
     }
 
     public void spawnEntitiesForce() {
-        System.out.println("Spawning koa village population for village: " + this.spawn);
+        FMLLog.info("[Tropicraft] Spawning Koa village population for village: %s", this.spawn);
         this.tickMonitorPersistantMembers();
     }
 

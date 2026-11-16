@@ -413,6 +413,8 @@ computes `b2` and never uses it; `readFromNBT`/`writeToNBT` wrap plain `getInteg
 
 ### B12. Encyclopedia progress is a single file in the game directory
 
+**Status: fixed** — see §16.
+
 `TropicalBook` writes `eTsave.dat` to `FMLClientHandler.getClient().mcDataDir`. Consequences:
 
 * progress is **shared between all worlds and all saves** (read the book in world A, it's fully unlocked
@@ -1402,6 +1404,80 @@ player's chunk reaches in normal play.
 
 ---
 
+## 16. P1 fixes applied (batch 5) — encyclopedia progress and the last residue
+
+### 16.1 B12: encyclopedia progress
+
+The old design: one `eTsave.dat` in the game directory, read in the constructor, rewritten (whole file, recompressed)
+by `saveData()` on **every** `markPageAsNewlyVisible`/`markPageAsRead`, i.e. on the input path, and shared between
+every save and every server.
+
+Three pieces now:
+
+* **`PageProgress`** (new, pure): the per-page state, with NBT read/write and no client classes, so it is unit
+  tested. It also fixes a second bug found while writing the tests: `markPageAsNewlyVisible` wrote the value
+  unconditionally, so a page the player had **read** could be flagged "new" again. `markVisible` now only upgrades.
+* **Per-world storage**: progress is written to
+  `<mcDataDir>/tropicraft/encyclopedia/<key>-<hash>.dat`, where the key is `sp:<save folder name>` in single player
+  and `mp:<server address>` on a server. The client cannot know a server's world name, so for multiplayer it is per
+  server, which is the closest thing to "per world" that exists client-side. The binding is resolved lazily (the book
+  is constructed at mod init, before any world exists) and re-resolved when the key changes, flushing the previous
+  world first.
+* **Debounced writes**: marks set a dirty flag; `flushIfDirty()` writes at most once every 2 s and is driven by
+  `TCMiscEvents.tickClient`; `flush()` runs on the client world unload so leaving a world cannot lose the last two
+  seconds.
+
+The old shared file is imported once: the first world opened after the update inherits it, and the file is renamed to
+`eTsave.dat.imported` so the next world does not inherit it too.
+
+Also in `TropicalBook`: the contents file's `getResourceAsStream` is null-checked with a clear message (a missing
+lang file used to be an NPE at startup), streams are closed with try-with-resources, the `java.util.logging` /
+`FMLLog` mix is now FMLLog throughout, the unused `public static File file` is gone, and the placeholder title method
+lost the parameter it ignored (`getPageTitleNotVisible(int)` → `getHiddenPageTitle()`).
+
+### 16.2 The rest of the residue
+
+`src/main/java` now has **no `System.out`/`System.err` and no `printStackTrace()`**. The 19 prints became `FMLLog`
+calls at the right level or were deleted (pure debug noise like `"t2"`, `"watwat"`, `"mount"`, `"sharing
+targetting"`, `"meta 8"`, a per-frame renderer print, a `VERIFY THIS CODE` marker that was verified in the P0 batch).
+Two were bugs rather than noise:
+
+* `BlockTropicraftFlowerPot` printed `"Flower pot was null!"` and then **dereferenced the null** - it now skips the
+  tile entity update instead of throwing.
+* `JobTrade.returnCredit` wrapped a loop in `catch (Exception) { printStackTrace(); }`; a null trader is the only way
+  it can fail, and the catch then dropped the player's offerings. It now returns early and keeps them.
+
+The remaining eight `printStackTrace()` calls were renderers and the packet handler: render failures log at debug
+(they would otherwise fire every frame), a broken encyclopedia recipe page warns once per session, a malformed packet
+warns, and the fire armour's reflection fallback logs at severe because failing it means no particles at all.
+
+### 16.3 Correction: the "43 alias locals" are not all noise
+
+I tried to inline the remaining 17 decompiler aliases with a script and reverted it, because the pattern is not what
+the review assumed. In `ModelKoaMan` the alias names deliberately do **not** match the field they read:
+
+```java
+final ModelRenderer leaf2 = this.leaf3;   // "leaf2" is the field leaf3
+final ModelRenderer leaf3 = this.leaf2;   // and "leaf3" is the field leaf2
+```
+
+A rewrite that assumes `alias == this.<same name>` swaps two leaf renderers, and even a rewrite that uses the
+initialiser expression has to know that the value is a *snapshot*: several blocks read `bipedHead.rotateAngleY` once
+and then assign it to eleven renderers. They are correct as written, they are confined to model/animation code, and
+they should be cleaned one file at a time with the pose logic in front of you - not swept.
+
+### 16.4 Where P1 ended up
+
+| Item | State |
+|---|---|
+| B5, B6, B7, B8, B9, B10, B11, B12, B13, B14 | fixed (§11–§16) |
+| B15: `TCInfo`, `TCNames` constants, `TileEntityFactory`, `TCPacketEvents` no-op, `Tropicraft.dbg` | deleted (§13) |
+| B15: `System.out`/`err`, blanket `printStackTrace`, empty `if`s, `new Random()` on hot paths | done (§13, §16.2) |
+| B15: alias locals | **deferred on purpose** (§16.3) |
+| B15: redundant `(Class)`/`(Item)`/`(Block)` casts, float literals written as doubles | deferred as noise; a mechanical sweep risks changing overload resolution and double rounding (§13.1) |
+
+---
+
 ## Appendix A — quick-win checklist
 
 - [x] Ship `koavillage.schematic` + `TCSchematics` extractor; fail loudly on a bad build (B1) — §11.1
@@ -1417,10 +1493,10 @@ player's chunk reaches in normal play.
       `finally` (B6) still open
 - [x] `JobFish`: `< 0.0f` → `<= 0.0f`, delete `rand.nextInt(1)`, use `worldObj.rand` (§12)
 - [x] `EffectHelper`: tick on one side only (§12)
-- [ ] `TropicalBook`: per-world save file, null-check the resource stream, try-with-resources
+- [x] `TropicalBook`: per-world save file, null-check the resource stream, try-with-resources (§16.1)
 - [x] `Tropicraft.dbg`: delete or gate behind a config key (§13)
-- [ ] Replace the remaining 19 `System.out/err` with `FMLLog` at appropriate levels (was 42, §13)
-- [ ] Replace the remaining 10 `catch (Exception) { printStackTrace(); }` (was 21, §13)
+- [x] Replace the remaining `System.out/err` with `FMLLog` at appropriate levels (42 → 0 in `src/main/java`, §16.2)
+- [x] Replace the remaining `catch (Exception) { printStackTrace(); }` (21 → 0 in `src/main/java`, §16.2)
 - [ ] Extract `RenderWaterMobBase` for the three duplicated `doRender`s (R1)
 - [ ] Extract `IUnlocalizedTropicraft` for the six duplicated `getUnlocalizedName`s (R2)
 - [x] `BlockRainforestLeaves.imageNames[1][0]` → `"leafMahogany"` and `[0][1]` → `"leafKapok"` (B24, #9, §12)

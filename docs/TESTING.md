@@ -108,9 +108,9 @@ to a single "covered by any test" number that two different class-id spaces allo
 
 ```
 jacoco coverage (executed source lines)
-  unit tests : 88 (0.6%)
-  in-game    : 3471 (23.7%)
-  combined   : 3520 (24.1%) of 14628 measurable
+  unit tests : 121 (0.8%)
+  in-game    : 3253 (21.7%)
+  combined   : 3335 (22.3%) of 14984 measurable
 ```
 
 The in-game run is most of the coverage because a dedicated server loads and touches a large part of the mod while

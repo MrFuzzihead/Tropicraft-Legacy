@@ -11,6 +11,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.world.WorldEvent;
+import net.tropicraft.Tropicraft;
 import net.tropicraft.config.ConfigMisc;
 import net.tropicraft.entity.placeable.EntityChair;
 import net.tropicraft.util.EffectHelper;
@@ -58,11 +59,27 @@ public class TCMiscEvents {
         ChunkProviderTropicraft.onWorldUnloaded(event.world);
     }
 
+    /** Leaving a world is the last chance to persist encyclopedia progress that is still inside the debounce window. */
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public void clientWorldUnload(final WorldEvent.Unload event) {
+        if (!event.world.isRemote) {
+            return;
+        }
+        if (Tropicraft.encyclopedia != null) {
+            Tropicraft.encyclopedia.flush();
+        }
+    }
+
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void tickClient(final TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             EffectHelper.tick(Side.CLIENT);
+            // Debounced encyclopedia writes: see TropicalBook#SAVE_DEBOUNCE_MILLIS.
+            if (Tropicraft.encyclopedia != null) {
+                Tropicraft.encyclopedia.flushIfDirty();
+            }
         }
         if (Minecraft.getMinecraft().currentScreen instanceof GuiMainMenu) {
             for (int ii = 0; ii < ExtendedRenderer.rotEffRenderer.fxLayers.length; ++ii) {

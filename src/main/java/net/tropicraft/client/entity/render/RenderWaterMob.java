@@ -10,6 +10,8 @@ import net.tropicraft.entity.underdasea.EntityTropicraftWaterMob;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.common.FMLLog;
+
 public class RenderWaterMob extends RenderLiving {
 
     private static final ResourceLocation RES_ITEM_GLINT;
@@ -152,7 +154,7 @@ public class RenderWaterMob extends RenderLiving {
             }
             GL11.glDisable(32826);
         } catch (Exception exception) {
-            exception.printStackTrace();
+            FMLLog.fine("[Tropicraft] Entity render failed: %s", exception);
         }
         OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
         GL11.glEnable(3553);
