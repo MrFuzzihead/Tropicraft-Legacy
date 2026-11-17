@@ -20,7 +20,7 @@ public class WorldGenTropicraftFlowers extends TCGenBase {
     }
 
     public boolean generate(final int i, final int j, final int k) {
-        for (int l = 0; l < 35; ++l) {
+        for (int l = 0; l < FLOWER_TRIES; ++l) {
             final int x = i + this.rand.nextInt(8) - this.rand.nextInt(8);
             final int y = j + this.rand.nextInt(4) - this.rand.nextInt(4);
             final int z = k + this.rand.nextInt(8) - this.rand.nextInt(8);

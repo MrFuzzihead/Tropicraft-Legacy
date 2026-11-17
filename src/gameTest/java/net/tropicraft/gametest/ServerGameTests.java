@@ -37,12 +37,14 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.ChunkProviderServer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.tropicraft.block.tileentity.TileEntityEIHMixer;
 import net.tropicraft.block.tileentity.TileEntityKoaChest;
+import net.tropicraft.config.ConfigGenRates;
 import net.tropicraft.drinks.Drink;
 import net.tropicraft.drinks.Ingredient;
 import net.tropicraft.economy.ItemEntry;
@@ -67,6 +69,7 @@ import net.tropicraft.registry.TCItemRegistry;
 import net.tropicraft.registry.TCKoaCurrencyRegistry;
 import net.tropicraft.util.TCSchematics;
 import net.tropicraft.util.TropicraftWorldUtils;
+import net.tropicraft.world.TCWorldGenerator;
 import net.tropicraft.world.biomes.BiomeGenTropicraft;
 import net.tropicraft.world.chunk.ChunkProviderTropicraft;
 import net.tropicraft.world.location.TownKoaVillage;
@@ -130,6 +133,10 @@ public final class ServerGameTests {
         deferredDecorationFlushesWhenItsNeighbourhoodLoads();
         drinkMixerMixesItsDocumentedRecipes();
         drinkIngredientsAreTranslated();
+        overworldFlowersCoverAboutOnePercent();
+        overworldFlowersRespectTheBiomeGate();
+        overworldFlowerCountIsConfigurable();
+        eihChanceInOverworldKeepsHeadsRare();
         return failures;
     }
 
@@ -1553,6 +1560,324 @@ public final class ServerGameTests {
             "expected " + expected.displayName
                 + " but got "
                 + (actual == null ? String.valueOf(mixer.result) : actual.displayName));
+    }
+
+    // ---------------------------------------------------------------------------------------------------------
+    // Overworld density (issue #52: the 6.2.5 terrain snap woke up a rate nobody had ever seen, ten features per
+    // chunk, about ten percent of a grass chunk's surface)
+    // ---------------------------------------------------------------------------------------------------------
+
+    /** Flat grass platform used by the density checks, far from anything else the suite touches. */
+    private static final int FLOWER_PLATFORM_X = 5000;
+    private static final int FLOWER_PLATFORM_Z = 5000;
+    private static final int FLOWER_PLATFORM_Y = 70;
+    private static final int FLOWER_PLATFORM_CHUNKS = 4;
+    /** Surface Y of the platform the last {@link #runFlowerPlatform} built. */
+    private static int flowerPlatformSurface;
+
+    /**
+     * Asserts the overworld rate rather than sampling real generated chunks.
+     * <p>
+     * A flat platform plus fixed per-chunk seeds makes this deterministic: sampling real chunks measured 0.2, 17 and
+     * 24 flowers per chunk depending on which region the run's random world seed happened to produce, which is exactly
+     * the flakiness that bit the mineral sand check.
+     * </p>
+     */
+    private static void overworldFlowersCoverAboutOnePercent() {
+        final WorldServer world = MinecraftServer.getServer()
+            .worldServerForDimension(0);
+        if (world == null) {
+            fail("overworld tropical flowers cover about one percent", "no overworld");
+            return;
+        }
+        final int saved = ConfigGenRates.flowersPerChunkInOverworld;
+        try {
+            ConfigGenRates.flowersPerChunkInOverworld = 1;
+            final int[] perChunk = new int[FLOWER_PLATFORM_CHUNKS * FLOWER_PLATFORM_CHUNKS];
+            final int flowers = runFlowerPlatform(world, BiomeGenBase.jungle, perChunk);
+            final double coverage = flowers / (double) (FLOWER_PLATFORM_CHUNKS * FLOWER_PLATFORM_CHUNKS * 256);
+            System.out.println(
+                String.format(
+                    "[TC-GAMETEST] overworld tropical flowers: %.2f%% of the surface, %d in %d chunks, %s",
+                    coverage * 100.0,
+                    flowers,
+                    perChunk.length,
+                    Arrays.toString(perChunk)));
+            final String detail = String.format(
+                "%.2f%% of the platform's surface (%d flowers in %d chunks), per chunk %s",
+                coverage * 100.0,
+                flowers,
+                perChunk.length,
+                Arrays.toString(perChunk));
+            // The band is wider than the measurement it was calibrated on (0.88% on every run) on purpose: this harness
+            // never ticks the world, so sky light at the platform's chunk borders is approximate and a border column
+            // occasionally refuses a flower. Ten features per chunk (the 6.2.5 - 6.2.6 rate, ~10%) and a dead
+            // feature (0.2%) both still fail.
+            assertTrue(
+                "overworld tropical flowers cover about one percent of a warm grass chunk",
+                coverage >= 0.0065 && coverage <= 0.0115,
+                detail);
+            int max = 0;
+            for (final int count : perChunk) {
+                max = Math.max(max, count);
+            }
+            assertTrue(
+                "no single overworld chunk becomes a flower meadow",
+                max <= 12,
+                "the busiest chunk held " + max + " tropical flowers; per chunk " + Arrays.toString(perChunk));
+        } catch (final Throwable t) {
+            t.printStackTrace();
+            fail("overworld tropical flowers cover about one percent", t.toString());
+        } finally {
+            ConfigGenRates.flowersPerChunkInOverworld = saved;
+        }
+    }
+
+    /** Cold, dry and merely temperate biomes get no tropical flowers; the gate can be turned off. */
+    private static void overworldFlowersRespectTheBiomeGate() {
+        final WorldServer world = MinecraftServer.getServer()
+            .worldServerForDimension(0);
+        if (world == null) {
+            fail("overworld tropical flowers respect the biome gate", "no overworld");
+            return;
+        }
+        final boolean savedGate = ConfigGenRates.genOverworldFlowersInWarmBiomesOnly;
+        try {
+            ConfigGenRates.genOverworldFlowersInWarmBiomesOnly = true;
+            // Desert is HOT in Forge's dictionary, so the gate lets it through - in a real world it has no grass to
+            // plant on, and this platform is artificial grass.
+            for (final BiomeGenBase cold : new BiomeGenBase[] { BiomeGenBase.taiga, BiomeGenBase.icePlains,
+                BiomeGenBase.plains, BiomeGenBase.forest, BiomeGenBase.mesa }) {
+                final int flowers = runFlowerPlatform(world, cold, null);
+                assertTrue(
+                    "overworld tropical flowers respect the biome gate",
+                    flowers == 0,
+                    flowers + " tropical flowers spawned in " + cold.biomeName);
+            }
+            // Savanna is warm, so it still gets them.
+            final int warm = runFlowerPlatform(world, BiomeGenBase.savanna, null);
+            assertTrue(
+                "overworld tropical flowers respect the biome gate",
+                warm > 0,
+                "no tropical flowers spawned in " + BiomeGenBase.savanna.biomeName);
+            // ...and the gate is switchable for pack makers who want the old everywhere-grass behaviour.
+            ConfigGenRates.genOverworldFlowersInWarmBiomesOnly = false;
+            final int ungated = runFlowerPlatform(world, BiomeGenBase.taiga, null);
+            assertTrue(
+                "overworld tropical flowers respect the biome gate",
+                ungated > 0,
+                "turning genOverworldFlowersInWarmBiomesOnly off did not allow flowers in a taiga");
+        } catch (final Throwable t) {
+            t.printStackTrace();
+            fail("overworld tropical flowers respect the biome gate", t.toString());
+        } finally {
+            ConfigGenRates.genOverworldFlowersInWarmBiomesOnly = savedGate;
+        }
+    }
+
+    /** The per-chunk feature count is the tuning knob, and it has to actually move the density. */
+    private static void overworldFlowerCountIsConfigurable() {
+        final WorldServer world = MinecraftServer.getServer()
+            .worldServerForDimension(0);
+        if (world == null) {
+            fail("the overworld flower rate follows its config", "no overworld");
+            return;
+        }
+        final int saved = ConfigGenRates.flowersPerChunkInOverworld;
+        try {
+            ConfigGenRates.flowersPerChunkInOverworld = 1;
+            final int one = runFlowerPlatform(world, BiomeGenBase.jungle, null);
+            ConfigGenRates.flowersPerChunkInOverworld = 3;
+            final int three = runFlowerPlatform(world, BiomeGenBase.jungle, null);
+            assertTrue(
+                "the overworld flower rate follows its config",
+                three > one * 2 && three < one * 5,
+                "1 feature/chunk placed " + one + " flowers, 3 features/chunk placed " + three);
+        } catch (final Throwable t) {
+            t.printStackTrace();
+            fail("the overworld flower rate follows its config", t.toString());
+        } finally {
+            ConfigGenRates.flowersPerChunkInOverworld = saved;
+        }
+    }
+
+    /**
+     * The overworld head rate is a config knob with a documented off switch, and it has to stay wired to the generator:
+     * one per 100 chunks was one head every 160 blocks, in every biome, which is scenery rather than a landmark.
+     */
+    private static void eihChanceInOverworldKeepsHeadsRare() {
+        final WorldServer world = MinecraftServer.getServer()
+            .worldServerForDimension(0);
+        if (world == null) {
+            fail("overworld Eastern Island Heads follow their config", "no overworld");
+            return;
+        }
+        final int savedChance = ConfigGenRates.eihChanceInOverworld;
+        final boolean savedToggle = ConfigGenRates.genTropicraftEIHInOverworld;
+        final boolean savedWarmOnly = ConfigGenRates.genOverworldEIHInWarmBiomesOnly;
+        try {
+            ConfigGenRates.genTropicraftEIHInOverworld = true;
+            ConfigGenRates.genOverworldEIHInWarmBiomesOnly = false;
+
+            final int every = countPlatformHeads(world, BiomeGenBase.jungle, 1);
+            assertTrue(
+                "overworld Eastern Island Heads follow their config",
+                every > 0,
+                "eihChanceInOverworld=1 placed no heads at all");
+
+            final int off = countPlatformHeads(world, BiomeGenBase.jungle, 0);
+            assertTrue(
+                "overworld Eastern Island Heads follow their config",
+                off == 0,
+                "eihChanceInOverworld=0 still placed " + off + " heads");
+        } catch (final Throwable t) {
+            t.printStackTrace();
+            fail("overworld Eastern Island Heads follow their config", t.toString());
+        } finally {
+            ConfigGenRates.eihChanceInOverworld = savedChance;
+            ConfigGenRates.genTropicraftEIHInOverworld = savedToggle;
+            ConfigGenRates.genOverworldEIHInWarmBiomesOnly = savedWarmOnly;
+        }
+    }
+
+    /** Heads placed on a fresh platform with the given eihChanceInOverworld. */
+    private static int countPlatformHeads(final WorldServer world, final BiomeGenBase biome, final int chance) {
+        final int saved = ConfigGenRates.eihChanceInOverworld;
+        ConfigGenRates.eihChanceInOverworld = chance;
+        runFlowerPlatform(world, biome, null);
+        ConfigGenRates.eihChanceInOverworld = saved;
+        int heads = 0;
+        for (int x = -8; x < FLOWER_PLATFORM_CHUNKS * 16 + 8; ++x) {
+            for (int z = -8; z < FLOWER_PLATFORM_CHUNKS * 16 + 8; ++z) {
+                for (int y = flowerPlatformSurface - 4; y <= flowerPlatformSurface + 12; ++y) {
+                    if (world.getBlock(FLOWER_PLATFORM_X + x, y, FLOWER_PLATFORM_Z + z) == TCBlockRegistry.chunkOHead) {
+                        ++heads;
+                    }
+                }
+            }
+        }
+        return heads;
+    }
+
+    /**
+     * Rebuilds the flat grass platform with {@code biome} everywhere, runs the real overworld generator over its 4x4
+     * chunks with fixed seeds and returns the tropical flowers that landed on it.
+     *
+     * @param perChunk filled with the per-chunk counts when non-null
+     */
+    private static int runFlowerPlatform(final WorldServer world, final BiomeGenBase biome, final int[] perChunk) {
+        buildFlowerPlatform(world, biome);
+        // Warm-up pass: the world is never ticked here, so chunks that were generated a moment ago still report stale
+        // sky light and some placements fail. Nothing respects that state either way, so measure second.
+        generateOverPlatform(world);
+        buildFlowerPlatform(world, biome);
+
+        final TCWorldGenerator generator = new TCWorldGenerator();
+        for (int cx = 0; cx < FLOWER_PLATFORM_CHUNKS; ++cx) {
+            for (int cz = 0; cz < FLOWER_PLATFORM_CHUNKS; ++cz) {
+                final int chunkX = (FLOWER_PLATFORM_X >> 4) + cx;
+                final int chunkZ = (FLOWER_PLATFORM_Z >> 4) + cz;
+                generator.generateSurface(world, new java.util.Random(1000L + cx * 4 + cz), chunkX, chunkZ);
+                if (perChunk != null) {
+                    perChunk[cx * FLOWER_PLATFORM_CHUNKS + cz] = countPlatformFlowers(world, chunkX, chunkZ);
+                }
+            }
+        }
+        return perChunk == null ? countAllPlatformFlowers(world) : sum(perChunk);
+    }
+
+    private static void generateOverPlatform(final WorldServer world) {
+        final TCWorldGenerator generator = new TCWorldGenerator();
+        for (int cx = 0; cx < FLOWER_PLATFORM_CHUNKS; ++cx) {
+            for (int cz = 0; cz < FLOWER_PLATFORM_CHUNKS; ++cz) {
+                generator.generateSurface(
+                    world,
+                    new java.util.Random(1000L + cx * 4 + cz),
+                    (FLOWER_PLATFORM_X >> 4) + cx,
+                    (FLOWER_PLATFORM_Z >> 4) + cz);
+            }
+        }
+    }
+
+    /**
+     * Flattens the platform at {@code FLOWER_PLATFORM_Y} or above, whichever is higher, and paints {@code biome} across
+     * its chunks.
+     */
+    private static void buildFlowerPlatform(final WorldServer world, final BiomeGenBase biome) {
+        final int size = FLOWER_PLATFORM_CHUNKS * 16;
+        final int margin = 16;
+        if (flowerPlatformSurface == 0) {
+            // Sit above whatever terrain this run's world seed put here: the generator snaps to the first soil block
+            // at or below getHeightValue, so a hill under the platform would move every flower above it and out of
+            // the count. Computed once, before there is a platform to find, so repeated rebuilds cannot climb.
+            int terrainTop = FLOWER_PLATFORM_Y;
+            for (int x = -margin; x < size + margin; x += 2) {
+                for (int z = -margin; z < size + margin; z += 2) {
+                    terrainTop = Math
+                        .max(terrainTop, world.getHeightValue(FLOWER_PLATFORM_X + x, FLOWER_PLATFORM_Z + z));
+                }
+            }
+            flowerPlatformSurface = terrainTop + 8;
+        }
+        final int surface = flowerPlatformSurface;
+        // A 16 block skirt, so flowers placed up to 7 blocks outside an edge still land on grass. The four layers
+        // under the surface are solid on purpose: the generator tries y +/- 3, and a hollow layer under the platform
+        // would let a stray flower sit below it and survive every rebuild.
+        for (int x = -margin; x < size + margin; ++x) {
+            for (int z = -margin; z < size + margin; ++z) {
+                for (int y = surface - 4; y <= surface - 2; ++y) {
+                    world.setBlock(FLOWER_PLATFORM_X + x, y, FLOWER_PLATFORM_Z + z, Blocks.dirt);
+                }
+                world.setBlock(FLOWER_PLATFORM_X + x, surface - 1, FLOWER_PLATFORM_Z + z, Blocks.grass);
+                for (int y = surface; y <= surface + 12; ++y) {
+                    world.setBlockToAir(FLOWER_PLATFORM_X + x, y, FLOWER_PLATFORM_Z + z);
+                }
+            }
+        }
+        // Biome last: generating the chunks above fills their biome arrays from the world's own layers.
+        for (int cx = 0; cx < FLOWER_PLATFORM_CHUNKS; ++cx) {
+            for (int cz = 0; cz < FLOWER_PLATFORM_CHUNKS; ++cz) {
+                final Chunk chunk = world
+                    .getChunkFromChunkCoords((FLOWER_PLATFORM_X >> 4) + cx, (FLOWER_PLATFORM_Z >> 4) + cz);
+                Arrays.fill(chunk.getBiomeArray(), (byte) biome.biomeID);
+                // This harness never ticks the world, so the edits above are not relit: the chunk's height map and
+                // sky light stay stale, the generator's terrain snap then finds the old surface, and
+                // BlockBush#canBlockStay refuses to plant. Recomputing both is what makes the check deterministic.
+                chunk.generateSkylightMap();
+            }
+        }
+    }
+
+    private static int countAllPlatformFlowers(final WorldServer world) {
+        int total = 0;
+        for (int cx = 0; cx < FLOWER_PLATFORM_CHUNKS; ++cx) {
+            for (int cz = 0; cz < FLOWER_PLATFORM_CHUNKS; ++cz) {
+                total += countPlatformFlowers(world, (FLOWER_PLATFORM_X >> 4) + cx, (FLOWER_PLATFORM_Z >> 4) + cz);
+            }
+        }
+        return total;
+    }
+
+    private static int countPlatformFlowers(final WorldServer world, final int chunkX, final int chunkZ) {
+        int found = 0;
+        for (int x = 0; x < 16; ++x) {
+            for (int z = 0; z < 16; ++z) {
+                for (int y = flowerPlatformSurface; y <= flowerPlatformSurface + 8; ++y) {
+                    if (world.getBlock(chunkX * 16 + x, y, chunkZ * 16 + z) == TCBlockRegistry.flowers) {
+                        ++found;
+                    }
+                }
+            }
+        }
+        return found;
+    }
+
+    private static int sum(final int[] values) {
+        int total = 0;
+        for (final int value : values) {
+            total += value;
+        }
+        return total;
     }
 
     private static String describe(final ItemStack[] ingredients) {
