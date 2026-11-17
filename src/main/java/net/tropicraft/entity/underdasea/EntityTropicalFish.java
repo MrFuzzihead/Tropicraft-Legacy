@@ -1,7 +1,6 @@
 package net.tropicraft.entity.underdasea;
 
 import java.util.List;
-import java.util.Random;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -9,7 +8,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityFishHook;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
@@ -25,7 +23,6 @@ public class EntityTropicalFish extends EntityTropicraftWaterMob {
     public Entity hook;
     public boolean hasBeenPlaced;
     public static final String[] names;
-    private static final int SHOULD_SPAWN_DATAWATCHER = 17;
     private static final int DATA_COLOR = 16;
 
     public EntityTropicalFish(final World world) {
@@ -36,7 +33,6 @@ public class EntityTropicalFish extends EntityTropicraftWaterMob {
         this.leader = null;
         this.setSize(0.6f, 0.6f);
         this.setColor(this.worldObj.rand.nextInt(EntityTropicalFish.names.length));
-        this.setShouldSpawnSchool(true);
         this.isCatchable = true;
         this.experienceValue = 3;
     }
@@ -56,17 +52,8 @@ public class EntityTropicalFish extends EntityTropicraftWaterMob {
         return this.dataWatcher.getWatchableObjectInt(16);
     }
 
-    public void setShouldSpawnSchool(final boolean spawnStatus) {
-        this.dataWatcher.updateObject(SHOULD_SPAWN_DATAWATCHER, (spawnStatus ? 1 : -1));
-    }
-
-    public boolean getShouldSpawnSchool() {
-        return this.dataWatcher.getWatchableObjectInt(17) == 1;
-    }
-
     public EntityTropicalFish(final World world, final EntityLiving entityliving, final int i) {
         super(world);
-        this.setShouldSpawnSchool(false);
         this.targetHook = false;
         this.isLeader = true;
         this.inSchool = false;
@@ -80,7 +67,7 @@ public class EntityTropicalFish extends EntityTropicraftWaterMob {
             entityliving.rotationYaw,
             entityliving.rotationPitch);
         this.posX -= MathHelper.cos(this.rotationYaw / 180.0f * 3.141593f) * 0.16f;
-        this.posY -= 0.10000000149011612;
+        this.posY -= 0.1f;
         this.posZ -= MathHelper.sin(this.rotationYaw / 180.0f * 3.141593f) * 0.16f;
         this.setPosition(this.posX, this.posY, this.posZ);
         this.yOffset = 0.0f;
@@ -91,42 +78,15 @@ public class EntityTropicalFish extends EntityTropicraftWaterMob {
         this.motionY = -MathHelper.sin(this.rotationPitch / 180.0f * 3.141593f);
     }
 
-    public EntityTropicalFish(final EntityTropicalFish original) {
-        this(original.worldObj);
-        this.setShouldSpawnSchool(false);
-        this.targetHook = false;
-        this.isLeader = false;
-        this.inSchool = true;
-        this.leader = original;
-        this.setColor(original.getColor());
-        this.yOffset = 0.0f;
-        this.setSize(original.width, original.height);
-        do {
-            final double offsetX = new Random().nextDouble() * 3.0 - 1.5;
-            final double offsetY = new Random().nextDouble() * 2.0 + 1.0;
-            final double offsetZ = new Random().nextDouble() * 3.0 - 1.5;
-            this.setLocationAndAngles(
-                original.posX + offsetX,
-                original.posY + offsetY,
-                original.posZ + offsetZ,
-                original.rotationYaw,
-                original.rotationPitch);
-        } while (!this.getCanSpawnHere());
-        this.motionX = original.motionX;
-        this.motionY = original.motionY;
-        this.motionZ = original.motionZ;
-    }
-
     @Override
     public void entityInit() {
         super.entityInit();
         this.dataWatcher.addObject(DATA_COLOR, 0);
-        this.dataWatcher.addObject(SHOULD_SPAWN_DATAWATCHER, -1);
     }
 
     public void checkForLeader() {
         final List list = this.worldObj
-            .getEntitiesWithinAABB((Class) EntityTropicalFish.class, this.boundingBox.expand(10.0, 10.0, 10.0));
+            .getEntitiesWithinAABB(EntityTropicalFish.class, this.boundingBox.expand(10.0, 10.0, 10.0));
         for (final Object ent : list) {
             if (((EntityTropicalFish) ent).getColor() == this.getColor()) {
                 if (this.getEntityId() > ((Entity) ent).getEntityId()) {
@@ -152,20 +112,19 @@ public class EntityTropicalFish extends EntityTropicraftWaterMob {
         } else {
             this.hasBeenPlaced = true;
         }
-        this.setShouldSpawnSchool(false);
         this.setColor(nbttagcompound.getInteger("Color"));
     }
 
     public EntityLivingBase getAttackTarget() {
-        if (this.leader != null && !this.inSchool && this.canEntityBeSeen((Entity) this.leader)) {
-            return (EntityLivingBase) this.leader;
+        if (this.leader != null && !this.inSchool && this.canEntityBeSeen(this.leader)) {
+            return this.leader;
         }
         return null;
     }
 
     public void checkForHook() {
         final List list = this.worldObj
-            .getEntitiesWithinAABB((Class) EntityFishHook.class, this.boundingBox.expand(10.0, 10.0, 10.0));
+            .getEntitiesWithinAABB(EntityFishHook.class, this.boundingBox.expand(10.0, 10.0, 10.0));
         if (list.isEmpty()) {
             this.targetHook = false;
             this.hook = null;
@@ -189,16 +148,13 @@ public class EntityTropicalFish extends EntityTropicraftWaterMob {
             .getItem() != TCItemRegistry.fishingNet) {
             return false;
         }
-        if (!entityplayer.inventory.hasItem((Item) TCItemRegistry.bucketTropicsWater)) {
+        if (!entityplayer.inventory.hasItem(TCItemRegistry.bucketTropicsWater)) {
             return false;
         }
         for (int i = 0; i < entityplayer.inventory.mainInventory.length; ++i) {
             if (entityplayer.inventory.getStackInSlot(i) != null && entityplayer.inventory.getStackInSlot(i)
                 .getItem() == TCItemRegistry.bucketTropicsWater) {
-                entityplayer.inventory.mainInventory[i] = new ItemStack(
-                    (Item) TCItemRegistry.fishBucket,
-                    1,
-                    this.getColor());
+                entityplayer.inventory.mainInventory[i] = new ItemStack(TCItemRegistry.fishBucket, 1, this.getColor());
                 this.setDead();
                 entityplayer.swingItem();
                 return true;
@@ -209,28 +165,20 @@ public class EntityTropicalFish extends EntityTropicraftWaterMob {
 
     @Override
     protected void updateEntityActionState() {
-        if (this.getShouldSpawnSchool()) {
-            final int maxInSchool = 7;
-            final int minInSchool = 4;
-            for (int numToSpawn = new Random().nextInt(1 + maxInSchool - minInSchool) + minInSchool - 1, i = 0; i
-                < numToSpawn; ++i) {
-                if (!this.worldObj.isRemote) {}
-            }
-            this.setShouldSpawnSchool(false);
-        }
-        if (this.leader != null && this.getDistanceToEntity((Entity) this.leader) < 1.5f) {
+        if (this.leader != null && this.getDistanceToEntity(this.leader) < 1.5f) {
             this.inSchool = true;
         }
         if (this.leader != null && this.leader.isDead) {
             this.leader = null;
         }
-        if (this.leader == null || this.isLeader) {
+        if ((this.leader == null || this.isLeader) && this.ticksExisted % 40 == 0) {
+            // Was every tick: getEntitiesWithinAABB over a 20x20x20 box per fish, per tick.
             this.checkForLeader();
         }
         if (!this.inSchool || this.isLeader) {
             super.updateEntityActionState();
         } else if (this.inSchool && this.leader != null) {
-            if (this.getDistanceToEntity((Entity) this.leader) >= 2.25f && this.ticksExisted % 40 == 0) {
+            if (this.getDistanceToEntity(this.leader) >= 2.25f && this.ticksExisted % 40 == 0) {
                 this.inSchool = false;
             }
             if (!this.leader.isLeader && this.leader.leader != null) {

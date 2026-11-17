@@ -39,7 +39,6 @@ public class CurareMixRegistry {
         final int[] temp = new int[ingredients.length];
         int count = 0;
         for (final ItemStack ing : ingredients) {
-            System.out.println(ing.getItemDamage());
             temp[count] = ing.getItemDamage();
             ++count;
         }

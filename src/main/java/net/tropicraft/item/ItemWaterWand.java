@@ -1,7 +1,6 @@
 package net.tropicraft.item;
 
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -43,7 +42,7 @@ public class ItemWaterWand extends ItemTropicraft {
         if (!world.isRemote) {
             if (world.getBlock(x, y, z)
                 .getMaterial() == Material.water) {
-                itemstack.damageItem(1, (EntityLivingBase) player);
+                itemstack.damageItem(1, player);
                 world.setBlockToAir(x, y, z);
                 return true;
             }

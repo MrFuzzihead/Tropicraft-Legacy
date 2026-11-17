@@ -2,6 +2,7 @@ package net.tropicraft.entity.koa;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.tropicraft.entity.EntityCoroAI;
@@ -77,7 +78,16 @@ public class EntityKoaBase extends EntityCoroAI {
         return false;
     }
 
+    /**
+     * Koa are deliberately neutral towards players - they only fight back - but a creative player is not a target
+     * either way. This used to be a bare delegation to {@link DiplomacyHelper#shouldTargetEnt}, which replaced
+     * {@code EntityCoroAI}'s version and with it the creative check every other CoroAI mob still has.
+     */
+    @Override
     public boolean isEnemy(final Entity ent) {
+        if (ent instanceof EntityPlayer && ((EntityPlayer) ent).capabilities.isCreativeMode) {
+            return false;
+        }
         return DiplomacyHelper.shouldTargetEnt((ICoroAI) this, ent);
     }
 
@@ -95,15 +105,15 @@ public class EntityKoaBase extends EntityCoroAI {
             ++this.outWaterTick;
         }
         if (!this.isInWater() && this.wasInWater && this.isCollidedHorizontally) {
-            this.motionY = 0.5400000214576721;
+            this.motionY = 0.54f;
         }
         this.wasInWater = this.isInWater();
         if (this.isInWater() && this.motionY < -0.001) {
             this.motionY = -0.001;
         }
         if (this.isInWater() && this.isCollidedHorizontally) {
-            this.motionX *= 1.2000000476837158;
-            this.motionZ *= 1.2000000476837158;
+            this.motionX *= 1.2f;
+            this.motionZ *= 1.2f;
         }
     }
 }

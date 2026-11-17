@@ -73,13 +73,15 @@ public class EntityFireBall extends EntityThrowableUsefull {
         }
     }
 
+    // CoroUtil's EntityThrowableUsefull declares both of these public, so a protected override is a compile error
+    // as soon as that jar is deobfuscated (i.e. on any dev run); the wider modifier is a legal override either way.
     @Override
-    protected void readEntityFromNBT(NBTTagCompound tagCompund) {
+    public void readEntityFromNBT(NBTTagCompound tagCompund) {
 
     }
 
     @Override
-    protected void writeEntityToNBT(NBTTagCompound tagCompound) {
+    public void writeEntityToNBT(NBTTagCompound tagCompound) {
 
     }
 
@@ -91,7 +93,7 @@ public class EntityFireBall extends EntityThrowableUsefull {
         MovingObjectPosition movingobjectposition = null;
         Entity entity = null;
         final List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(
-            (Entity) this,
+            this,
             this.boundingBox.addCoord(this.motionX, this.motionY, this.motionZ)
                 .expand(0.5, 1.0, 0.5));
         final double d0 = 0.0;
@@ -115,14 +117,12 @@ public class EntityFireBall extends EntityThrowableUsefull {
             if (movingobjectposition.entityHit instanceof ICoroAI && this.getThrower() instanceof ICoroAI) {
                 if (((ICoroAI) this.getThrower()).getAIAgent().dipl_info
                     != ((ICoroAI) movingobjectposition.entityHit).getAIAgent().dipl_info) {
-                    movingobjectposition.entityHit.attackEntityFrom(
-                        DamageSource.causeThrownDamage((Entity) this, (Entity) this.getThrower()),
-                        (float) byte0);
+                    movingobjectposition.entityHit
+                        .attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), (float) byte0);
                 }
             } else {
-                movingobjectposition.entityHit.attackEntityFrom(
-                    DamageSource.causeThrownDamage((Entity) this, (Entity) this.getThrower()),
-                    (float) byte0);
+                movingobjectposition.entityHit
+                    .attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), (float) byte0);
             }
             movingobjectposition.entityHit.setFire(10);
             if (!this.worldObj.isRemote) {

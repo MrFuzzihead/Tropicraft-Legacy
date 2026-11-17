@@ -18,7 +18,7 @@ public class CommandTropicraft extends CommandBase {
 
     /** The sub-commands, in the order {@code /tc} lists and completes them. */
     private static final ICommand[] SUBCOMMANDS = { new CommandTCTime(), new CommandTCWeather(),
-        new CommandTropicsTeleport() };
+        new CommandTropicsTeleport(), new CommandTCVersion(), new CommandTCVillage() };
 
     public String getCommandName() {
         return "tc";

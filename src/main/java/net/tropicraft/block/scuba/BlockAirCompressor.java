@@ -1,7 +1,5 @@
 package net.tropicraft.block.scuba;
 
-import java.util.Random;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -14,7 +12,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.tropicraft.block.BlockTropicraft;
 import net.tropicraft.block.tileentity.TileEntityAirCompressor;
-import net.tropicraft.factory.TileEntityFactory;
 import net.tropicraft.info.TCRenderIDs;
 import net.tropicraft.registry.TCCreativeTabRegistry;
 
@@ -95,12 +92,8 @@ public class BlockAirCompressor extends BlockTropicraft implements ITileEntityPr
         return 4;
     }
 
-    public void updateTick(final World world, final int x, final int y, final int z, final Random rand) {
-        if (!world.isRemote) {}
-    }
-
     public TileEntity createNewTileEntity(final World var1, final int var2) {
-        return TileEntityFactory.getAirCompressorTE();
+        return new TileEntityAirCompressor();
     }
 
     public void registerBlockIcons(final IIconRegister iconRegistry) {

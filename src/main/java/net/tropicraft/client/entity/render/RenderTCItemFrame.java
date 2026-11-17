@@ -299,7 +299,7 @@ public class RenderTCItemFrame extends Render {
                     }
                 }
                 RenderItem.renderInFrame = true;
-                RenderManager.instance.renderEntityWithPosYaw((Entity) entityitem, 0.0, 0.0, 0.0, 0.0f, 0.0f);
+                RenderManager.instance.renderEntityWithPosYaw(entityitem, 0.0, 0.0, 0.0, 0.0f, 0.0f);
                 RenderItem.renderInFrame = false;
                 if (item == Items.compass) {
                     final TextureAtlasSprite textureatlassprite2 = ((TextureMap) Minecraft.getMinecraft()
@@ -324,7 +324,7 @@ public class RenderTCItemFrame extends Render {
             && this.renderManager.field_147941_i == p_147914_1_) {
             final float f = 1.6f;
             final float f2 = 0.016666668f * f;
-            final double d3 = p_147914_1_.getDistanceSqToEntity((Entity) this.renderManager.livingPlayer);
+            final double d3 = p_147914_1_.getDistanceSqToEntity(this.renderManager.livingPlayer);
             final float f3 = p_147914_1_.isSneaking() ? 32.0f : 64.0f;
             if (d3 < f3 * f3) {
                 final String s = p_147914_1_.getDisplayedItem()
@@ -363,7 +363,7 @@ public class RenderTCItemFrame extends Render {
                     GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
                     GL11.glPopMatrix();
                 } else {
-                    this.func_147906_a((Entity) p_147914_1_, s, p_147914_2_, p_147914_4_, p_147914_6_, 64);
+                    this.func_147906_a(p_147914_1_, s, p_147914_2_, p_147914_4_, p_147914_6_, 64);
                 }
             }
         }

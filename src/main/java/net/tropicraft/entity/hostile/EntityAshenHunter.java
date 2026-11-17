@@ -33,9 +33,9 @@ public class EntityAshenHunter extends EntityAshen {
 
     public void attackEntityWithRangedAttack(final EntityLivingBase entity, final float range) {
         if (this.getAttackTarget() != null) {
-            this.faceEntity((Entity) this.getAttackTarget(), 180.0f, 180.0f);
-            final EntityDart entitydart = new EntityDart(this.worldObj, (Entity) this, 3.0f, (short) 0);
-            this.worldObj.spawnEntityInWorld((Entity) entitydart);
+            this.faceEntity(this.getAttackTarget(), 180.0f, 180.0f);
+            final EntityDart entitydart = new EntityDart(this.worldObj, this, 3.0f, (short) 0);
+            this.worldObj.spawnEntityInWorld(entitydart);
         }
     }
 

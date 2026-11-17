@@ -30,6 +30,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class EntityDart extends Entity implements IProjectile {
 
     private static final short MAX_HIT_TIME = 200;
+    /**
+     * Potion applied by {@link #dartType}, indexed by the dart item's metadata. Index 0 is unused: dart type 0
+     * is the "paralysis" effect, which is applied through {@link EffectHelper} instead of a vanilla potion.
+     */
+    private static final int[] POTIONS = { Potion.blindness.id, Potion.poison.id, Potion.moveSlowdown.id,
+        Potion.harm.id, Potion.confusion.id, Potion.hunger.id, Potion.weakness.id };
     private int ticksInGround;
     private int ticksInAir;
     public Entity shootingEntity;
@@ -38,7 +44,6 @@ public class EntityDart extends Entity implements IProjectile {
     public boolean doesDartBelongToPlayer;
     public int dartShake;
     private boolean hasRidden;
-    public static int[] potions;
 
     public EntityDart(final World world) {
         super(world);
@@ -67,7 +72,7 @@ public class EntityDart extends Entity implements IProjectile {
             shooter.rotationYaw,
             shooter.rotationPitch);
         this.posX -= MathHelper.cos(this.rotationYaw / 180.0f * 3.1415927f) * 0.16f;
-        this.posY -= 0.10000000149011612;
+        this.posY -= 0.1f;
         this.posZ -= MathHelper.sin(this.rotationYaw / 180.0f * 3.1415927f) * 0.16f;
         this.setPosition(this.posX, this.posY, this.posZ);
         this.yOffset = 0.0f;
@@ -84,9 +89,9 @@ public class EntityDart extends Entity implements IProjectile {
         x /= f2;
         y /= f2;
         z /= f2;
-        x += this.rand.nextGaussian() * (this.rand.nextBoolean() ? -1 : 1) * 0.007499999832361937 * rotation2;
-        y += this.rand.nextGaussian() * (this.rand.nextBoolean() ? -1 : 1) * 0.007499999832361937 * rotation2;
-        z += this.rand.nextGaussian() * (this.rand.nextBoolean() ? -1 : 1) * 0.007499999832361937 * rotation2;
+        x += this.rand.nextGaussian() * (this.rand.nextBoolean() ? -1 : 1) * 0.0075f * rotation2;
+        y += this.rand.nextGaussian() * (this.rand.nextBoolean() ? -1 : 1) * 0.0075f * rotation2;
+        z += this.rand.nextGaussian() * (this.rand.nextBoolean() ? -1 : 1) * 0.0075f * rotation2;
         x *= rotation1;
         y *= rotation1;
         z *= rotation1;
@@ -117,7 +122,6 @@ public class EntityDart extends Entity implements IProjectile {
         if (this.dartShake > 0) {
             --this.dartShake;
         }
-        if (!this.worldObj.isRemote) {}
         if (this.inGround) {
             this.setDead();
         } else {
@@ -182,7 +186,6 @@ public class EntityDart extends Entity implements IProjectile {
                             final EntityLivingBase entitylivingbase = (EntityLivingBase) movingobjectposition.entityHit;
                             if (!this.worldObj.isRemote) {
                                 if (this.dartType == 0) {
-                                    System.out.println("client?: " + this.worldObj.isRemote);
                                     if (entitylivingbase instanceof EntityPlayerMP) {
                                         final NBTTagCompound nbt = new NBTTagCompound();
                                         nbt.setString("packetCommand", "effectAdd");
@@ -195,8 +198,10 @@ public class EntityDart extends Entity implements IProjectile {
                                         EffectHelper.addEntry(entitylivingbase, 100);
                                     }
                                 } else {
-                                    entitylivingbase
-                                        .addPotionEffect(new PotionEffect(EntityDart.potions[this.dartType], 200, 1));
+                                    final int potionId = getPotionId(this.dartType);
+                                    if (potionId > 0) {
+                                        entitylivingbase.addPotionEffect(new PotionEffect(potionId, 200, 1));
+                                    }
                                 }
                             }
                             if (this.shootingEntity != null && movingobjectposition.entityHit != this.shootingEntity
@@ -208,9 +213,9 @@ public class EntityDart extends Entity implements IProjectile {
                         }
                         this.playSound("random.bowhit", 1.0f, 1.2f / (this.rand.nextFloat() * 0.2f + 0.9f));
                     } else {
-                        this.motionX *= -0.10000000149011612;
-                        this.motionY *= -0.10000000149011612;
-                        this.motionZ *= -0.10000000149011612;
+                        this.motionX *= -0.1f;
+                        this.motionY *= -0.1f;
+                        this.motionZ *= -0.1f;
                         this.rotationYaw += 180.0f;
                         this.prevRotationYaw += 180.0f;
                         this.ticksInAir = 0;
@@ -273,10 +278,6 @@ public class EntityDart extends Entity implements IProjectile {
         }
     }
 
-    public void setDead() {
-        super.setDead();
-    }
-
     @SideOnly(Side.CLIENT)
     public void setPositionAndRotation2(final double par1, final double par3, final double par5, final float par7,
         final float par8, final int par9) {
@@ -316,10 +317,20 @@ public class EntityDart extends Entity implements IProjectile {
     }
 
     protected void entityInit() {
-        EntityDart.potions = new int[] { Potion.blindness.id, Potion.poison.id, Potion.moveSlowdown.id, Potion.harm.id,
-            Potion.confusion.id, Potion.hunger.id, Potion.weakness.id };
-        this.dataWatcher.addObject(17, (short) 200);
+        this.dataWatcher.addObject(17, MAX_HIT_TIME);
         this.dataWatcher.addObject(18, (byte) 0);
+    }
+
+    /**
+     * @return the potion a dart type applies, or -1 if the type has no potion (unknown or out of range, e.g. a
+     *         hand-edited {@code dartType} NBT tag - this used to throw {@link ArrayIndexOutOfBoundsException}
+     *         inside entity update).
+     */
+    private static int getPotionId(final int dartType) {
+        if (dartType <= 0 || dartType >= POTIONS.length) {
+            return -1;
+        }
+        return POTIONS[dartType];
     }
 
     public void writeEntityToNBT(final NBTTagCompound nbttagcompound) {

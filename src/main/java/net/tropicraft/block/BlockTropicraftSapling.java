@@ -17,6 +17,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
 import net.tropicraft.registry.TCBlockRegistry;
 import net.tropicraft.registry.TCCreativeTabRegistry;
+import net.tropicraft.util.TropicraftNames;
 import net.tropicraft.world.worldgen.TCGenBase;
 import net.tropicraft.world.worldgen.WorldGenTallTree;
 import net.tropicraft.world.worldgen.WorldGenTropicraftCurvedPalm;
@@ -114,13 +115,13 @@ public class BlockTropicraftSapling extends BlockSapling implements IGrowable {
         if (gen != null) {
             world.setBlockToAir(x, y, z);
             if (!gen.generate(world, rand, x, y, z)) {
-                world.setBlock(x, y, z, (Block) this, type, 3);
+                world.setBlock(x, y, z, this, type, 3);
             }
         }
     }
 
     private WorldGenerator randomRainforestTreeGen(final World world) {
-        final Random rand = new Random();
+        final Random rand = world.rand;
         final int type = rand.nextInt(4);
         switch (type) {
             case 0: {
@@ -159,11 +160,7 @@ public class BlockTropicraftSapling extends BlockSapling implements IGrowable {
     }
 
     public String getUnlocalizedName() {
-        return String.format("tile.%s%s", "tropicraft:", this.getActualName(super.getUnlocalizedName()));
-    }
-
-    protected String getActualName(final String unlocalizedName) {
-        return unlocalizedName.substring(unlocalizedName.indexOf(46) + 1);
+        return TropicraftNames.block(super.getUnlocalizedName());
     }
 
     @SideOnly(Side.CLIENT)

@@ -30,6 +30,6 @@ public class TCTileEntityRegistry {
     }
 
     private static void registerTE(final Class<? extends TileEntity> clazz, final String name) {
-        GameRegistry.registerTileEntity((Class) clazz, name);
+        GameRegistry.registerTileEntity(clazz, name);
     }
 }

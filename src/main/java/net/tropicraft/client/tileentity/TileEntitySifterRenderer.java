@@ -23,7 +23,7 @@ public class TileEntitySifterRenderer extends TileEntitySpecialRenderer {
         GL11.glPushMatrix();
         GL11.glTranslatef((float) x + 0.5f, (float) y, (float) z + 0.5f);
         if (this.item == null && sifter.isSifting()) {
-            this.item = (Entity) new EntityItem(sifter.getWorldObj());
+            this.item = new EntityItem(sifter.getWorldObj());
             ((EntityItem) this.item).setEntityItemStack(sifter.siftItem.copy());
         }
         if (this.item != null) {

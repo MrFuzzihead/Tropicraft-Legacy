@@ -1,6 +1,5 @@
 package net.tropicraft.entity.underdasea;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.world.World;
@@ -34,7 +33,7 @@ public class EntityTurtleEgg extends EntityLiving {
                     final double d4 = this.posY;
                     final double d5 = this.posZ;
                     babyturtle.setLocationAndAngles(d3, d4, d5, 0.0f, 0.0f);
-                    this.worldObj.spawnEntityInWorld((Entity) babyturtle);
+                    this.worldObj.spawnEntityInWorld(babyturtle);
                     this.setDead();
                 }
                 for (int i = 0; i < 8; ++i) {

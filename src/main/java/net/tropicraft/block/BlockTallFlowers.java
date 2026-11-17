@@ -3,7 +3,6 @@ package net.tropicraft.block;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoublePlant;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -13,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.tropicraft.registry.TCCreativeTabRegistry;
+import net.tropicraft.util.TropicraftNames;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -63,11 +63,7 @@ public class BlockTallFlowers extends BlockDoublePlant {
     }
 
     public String getUnlocalizedName() {
-        return String.format("tile.%s%s", "tropicraft:", this.getActualName(super.getUnlocalizedName()));
-    }
-
-    protected String getActualName(final String unlocalizedName) {
-        return unlocalizedName.substring(unlocalizedName.indexOf(46) + 1);
+        return TropicraftNames.block(super.getUnlocalizedName());
     }
 
     @SideOnly(Side.CLIENT)
@@ -91,7 +87,7 @@ public class BlockTallFlowers extends BlockDoublePlant {
         if (meta == 0) {
             return null;
         }
-        return Item.getItemFromBlock((Block) this);
+        return Item.getItemFromBlock(this);
     }
 
     public int getRenderType() {
@@ -100,7 +96,7 @@ public class BlockTallFlowers extends BlockDoublePlant {
 
     public void onBlockPlacedBy(final World world, final int x, final int y, final int z, final EntityLivingBase player,
         final ItemStack itemstack) {
-        world.setBlock(x, y + 1, z, (Block) this, itemstack.getItemDamage(), 3);
+        world.setBlock(x, y + 1, z, this, itemstack.getItemDamage(), 3);
     }
 
     public boolean func_149851_a(final World world, final int x, final int y, final int z, final boolean var5) {

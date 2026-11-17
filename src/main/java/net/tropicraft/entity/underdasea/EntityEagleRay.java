@@ -68,8 +68,8 @@ public class EntityEagleRay extends EntityTropicraftWaterMob {
 
     private float amplitudeFunc(final float n) {
         final double angle = 6.283185307179586 * n / 9.0;
-        return this.decayFunc(n) * MathHelper
-            .sin((float) (this.getAnimationProgress() * 2.0f * 3.141592653589793 + 0.33000001311302185 * angle));
+        return this.decayFunc(n)
+            * MathHelper.sin((float) (this.getAnimationProgress() * 2.0f * 3.141592653589793 + 0.33f * angle));
     }
 
     private float getAnimationProgress() {

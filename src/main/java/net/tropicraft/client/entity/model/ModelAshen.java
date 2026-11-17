@@ -123,8 +123,7 @@ public class ModelAshen extends ModelBase {
                 this.leftArm.rotateAngleY = 0.0f;
                 this.leftArmSub.rotateAngleZ = 0.0f;
                 if (this.swinging) {
-                    final ModelRenderer leftArm = this.leftArm;
-                    leftArm.rotateAngleX += MathHelper.sin(f2 * 0.75f) * 0.052f;
+                    this.leftArm.rotateAngleX += MathHelper.sin(f2 * 0.75f) * 0.052f;
                     break;
                 }
                 this.leftArm.rotateAngleX = 0.0f;
@@ -141,9 +140,7 @@ public class ModelAshen extends ModelBase {
                 break;
             }
         }
-        final ModelRenderer rightArm = this.rightArm;
-        rightArm.rotateAngleY += MathHelper.sin(f2 * 0.25f) * 0.002f;
-        final ModelRenderer leftArm2 = this.leftArm;
-        leftArm2.rotateAngleY -= MathHelper.sin(f2 * 0.25f) * 0.002f;
+        this.rightArm.rotateAngleY += MathHelper.sin(f2 * 0.25f) * 0.002f;
+        this.leftArm.rotateAngleY -= MathHelper.sin(f2 * 0.25f) * 0.002f;
     }
 }

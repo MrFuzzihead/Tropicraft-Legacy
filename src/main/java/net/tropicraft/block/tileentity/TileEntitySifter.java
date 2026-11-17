@@ -1,10 +1,7 @@
 package net.tropicraft.block.tileentity;
 
-import java.util.Random;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -25,14 +22,12 @@ public class TileEntitySifter extends TileEntity {
     public static final int SIFT_TIME = 80;
     public boolean isSifting;
     public int currentSiftTime;
-    private Random rand;
     public double yaw;
     public double yaw2;
     public ItemStack siftItem;
 
     public TileEntitySifter() {
         this.yaw2 = 0.0;
-        this.rand = new Random();
         this.currentSiftTime = 80;
     }
 
@@ -42,7 +37,7 @@ public class TileEntitySifter extends TileEntity {
         }
         if (this.worldObj.isRemote) {
             this.yaw2 = this.yaw % 360.0;
-            this.yaw += 4.545454502105713;
+            this.yaw += 4.5454545f;
         }
         if (!this.worldObj.isRemote && this.isSifting && this.currentSiftTime <= 0) {
             final double x = this.xCoord + this.worldObj.rand.nextDouble() * 1.4;
@@ -61,29 +56,29 @@ public class TileEntitySifter extends TileEntity {
             if (this.siftItem.getItem() == TCItemRegistry.ore) {
                 refinedAmt = this.refine(refinedAmt);
             }
-            if (this.siftItem.getItem() == Item.getItemFromBlock((Block) TCBlockRegistry.mineralSands)
+            if (this.siftItem.getItem() == Item.getItemFromBlock(TCBlockRegistry.mineralSands)
                 && this.siftItem.getItemDamage() == 3) {
-                this.siftItem = new ItemStack((Item) TCItemRegistry.ore, 1, 5);
+                this.siftItem = new ItemStack(TCItemRegistry.ore, 1, 5);
             }
             if (refinedAmt == 100.0f) {
-                this.siftItem = new ItemStack((Item) TCItemRegistry.ore, 1, 6);
+                this.siftItem = new ItemStack(TCItemRegistry.ore, 1, 6);
             }
             this.getTagCompound(this.siftItem)
                 .setFloat("AmtRefined", refinedAmt);
             this.spawn(this.siftItem, x, y, z);
-            this.spawn(new ItemStack((Block) TCBlockRegistry.purifiedSand), x, y, z);
+            this.spawn(new ItemStack(TCBlockRegistry.purifiedSand), x, y, z);
         } else {
             this.dumpBeachResults(x, y, z);
         }
     }
 
     private void dumpBeachResults(final double x, final double y, final double z) {
-        int dumpCount = this.rand.nextInt(3) + 1;
-        this.spawn(new ItemStack((Block) TCBlockRegistry.purifiedSand), x, y, z);
+        int dumpCount = this.worldObj.rand.nextInt(3) + 1;
+        this.spawn(new ItemStack(TCBlockRegistry.purifiedSand), x, y, z);
         while (dumpCount > 0) {
             --dumpCount;
             ItemStack stack;
-            if (this.rand.nextInt(10) == 0) {
+            if (this.worldObj.rand.nextInt(10) == 0) {
                 stack = this.getRareItem();
             } else {
                 stack = this.getCommonItem();
@@ -98,11 +93,11 @@ public class TileEntitySifter extends TileEntity {
         }
         final EntityItem eitem = new EntityItem(this.worldObj, x, y, z, stack);
         eitem.setLocationAndAngles(x, y, z, 0.0f, 0.0f);
-        this.worldObj.spawnEntityInWorld((Entity) eitem);
+        this.worldObj.spawnEntityInWorld(eitem);
     }
 
     private ItemStack getCommonItem() {
-        final int dmg = this.rand.nextInt(8);
+        final int dmg = this.worldObj.rand.nextInt(8);
         switch (dmg) {
             case 0:
             case 1:
@@ -118,7 +113,7 @@ public class TileEntitySifter extends TileEntity {
     }
 
     private ItemStack getRareItem() {
-        final int dmg = this.rand.nextInt(8);
+        final int dmg = this.worldObj.rand.nextInt(8);
         switch (dmg) {
             case 0: {
                 return new ItemStack(TCItemRegistry.shells, 1, 3);
@@ -136,10 +131,10 @@ public class TileEntitySifter extends TileEntity {
                 return new ItemStack(Items.glass_bottle, 1);
             }
             case 5: {
-                return new ItemStack((Item) TCItemRegistry.pearl, 1, 0);
+                return new ItemStack(TCItemRegistry.pearl, 1, 0);
             }
             case 6: {
-                return new ItemStack((Item) TCItemRegistry.pearl, 1, 1);
+                return new ItemStack(TCItemRegistry.pearl, 1, 1);
             }
             default: {
                 return new ItemStack(TCItemRegistry.shells, 1, 3);
@@ -168,14 +163,12 @@ public class TileEntitySifter extends TileEntity {
     public void setSifting(final boolean flag, final int type, final float refined) {
         this.isSifting = flag;
         this.siftItem = ((type == -1) ? null
-            : ((type == 1) ? new ItemStack((Block) Blocks.sand)
-                : ((type == 2) ? new ItemStack((Block) TCBlockRegistry.mineralSands, 1, 3)
-                    : new ItemStack((Item) TCItemRegistry.ore, 1, 5))));
+            : ((type == 1) ? new ItemStack(Blocks.sand)
+                : ((type == 2) ? new ItemStack(TCBlockRegistry.mineralSands, 1, 3)
+                    : new ItemStack(TCItemRegistry.ore, 1, 5))));
         if (this.siftItem.getItem() == TCItemRegistry.ore) {
             this.getTagCompound(this.siftItem)
                 .setFloat("AmtRefined", refined);
-        } else {
-            System.err.println("stack is null : (");
         }
         this.sync();
     }

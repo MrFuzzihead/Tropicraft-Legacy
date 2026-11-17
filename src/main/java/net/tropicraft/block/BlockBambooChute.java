@@ -75,7 +75,7 @@ public class BlockBambooChute extends BlockTropicraft implements IPlantable {
             if (plantHeight < 12) {
                 final int meta = world.getBlockMetadata(x, y, z);
                 if (meta == 8) {
-                    world.setBlock(x, y + 1, z, (Block) TCBlockRegistry.bambooChute);
+                    world.setBlock(x, y + 1, z, TCBlockRegistry.bambooChute);
                     world.setBlockMetadataWithNotify(x, y, z, 0, 3);
                 } else {
                     world.setBlockMetadataWithNotify(x, y, z, meta + 1, 3);

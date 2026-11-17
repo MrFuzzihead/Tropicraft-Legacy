@@ -3,7 +3,6 @@ package net.tropicraft.block;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockFalling;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -20,6 +19,7 @@ import net.tropicraft.info.TCNames;
 import net.tropicraft.registry.TCBlockRegistry;
 import net.tropicraft.registry.TCCreativeTabRegistry;
 import net.tropicraft.util.CoralColors;
+import net.tropicraft.util.TropicraftNames;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -38,7 +38,7 @@ public class BlockMineralSands extends BlockFalling {
     }
 
     public Item getItemDropped(final int meta, final Random rand, final int unused) {
-        return Item.getItemFromBlock((Block) TCBlockRegistry.mineralSands);
+        return Item.getItemFromBlock(TCBlockRegistry.mineralSands);
     }
 
     public void onEntityWalking(final World world, final int x, final int y, final int z, final Entity entity) {
@@ -77,15 +77,12 @@ public class BlockMineralSands extends BlockFalling {
     }
 
     public String getUnlocalizedName() {
-        return String.format("tile.%s%s", "tropicraft:", this.getActualName(super.getUnlocalizedName()));
-    }
-
-    protected String getActualName(final String unlocalizedName) {
-        return unlocalizedName.substring(unlocalizedName.indexOf(46) + 1);
+        return TropicraftNames.block(super.getUnlocalizedName());
     }
 
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(final IIconRegister iconRegister) {
-        this.blockIcon = iconRegister.registerIcon(String.format("%s", this.getActualName(this.getUnlocalizedName())));
+        this.blockIcon = iconRegister
+            .registerIcon(String.format("%s", TropicraftNames.afterFirstDot(this.getUnlocalizedName())));
     }
 }

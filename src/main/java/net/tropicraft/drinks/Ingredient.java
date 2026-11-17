@@ -3,7 +3,6 @@ package net.tropicraft.drinks;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -99,31 +98,27 @@ public class Ingredient implements Comparable<Ingredient> {
         ingredientsList = new Ingredient[128];
         sugar = new Ingredient(0, new ItemStack(Items.sugar), false, 16777215, 0.1f)
             .addAction((DrinkAction) new DrinkActionFood(1, 0.1f));
-        lemon = new Ingredient(5, new ItemStack((Item) TCItemRegistry.lemon), true, 16776960)
+        lemon = new Ingredient(5, new ItemStack(TCItemRegistry.lemon), true, 16776960)
             .addAction((DrinkAction) new DrinkActionFood(2, 0.2f));
-        lime = new Ingredient(6, new ItemStack((Item) TCItemRegistry.lime), true, 8388352)
+        lime = new Ingredient(6, new ItemStack(TCItemRegistry.lime), true, 8388352)
             .addAction((DrinkAction) new DrinkActionFood(2, 0.2f));
-        orange = new Ingredient(7, new ItemStack((Item) TCItemRegistry.orange), true, 16753920)
+        orange = new Ingredient(7, new ItemStack(TCItemRegistry.orange), true, 16753920)
             .addAction((DrinkAction) new DrinkActionFood(3, 0.2f));
-        grapefruit = new Ingredient(8, new ItemStack((Item) TCItemRegistry.grapefruit), true, 16737095)
+        grapefruit = new Ingredient(8, new ItemStack(TCItemRegistry.grapefruit), true, 16737095)
             .addAction((DrinkAction) new DrinkActionFood(4, 0.2f));
-        pineapple = new Ingredient(9, new ItemStack((Block) TCBlockRegistry.pineapple, 1, 0), true, 15662848)
+        pineapple = new Ingredient(9, new ItemStack(TCBlockRegistry.pineapple, 1, 0), true, 15662848)
             .addAction((DrinkAction) new DrinkActionFood(1, 0.1f));
-        pineappleChunks = new Ingredient(10, new ItemStack((Item) TCItemRegistry.pineappleCubes), false, 15662848, 0.1f)
+        pineappleChunks = new Ingredient(10, new ItemStack(TCItemRegistry.pineappleCubes), false, 15662848, 0.1f)
             .addAction((DrinkAction) new DrinkActionFood(1, 0.1f));
-        coconut = new Ingredient(11, new ItemStack((Block) TCBlockRegistry.coconut), true, 15724527)
+        coconut = new Ingredient(11, new ItemStack(TCBlockRegistry.coconut), true, 15724527)
             .addAction((DrinkAction) new DrinkActionFood(1, 0.1f));
-        coconutChunk = new Ingredient(12, new ItemStack((Item) TCItemRegistry.coconutChunk), false, 15724527, 0.1f)
+        coconutChunk = new Ingredient(12, new ItemStack(TCItemRegistry.coconutChunk), false, 15724527, 0.1f)
             .addAction((DrinkAction) new DrinkActionFood(1, 0.1f));
         sugarcane = new Ingredient(13, new ItemStack(Items.reeds), false, 11665259, 0.1f);
-        roastedCoffeeBean = new Ingredient(
-            14,
-            new ItemStack((Item) TCItemRegistry.coffeeBean, 1, 1),
-            false,
-            6833196,
-            0.95f).addAction((DrinkAction) new DrinkActionFood(4, 0.2f))
-                .addAction((DrinkAction) new DrinkActionPotion(Potion.moveSpeed.id, 5, 1));
-        waterBucket = new Ingredient(15, new ItemStack((Item) TCItemRegistry.bucketTropicsWater), true, 16777215);
+        roastedCoffeeBean = new Ingredient(14, new ItemStack(TCItemRegistry.coffeeBean, 1, 1), false, 6833196, 0.95f)
+            .addAction((DrinkAction) new DrinkActionFood(4, 0.2f))
+            .addAction((DrinkAction) new DrinkActionPotion(Potion.moveSpeed.id, 5, 1));
+        waterBucket = new Ingredient(15, new ItemStack(TCItemRegistry.bucketTropicsWater), true, 16777215);
         milkBucket = new Ingredient(16, new ItemStack(Items.milk_bucket), false, 16777215, 0.1f)
             .addAction((DrinkAction) new DrinkActionFood(2, 0.2f));
         cocoaBean = new Ingredient(17, new ItemStack(Items.dye, 1, 3), false, 8411710, 0.95f)

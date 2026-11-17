@@ -3,7 +3,6 @@ package net.tropicraft.block;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -13,7 +12,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.tropicraft.block.tileentity.TileEntityCurareBowl;
-import net.tropicraft.factory.TileEntityFactory;
 import net.tropicraft.registry.TCBlockRegistry;
 
 public class BlockCurareBowl extends BlockTropicraft implements ITileEntityProvider {
@@ -23,7 +21,7 @@ public class BlockCurareBowl extends BlockTropicraft implements ITileEntityProvi
     }
 
     public TileEntity createNewTileEntity(final World var1, final int var2) {
-        return TileEntityFactory.getCurareBowlTE();
+        return new TileEntityCurareBowl();
     }
 
     public void breakBlock(final World par1World, final int par2, final int par3, final int par4, final Block par5,
@@ -43,7 +41,7 @@ public class BlockCurareBowl extends BlockTropicraft implements ITileEntityProvi
                             (double) (par3 + var10),
                             (double) (par4 + var11),
                             var9);
-                        par1World.spawnEntityInWorld((Entity) item);
+                        par1World.spawnEntityInWorld(item);
                     }
                 }
             } else {
@@ -87,7 +85,7 @@ public class BlockCurareBowl extends BlockTropicraft implements ITileEntityProvi
                     }
                 }
             } else if (entityplayer.getCurrentEquippedItem()
-                .getItem() == Item.getItemFromBlock((Block) TCBlockRegistry.flowers)) {
+                .getItem() == Item.getItemFromBlock(TCBlockRegistry.flowers)) {
                     bowl.addIngredient(entityplayer.getCurrentEquippedItem());
                     if (!entityplayer.capabilities.isCreativeMode) {
                         final ItemStack getCurrentEquippedItem = entityplayer.getCurrentEquippedItem();

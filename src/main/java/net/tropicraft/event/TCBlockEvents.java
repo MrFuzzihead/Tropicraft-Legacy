@@ -1,7 +1,6 @@
 package net.tropicraft.event;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
@@ -42,7 +41,7 @@ public class TCBlockEvents {
         ItemStack drop = null;
         if (inHand != null
             && (inHand instanceof ItemSword || inHand.getItemUseAction(new ItemStack(inHand)) == EnumAction.block)) {
-            drop = new ItemStack((Item) TCItemRegistry.pineappleCubes);
+            drop = new ItemStack(TCItemRegistry.pineappleCubes);
         } else {
             drop = new ItemStack(block, 1, 0);
         }
@@ -50,7 +49,6 @@ public class TCBlockEvents {
             ? (world.rand.nextInt(3) + 2)
             : 1;
         if (meta == 8) {
-            System.out.println("meta 8" + drop.getDisplayName());
             world.setBlockMetadataWithNotify(x, y - 1, z, 0, 3);
             world.setBlockToAir(x, y, z);
             for (int i = 0; i < numDrops; ++i) {
@@ -93,7 +91,7 @@ public class TCBlockEvents {
         ItemStack drop = null;
         if (inHand != null
             && (inHand instanceof ItemSword || inHand.getItemUseAction(new ItemStack(inHand)) == EnumAction.block)) {
-            drop = new ItemStack((Item) TCItemRegistry.coconutChunk);
+            drop = new ItemStack(TCItemRegistry.coconutChunk);
         } else {
             drop = new ItemStack(block, 1, 0);
         }
@@ -119,7 +117,7 @@ public class TCBlockEvents {
                 p_149642_4_ + d3,
                 p_149642_5_);
             entityitem.delayBeforeCanPickup = 10;
-            p_149642_1_.spawnEntityInWorld((Entity) entityitem);
+            p_149642_1_.spawnEntityInWorld(entityitem);
         }
     }
 

@@ -2,11 +2,8 @@ package net.tropicraft.block.tileentity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -94,11 +91,11 @@ public class TileEntityCurareBowl extends TileEntity {
         final EntityItem result = new EntityItem(
             this.worldObj,
             (double) this.xCoord,
-            this.yCoord + (new Random().nextInt(1) + 0.3),
+            this.yCoord + 0.3,
             (double) this.zCoord,
             stack);
         if (!this.worldObj.isRemote) {
-            this.worldObj.spawnEntityInWorld((Entity) result);
+            this.worldObj.spawnEntityInWorld(result);
         }
         this.ingredients.clear();
         this.sync();
@@ -150,7 +147,7 @@ public class TileEntityCurareBowl extends TileEntity {
     }
 
     private ItemStack getCurareResult(final CurareType curare) {
-        return new ItemStack((Item) TCItemRegistry.curare, 1, curare.curareId);
+        return new ItemStack(TCItemRegistry.curare, 1, curare.curareId);
     }
 
     private CurareType getResult(final ItemStack[] ingredients1) {

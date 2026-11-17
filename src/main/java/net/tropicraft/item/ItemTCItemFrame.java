@@ -1,7 +1,6 @@
 package net.tropicraft.item;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemHangingEntity;
 import net.minecraft.item.ItemStack;
@@ -9,6 +8,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 import net.tropicraft.entity.EntityTCItemFrame;
 import net.tropicraft.registry.TCCreativeTabRegistry;
+import net.tropicraft.util.TropicraftNames;
 
 public class ItemTCItemFrame extends ItemHangingEntity {
 
@@ -38,7 +38,7 @@ public class ItemTCItemFrame extends ItemHangingEntity {
         }
         if (entityhanging != null && entityhanging.onValidSurface()) {
             if (!par3World.isRemote) {
-                par3World.spawnEntityInWorld((Entity) entityhanging);
+                par3World.spawnEntityInWorld(entityhanging);
             }
             --par1ItemStack.stackSize;
         }
@@ -55,14 +55,11 @@ public class ItemTCItemFrame extends ItemHangingEntity {
     }
 
     public String getUnlocalizedName() {
-        return String.format("item.%s%s", "tropicraft:", this.getActualName(super.getUnlocalizedName()));
+        return TropicraftNames.item(super.getUnlocalizedName());
     }
 
     public String getUnlocalizedName(final ItemStack itemStack) {
-        return String.format("item.%s%s", "tropicraft:", this.getActualName(super.getUnlocalizedName()));
+        return TropicraftNames.item(super.getUnlocalizedName());
     }
 
-    protected String getActualName(final String unlocalizedName) {
-        return unlocalizedName.substring(unlocalizedName.indexOf(".") + 1);
-    }
 }

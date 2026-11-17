@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -14,6 +15,8 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+
+import cpw.mods.fml.common.FMLLog;
 
 public abstract class EntityTropicraftWaterMob extends EntityWaterMob {
 
@@ -92,15 +95,15 @@ public abstract class EntityTropicraftWaterMob extends EntityWaterMob {
         this.important1 += this.important2;
         if (this.prevRotationPitch == 0.0f && this.prevRotationYaw == 0.0f) {
             final float f = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
-            final float n = (float) (Math.atan2(this.motionX, this.motionZ) * 180.0 / 3.1415927410125732);
+            final float n = (float) (Math.atan2(this.motionX, this.motionZ) * 180.0 / 3.1415927f);
             this.renderYawOffset = n;
             this.prevRenderYawOffset = n;
-            final float n2 = (float) (Math.atan2(this.motionY, f) * 180.0 / 3.1415927410125732);
+            final float n2 = (float) (Math.atan2(this.motionY, f) * 180.0 / 3.1415927f);
             this.rotationPitch = n2;
             this.prevRotationPitch = n2;
         }
         final float f2 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
-        this.rotationPitch = (float) (Math.atan2(this.motionY, f2) * 180.0 / 3.1415927410125732);
+        this.rotationPitch = (float) (Math.atan2(this.motionY, f2) * 180.0 / 3.1415927f);
         while (this.rotationPitch - this.prevRotationPitch < -180.0f) {
             this.prevRotationPitch -= 360.0f;
         }
@@ -146,7 +149,7 @@ public abstract class EntityTropicraftWaterMob extends EntityWaterMob {
         if (!this.isInWater()) {
             if (!this.worldObj.isRemote) {
                 this.motionX = 0.0;
-                this.motionY *= 0.9800000190734863;
+                this.motionY *= 0.98f;
                 this.motionZ = 0.0;
             }
             this.setAir(400);
@@ -196,7 +199,7 @@ public abstract class EntityTropicraftWaterMob extends EntityWaterMob {
             }
         }
         if (this.targetEntity == null) {
-            this.targetEntity = (Entity) this.getAttackTarget();
+            this.targetEntity = this.getAttackTarget();
             if (this.rand.nextInt(this.hyperness) == 0 || !this.inWater
                 || (this.randomMotionVecX == 0.0f && this.randomMotionVecY == 0.0f && this.randomMotionVecZ == 0.0f)) {
                 final float f = this.rand.nextFloat() * 3.141593f * 2.0f;
@@ -317,6 +320,29 @@ public abstract class EntityTropicraftWaterMob extends EntityWaterMob {
         return super.isInWater();
     }
 
+    /**
+     * Vanilla decides "am I in water" by testing {@code boundingBox.expand(0, -0.4, 0)}, which shrinks the box by
+     * 0.4 in both directions. For an entity shorter than 0.8 blocks that box turns inside out, and once its top has
+     * been pushed into the block below its bottom the material query finds nothing - so the entity is never wet.
+     * <p>
+     * That is what kept the eagle ray (1.0 x 0.25) perfectly still: every swim branch in this class is gated on
+     * {@code isInWater()}, so none of them ever ran. Falling back to the unexpanded box only when vanilla says no
+     * keeps the normal case identical and cannot double-apply the fluid push.
+     * </p>
+     */
+    @Override
+    public boolean handleWaterMovement() {
+        if (super.handleWaterMovement()) {
+            return true;
+        }
+        if (this.worldObj != null && this.worldObj.isMaterialInBB(this.boundingBox, Material.water)) {
+            this.inWater = true;
+            this.fallDistance = 0.0f;
+            return true;
+        }
+        return false;
+    }
+
     public boolean getCanSpawnHere() {
         return this.posY > 45.0 && this.posY < 63.0 && super.getCanSpawnHere();
     }
@@ -330,8 +356,7 @@ public abstract class EntityTropicraftWaterMob extends EntityWaterMob {
     public void applyEntityCollision(final Entity entity) {
         super.applyEntityCollision(entity);
         if (this.targetEntity != null && entity.equals((Object) this.targetEntity) && this.attackStrength() != 0) {
-            this.targetEntity
-                .attackEntityFrom(DamageSource.causeMobDamage((EntityLivingBase) this), (float) this.attackStrength());
+            this.targetEntity.attackEntityFrom(DamageSource.causeMobDamage(this), (float) this.attackStrength());
             this.attackTime = 60;
         }
     }
@@ -393,7 +418,6 @@ public abstract class EntityTropicraftWaterMob extends EntityWaterMob {
                     if (e.isDead) {
                         this.setHookID(-1);
                     }
-                    if (this.rand.nextInt(this.fishingBreakLineOdds) != 0 || !this.worldObj.isRemote) {}
                 }
             }
         }
@@ -407,7 +431,7 @@ public abstract class EntityTropicraftWaterMob extends EntityWaterMob {
                 if (this.fishingLog.contains(out)) {
                     return;
                 }
-                System.out.println(out);
+                FMLLog.info("%s", out);
                 this.fishingLog.add(out);
             }
         } catch (Exception ex) {}

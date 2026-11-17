@@ -2,7 +2,6 @@ package net.tropicraft.entity.underdasea;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -42,7 +41,7 @@ public class EntitySeaUrchin extends EntityEchinoderm {
             if (ent instanceof EntityPlayer) {
                 final EntityPlayer player = (EntityPlayer) ent;
                 if (player.getHeldItem() == null) {
-                    player.attackEntityFrom(DamageSource.causeMobDamage((EntityLivingBase) this), 2.0f);
+                    player.attackEntityFrom(DamageSource.causeMobDamage(this), 2.0f);
                 }
             }
         }
@@ -54,12 +53,12 @@ public class EntitySeaUrchin extends EntityEchinoderm {
         if (!this.worldObj.isRemote && ent instanceof EntityLiving
             && !(ent instanceof EntitySeaUrchin)
             && !(ent instanceof EntitySeaUrchinEgg)) {
-            ent.attackEntityFrom(DamageSource.causeMobDamage((EntityLivingBase) this), 2.0f);
+            ent.attackEntityFrom(DamageSource.causeMobDamage(this), 2.0f);
         }
     }
 
     protected Item getDropItem() {
-        return (Item) (this.isChild() ? null : TCItemRegistry.seaUrchinRoe);
+        return (this.isChild() ? null : TCItemRegistry.seaUrchinRoe);
     }
 
     public EntityEchinodermEgg createEgg() {

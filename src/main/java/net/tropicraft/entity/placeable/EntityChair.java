@@ -154,28 +154,28 @@ public class EntityChair extends Entity {
                     this.motionY *= 0.5;
                     this.motionZ *= 0.5;
                 }
-                this.motionX *= 0.9900000095367432;
-                this.motionY *= 0.949999988079071;
-                this.motionZ *= 0.9900000095367432;
+                this.motionX *= 0.99f;
+                this.motionY *= 0.95f;
+                this.motionZ *= 0.99f;
             }
         } else {
             if (d0 < 1.0) {
                 final double d5 = d0 * 2.0 - 1.0;
-                this.motionY += 0.03999999910593033 * d5;
+                this.motionY += 0.04f * d5;
             } else {
                 if (this.motionY < 0.0) {
                     this.motionY /= 2.0;
                 }
-                this.motionY += 0.007000000216066837;
+                this.motionY += 0.007f;
             }
             if (this.getComeSailAway() && this.riddenByEntity instanceof EntityLivingBase entitylivingbase) {
                 final float f = entitylivingbase.rotationYaw + -entitylivingbase.moveStrafing * 90.0f;
                 this.motionX += -Math.sin(f * 3.1415927f / 180.0f) * this.speedMultiplier
                     * entitylivingbase.moveForward
-                    * 0.05000000074505806;
+                    * 0.05f;
                 this.motionZ += Math.cos(f * 3.1415927f / 180.0f) * this.speedMultiplier
                     * entitylivingbase.moveForward
-                    * 0.05000000074505806;
+                    * 0.05f;
             }
             double d5 = Math.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
             if (d5 > 0.45) {
@@ -224,9 +224,9 @@ public class EntityChair extends Entity {
             }
             this.moveEntity(this.motionX, this.motionY, this.motionZ);
             if (this.getComeSailAway()) {
-                this.motionX *= 0.9900000095367432;
-                this.motionY *= 0.949999988079071;
-                this.motionZ *= 0.9900000095367432;
+                this.motionX *= 0.99f;
+                this.motionY *= 0.95f;
+                this.motionZ *= 0.99f;
             }
             this.rotationPitch = 0.0f;
             double d6 = this.rotationYaw;
@@ -244,9 +244,8 @@ public class EntityChair extends Entity {
             }
             this.setRotation(this.rotationYaw += (float) d13, this.rotationPitch);
             if (!this.worldObj.isRemote) {
-                final List<?> list = this.worldObj.getEntitiesWithinAABBExcludingEntity(
-                    this,
-                    this.boundingBox.expand(0.20000000298023224, 0.0, 0.20000000298023224));
+                final List<?> list = this.worldObj
+                    .getEntitiesWithinAABBExcludingEntity(this, this.boundingBox.expand(0.2f, 0.0, 0.2f));
                 if (list != null && !list.isEmpty()) {
                     for (final Object obj : list) {
                         final Entity entity = (Entity) obj;
@@ -323,7 +322,6 @@ public class EntityChair extends Entity {
             return true;
         }
         if (!this.worldObj.isRemote) {
-            System.out.println("mount");
             player.mountEntity(this);
         }
         return true;

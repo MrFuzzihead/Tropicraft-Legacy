@@ -20,6 +20,8 @@ import net.tropicraft.block.tileentity.TileEntityBambooChest;
 import net.tropicraft.registry.TCBlockRegistry;
 import net.tropicraft.registry.TCItemRegistry;
 
+import cpw.mods.fml.common.FMLLog;
+
 public class TeleporterTropics extends Teleporter {
 
     private static Block PORTAL_WALL_BLOCK;
@@ -46,9 +48,7 @@ public class TeleporterTropics extends Teleporter {
             this.placeInExistingPortal(entity, d, d2, d3, f);
         }
         final long finishTime = System.currentTimeMillis();
-        System.out.printf(
-            "It took %f seconds for TeleporterTropics.placeInPortal to complete\n",
-            (finishTime - startTime) / 1000.0f);
+        FMLLog.fine("TeleporterTropics.placeInPortal took {} ms", finishTime - startTime);
     }
 
     public boolean placeInExistingPortal(final Entity entity, final double d, final double d2, final double d3,
@@ -286,15 +286,15 @@ public class TeleporterTropics extends Teleporter {
                     }
                     final boolean isCorner = (xOffset == -2 || xOffset == 2) && (zOffset == -2 || zOffset == 2);
                     if (yOffset == 0 && isCorner) {
-                        this.world.setBlock(blockX, blockY + 1, blockZ, (Block) TCBlockRegistry.tikiTorch, 1, 3);
-                        this.world.setBlock(blockX, blockY + 2, blockZ, (Block) TCBlockRegistry.tikiTorch, 1, 3);
-                        this.world.setBlock(blockX, blockY + 3, blockZ, (Block) TCBlockRegistry.tikiTorch, 0, 3);
+                        this.world.setBlock(blockX, blockY + 1, blockZ, TCBlockRegistry.tikiTorch, 1, 3);
+                        this.world.setBlock(blockX, blockY + 2, blockZ, TCBlockRegistry.tikiTorch, 1, 3);
+                        this.world.setBlock(blockX, blockY + 3, blockZ, TCBlockRegistry.tikiTorch, 0, 3);
                     }
                 }
             }
         }
         if (this.world.provider instanceof WorldProviderTropicraft) {
-            this.world.setBlock(x + 2, y + 1, z, (Block) TCBlockRegistry.bambooChest, 1, 3);
+            this.world.setBlock(x + 2, y + 1, z, TCBlockRegistry.bambooChest, 1, 3);
             final TileEntityBambooChest tile = (TileEntityBambooChest) this.world.getTileEntity(x + 2, y + 1, z);
             if (tile != null) {
                 tile.setIsUnbreakable(true);
@@ -333,7 +333,6 @@ public class TeleporterTropics extends Teleporter {
     }
 
     private List<Block> getValidBuildBlocks() {
-        return Arrays
-            .asList((Block) Blocks.sand, (Block) Blocks.grass, Blocks.dirt, (Block) TCBlockRegistry.purifiedSand);
+        return Arrays.asList(Blocks.sand, Blocks.grass, Blocks.dirt, TCBlockRegistry.purifiedSand);
     }
 }

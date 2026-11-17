@@ -3,7 +3,6 @@ package net.tropicraft.entity.hostile;
 import java.util.Random;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
@@ -28,7 +27,7 @@ public class SpiderAdult extends SpiderBase {
     }
 
     public void attackMelee(final Entity ent, final float dist) {
-        ent.attackEntityFrom(DamageSource.causeMobDamage((EntityLivingBase) this), this.isMother ? 6.0f : 4.0f);
+        ent.attackEntityFrom(DamageSource.causeMobDamage(this), this.isMother ? 6.0f : 4.0f);
     }
 
     @Override
@@ -55,7 +54,7 @@ public class SpiderAdult extends SpiderBase {
     }
 
     public IEntityLivingData onSpawnWithEgg(final IEntityLivingData par1EntityLivingBaseData) {
-        final Random rand = new Random();
+        final Random rand = this.rand;
         if (rand.nextInt(4) == 0) {
             this.isMother = true;
         }

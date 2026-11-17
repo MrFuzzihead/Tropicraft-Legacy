@@ -12,7 +12,6 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.tropicraft.block.tileentity.TileEntityBambooMug;
-import net.tropicraft.factory.TileEntityFactory;
 import net.tropicraft.registry.TCItemRegistry;
 
 public class BlockBambooMug extends BlockContainer {
@@ -72,6 +71,6 @@ public class BlockBambooMug extends BlockContainer {
     }
 
     public TileEntity createNewTileEntity(final World p_149915_1_, final int p_149915_2_) {
-        return TileEntityFactory.getBambooMugTE();
+        return new TileEntityBambooMug();
     }
 }

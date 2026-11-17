@@ -75,13 +75,15 @@ public class EntityTameBall extends EntityThrowableUsefull {
         }
     }
 
+    // CoroUtil's EntityThrowableUsefull declares both of these public, so a protected override is a compile error
+    // as soon as that jar is deobfuscated (i.e. on any dev run); the wider modifier is a legal override either way.
     @Override
-    protected void readEntityFromNBT(NBTTagCompound tagCompund) {
+    public void readEntityFromNBT(NBTTagCompound tagCompund) {
 
     }
 
     @Override
-    protected void writeEntityToNBT(NBTTagCompound tagCompound) {
+    public void writeEntityToNBT(NBTTagCompound tagCompound) {
 
     }
 
@@ -93,7 +95,7 @@ public class EntityTameBall extends EntityThrowableUsefull {
         MovingObjectPosition movingobjectposition = null;
         Entity entity = null;
         final List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(
-            (Entity) this,
+            this,
             this.boundingBox.addCoord(this.motionX, this.motionY, this.motionZ)
                 .expand(0.5, 1.0, 0.5));
         final double d0 = 0.0;
@@ -118,7 +120,7 @@ public class EntityTameBall extends EntityThrowableUsefull {
             final AITamable tamable = ((ICoroAI) movingobjectposition.entityHit).getAIAgent().jobMan
                 .getPrimaryJob().tamable;
             if (!tamable.isTame()) {
-                tamable.tameBy(CoroUtilEntity.getName((Entity) this.getThrower()));
+                tamable.tameBy(CoroUtilEntity.getName(this.getThrower()));
                 this.setDead();
             }
         }

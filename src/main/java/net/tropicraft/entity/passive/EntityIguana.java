@@ -4,11 +4,8 @@ import java.util.List;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
@@ -16,7 +13,11 @@ import net.minecraft.world.World;
 import net.tropicraft.entity.EntityTropicraftAnimal;
 import net.tropicraft.registry.TCItemRegistry;
 
-public class EntityIguana extends EntityTropicraftAnimal implements IMob {
+/**
+ * A passive animal. {@code IMob} used to be declared here, which marked the iguana as hostile to everything that
+ * classifies mobs by type (spawn caps, peaceful handling) while its behaviour was an ordinary animal's.
+ */
+public class EntityIguana extends EntityTropicraftAnimal {
 
     private int angerLevel;
 
@@ -33,7 +34,7 @@ public class EntityIguana extends EntityTropicraftAnimal implements IMob {
         final Entity entity = damagesource.getEntity();
         if (entity instanceof EntityPlayer) {
             final List list = this.worldObj
-                .getEntitiesWithinAABBExcludingEntity((Entity) this, this.boundingBox.expand(32.0, 32.0, 32.0));
+                .getEntitiesWithinAABBExcludingEntity(this, this.boundingBox.expand(32.0, 32.0, 32.0));
             for (int i = 0; i < list.size(); ++i) {
                 final Entity entity2 = (Entity) list.get(i);
                 if (entity2 instanceof EntityIguana) {
@@ -57,15 +58,15 @@ public class EntityIguana extends EntityTropicraftAnimal implements IMob {
                 final double d = entity.posX - this.posX;
                 final double d2 = entity.posZ - this.posZ;
                 final float f1 = MathHelper.sqrt_double(d * d + d2 * d2);
-                this.motionX = d / f1 * 0.5 * 0.800000011920929 + this.motionX * 0.20000000298023224;
-                this.motionZ = d2 / f1 * 0.5 * 0.800000011920929 + this.motionZ * 0.20000000298023224;
-                this.motionY = 0.4000000059604645;
+                this.motionX = d / f1 * 0.5 * 0.8f + this.motionX * 0.2f;
+                this.motionZ = d2 / f1 * 0.5 * 0.8f + this.motionZ * 0.2f;
+                this.motionY = 0.4f;
             }
         } else if (range < 1.5f && entity.boundingBox.maxY > this.boundingBox.minY
             && entity.boundingBox.minY < this.boundingBox.maxY) {
                 this.attackTime = 20;
                 final byte byte0 = 2;
-                entity.attackEntityFrom(DamageSource.causeMobDamage((EntityLivingBase) this), (float) byte0);
+                entity.attackEntityFrom(DamageSource.causeMobDamage(this), (float) byte0);
             }
     }
 
@@ -77,7 +78,7 @@ public class EntityIguana extends EntityTropicraftAnimal implements IMob {
 
     protected void dropFewItems(final boolean recentlyHit, final int looting) {
         for (int numDrops = 3 + this.rand.nextInt(1 + looting), i = 0; i < numDrops; ++i) {
-            this.dropItem((Item) TCItemRegistry.scale, 1);
+            this.dropItem(TCItemRegistry.scale, 1);
         }
     }
 
@@ -93,8 +94,8 @@ public class EntityIguana extends EntityTropicraftAnimal implements IMob {
         if (this.angerLevel == 0) {
             return null;
         }
-        final EntityPlayer entityplayer = this.worldObj.getClosestVulnerablePlayerToEntity((Entity) this, 16.0);
-        return (Entity) ((entityplayer != null && this.canEntityBeSeen((Entity) entityplayer)) ? entityplayer : null);
+        final EntityPlayer entityplayer = this.worldObj.getClosestVulnerablePlayerToEntity(this, 16.0);
+        return ((entityplayer != null && this.canEntityBeSeen(entityplayer)) ? entityplayer : null);
     }
 
     public float getSoundVolume() {

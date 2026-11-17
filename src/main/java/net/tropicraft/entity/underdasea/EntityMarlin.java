@@ -2,7 +2,6 @@ package net.tropicraft.entity.underdasea;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
@@ -61,7 +60,7 @@ public class EntityMarlin extends EntityTropicraftWaterMob {
     protected void dropFewItems(final boolean flag) {
         for (int i = this.rand.nextInt(3) + 1, j = 0; j < i; ++j) {
             if (!this.worldObj.isRemote) {
-                this.entityDropItem(new ItemStack((Item) TCItemRegistry.freshMarlin), 0.0f);
+                this.entityDropItem(new ItemStack(TCItemRegistry.freshMarlin), 0.0f);
             }
         }
     }

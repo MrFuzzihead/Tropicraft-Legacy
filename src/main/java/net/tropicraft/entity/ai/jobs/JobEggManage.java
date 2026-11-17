@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
@@ -58,7 +57,7 @@ public class JobEggManage extends JobBase {
         if (this.eggSpawnCountdown == -1 && this.ent.worldObj.getWorldTime() % 80L == 0L) {
             this.eggSpawnCountdown = this.eggSpawnCountdownMax;
             final List<SpiderEgg> foundEggs = (List<SpiderEgg>) this.ent.worldObj.getEntitiesWithinAABB(
-                (Class) SpiderEgg.class,
+                SpiderEgg.class,
                 this.ent.boundingBox.expand(
                     (double) this.eggScanRangeMotherToEgg,
                     (double) this.eggScanRangeMotherToEgg,
@@ -72,7 +71,7 @@ public class JobEggManage extends JobBase {
         if (this.ent.onGround && this.ent.getNavigator()
             .noPath() && this.eggs.size() < this.eggSpawnMax && this.eggSpawnCountdown == 0) {
             this.eggSpawnCountdown = this.eggSpawnCountdownMax;
-            final Random rand = new Random();
+            final Random rand = this.ent.worldObj.rand;
             Vec3 spawnCoords = null;
             if (this.eggs.size() == 0) {
                 spawnCoords = Vec3.createVectorHelper(this.ent.posX, this.ent.posY, this.ent.posZ);
@@ -85,7 +84,7 @@ public class JobEggManage extends JobBase {
             eggSpawn.setPosition(spawnCoords.xCoord, spawnCoords.yCoord, spawnCoords.zCoord);
             eggSpawn.onSpawnWithEgg(null);
             eggSpawn.motherID = this.ai.entID;
-            this.ent.worldObj.spawnEntityInWorld((Entity) eggSpawn);
+            this.ent.worldObj.spawnEntityInWorld(eggSpawn);
             this.eggs.add(eggSpawn);
         }
         if (this.eggs.size() > 0 && this.ent.worldObj.getWorldTime() % 80L == 0L) {
@@ -96,9 +95,9 @@ public class JobEggManage extends JobBase {
                 }
             }
             if (this.eggs.size() > 0 && this.ent.getNavigator()
-                .noPath() && this.ent.getDistanceToEntity((Entity) this.eggs.get(0)) > this.eggMaxDistGuard) {
+                .noPath() && this.ent.getDistanceToEntity(this.eggs.get(0)) > this.eggMaxDistGuard) {
                 this.ai.walkTo(
-                    (Entity) this.ent,
+                    this.ent,
                     MathHelper.floor_double(this.eggs.get(0).posX),
                     MathHelper.floor_double(this.eggs.get(0).posY),
                     MathHelper.floor_double(this.eggs.get(0).posZ),

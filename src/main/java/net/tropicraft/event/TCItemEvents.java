@@ -2,7 +2,6 @@ package net.tropicraft.event;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
@@ -27,7 +26,7 @@ public class TCItemEvents {
 
     @SubscribeEvent
     public void handleBucketFillEvent(final FillBucketEvent event) {
-        final ItemStack iHazBucket = new ItemStack((Item) TCItemRegistry.bucketTropicsWater);
+        final ItemStack iHazBucket = new ItemStack(TCItemRegistry.bucketTropicsWater);
         final World world = event.world;
         final int x = event.target.blockX;
         final int y = event.target.blockY;

@@ -25,8 +25,13 @@ public class JobExtraTargetting extends JobBase {
     public void tick() {
         super.tick();
         if (this.ai.entityToAttack == null) {
-            this.ai.entityToAttack = (Entity) this.ent.worldObj
-                .getClosestVulnerablePlayerToEntity((Entity) this.ent, (double) this.rangeTarget);
+            final Entity candidate = this.ent.worldObj
+                .getClosestVulnerablePlayerToEntity(this.ent, (double) this.rangeTarget);
+            // Acquiring a target has to go through isEnemy, or this job re-invents the creative-player problem the
+            // rest of the job system was just fixed for.
+            if (candidate != null && this.isEnemy(candidate)) {
+                this.ai.entityToAttack = candidate;
+            }
         }
     }
 }

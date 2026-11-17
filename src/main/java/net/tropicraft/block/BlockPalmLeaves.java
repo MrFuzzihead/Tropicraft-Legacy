@@ -2,7 +2,6 @@ package net.tropicraft.block;
 
 import java.util.Random;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.Item;
@@ -10,6 +9,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.tropicraft.registry.TCBlockRegistry;
 import net.tropicraft.registry.TCCreativeTabRegistry;
+import net.tropicraft.util.TropicraftNames;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -36,11 +36,7 @@ public class BlockPalmLeaves extends BlockLeaves {
     }
 
     public String getUnlocalizedName() {
-        return String.format("tile.%s%s", "tropicraft:", this.getActualName(super.getUnlocalizedName()));
-    }
-
-    protected String getActualName(final String unlocalizedName) {
-        return unlocalizedName.substring(unlocalizedName.indexOf(46) + 1);
+        return TropicraftNames.block(super.getUnlocalizedName());
     }
 
     public int quantityDropped(final Random random) {
@@ -48,7 +44,7 @@ public class BlockPalmLeaves extends BlockLeaves {
     }
 
     public Item getItemDropped(final int metadata, final Random random, final int j) {
-        return Item.getItemFromBlock((Block) TCBlockRegistry.saplings);
+        return Item.getItemFromBlock(TCBlockRegistry.saplings);
     }
 
     @SideOnly(Side.CLIENT)

@@ -9,7 +9,12 @@ import modconfig.IConfigCategory;
 
 public class ConfigMisc implements IConfigCategory {
 
-    @ConfigComment({ "List of users who can use coconut bombs." })
+    @ConfigComment({ "When true, only the players named in coconutBombWhitelist may throw coconut bombs.",
+        "When false (the default) everybody can, and coconutBombWhitelist is ignored.",
+        "The whitelist accepts names separated by commas or spaces." })
+    public static boolean coconutBombWhitelistEnabled;
+
+    @ConfigComment({ "Names allowed to throw coconut bombs while coconutBombWhitelistEnabled is true." })
     public static String coconutBombWhitelist;
     public static String[] COCONUT_BOMB_WHITELIST;
     public static List<String> coconutBombWhitelistedUsers;
@@ -23,6 +28,13 @@ public class ConfigMisc implements IConfigCategory {
         "Set to false to restore the old behaviour, where the Tropics always matched the overworld.",
         "Changing this takes effect the next time the Tropics dimension loads." })
     public static boolean separateTimeAndWeather;
+
+    @ConfigComment({
+        "The dimension id the Tropics are registered under. Default -127, which is what existing worlds were saved with.",
+        "Change it only before a world is created: the dimension id is part of every saved chunk's location, and a world",
+        "saved with the old id keeps its chunks there - they will not appear under a new id.",
+        "Must not collide with another mod's dimension; a failed registration is reported in the log at startup." })
+    public static int tropicsDimensionId;
 
     @ConfigComment({ "Time of day the Tropics start at when their clock first starts.",
         "The island's clock is pinned to this time of day on day 1, in clear weather, the first time a player actually",
@@ -44,17 +56,18 @@ public class ConfigMisc implements IConfigCategory {
     }
 
     public void hookUpdatedValues() {
-        ConfigMisc.COCONUT_BOMB_WHITELIST = (ConfigMisc.coconutBombWhitelist.contains(",")
-            ? ConfigMisc.coconutBombWhitelist.replace(" ", "")
-                .split(",")
-            : ConfigMisc.coconutBombWhitelist.split(" "));
+        // An empty string used to split into [""], i.e. one nameless entry; accept both "a, b" and "a b" instead.
+        final String raw = ConfigMisc.coconutBombWhitelist == null ? "" : ConfigMisc.coconutBombWhitelist.trim();
+        ConfigMisc.COCONUT_BOMB_WHITELIST = raw.isEmpty() ? new String[0] : raw.split("[,\s]+");
         ConfigMisc.coconutBombWhitelistedUsers = Arrays.asList(ConfigMisc.COCONUT_BOMB_WHITELIST);
     }
 
     static {
         ConfigMisc.separateTimeAndWeather = true;
+        ConfigMisc.tropicsDimensionId = -127;
         ConfigMisc.tropicsInitialTime = 1000;
         ConfigMisc.sleepResetsWeather = true;
+        ConfigMisc.coconutBombWhitelistEnabled = false;
         ConfigMisc.coconutBombWhitelist = "";
         ConfigMisc.COCONUT_BOMB_WHITELIST = null;
         ConfigMisc.coconutBombWhitelistedUsers = new ArrayList<String>();

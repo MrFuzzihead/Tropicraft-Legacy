@@ -1,15 +1,11 @@
 package net.tropicraft.event;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetHandlerPlayServer;
 import net.tropicraft.util.EffectHelper;
 
 import CoroUtil.packet.PacketHelper;
-import CoroUtil.util.CoroUtilEntity;
+import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -23,32 +19,13 @@ public class TCPacketEvents {
         try {
             final NBTTagCompound nbt = PacketHelper.readNBTTagCompound(event.packet.payload());
             final String packetCommand = nbt.getString("packetCommand");
-            System.out.println("Tropicraft packet command from server: " + packetCommand);
             if (packetCommand.equals("effectAdd")) {
-                EffectHelper
-                    .addEntry((EntityLivingBase) Minecraft.getMinecraft().thePlayer, nbt.getInteger("effectTime"));
+                EffectHelper.addEntry(Minecraft.getMinecraft().thePlayer, nbt.getInteger("effectTime"));
             } else if (packetCommand.equals("effectRemove")) {
-                EffectHelper.removeEntry((EntityLivingBase) Minecraft.getMinecraft().thePlayer);
+                EffectHelper.removeEntry(Minecraft.getMinecraft().thePlayer);
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            FMLLog.warning("[Tropicraft] Could not read a packet from the server: %s", ex);
         }
-    }
-
-    @SubscribeEvent
-    public void onPacketFromClient(final FMLNetworkEvent.ServerCustomPacketEvent event) {
-        final EntityPlayerMP entP = ((NetHandlerPlayServer) event.handler).playerEntity;
-        try {
-            final NBTTagCompound nbt = PacketHelper.readNBTTagCompound(event.packet.payload());
-            final String packetCommand = nbt.getString("packetCommand");
-            if (packetCommand.equals("")) {}
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    @SideOnly(Side.CLIENT)
-    public String getSelfUsername() {
-        return CoroUtilEntity.getName((Entity) Minecraft.getMinecraft().thePlayer);
     }
 }

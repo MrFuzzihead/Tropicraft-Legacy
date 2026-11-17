@@ -1,12 +1,11 @@
 package net.tropicraft.item;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.tropicraft.entity.projectile.EntityTropicraftLeafballNew;
+import net.tropicraft.util.TropicraftNames;
 
 import CoroUtil.entity.ItemTropicraftLeafball;
 import cpw.mods.fml.relauncher.Side;
@@ -23,26 +22,22 @@ public class ItemTropicraftLeafballNew extends ItemTropicraftLeafball {
             --itemstack.stackSize;
         }
         world.playSoundAtEntity(
-            (Entity) entityplayer,
+            entityplayer,
             "random.bow",
             0.5f,
             0.4f / (ItemTropicraftLeafballNew.itemRand.nextFloat() * 0.4f + 0.8f));
         if (!world.isRemote) {
-            world.spawnEntityInWorld((Entity) new EntityTropicraftLeafballNew(world, (EntityLivingBase) entityplayer));
+            world.spawnEntityInWorld(new EntityTropicraftLeafballNew(world, entityplayer));
         }
         return itemstack;
     }
 
     public String getUnlocalizedName() {
-        return String.format("item.%s%s", "tropicraft:", this.getActualName(super.getUnlocalizedName()));
+        return TropicraftNames.item(super.getUnlocalizedName());
     }
 
     public String getUnlocalizedName(final ItemStack itemStack) {
-        return String.format("item.%s%s", "tropicraft:", this.getActualName(super.getUnlocalizedName()));
-    }
-
-    protected String getActualName(final String unlocalizedName) {
-        return unlocalizedName.substring(unlocalizedName.indexOf(".") + 1);
+        return TropicraftNames.item(super.getUnlocalizedName());
     }
 
     @SideOnly(Side.CLIENT)

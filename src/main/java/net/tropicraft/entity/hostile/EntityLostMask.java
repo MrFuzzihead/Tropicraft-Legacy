@@ -49,9 +49,9 @@ public class EntityLostMask extends Entity implements WindHandler {
             this.motionY = 0.0;
         }
         if (this.checkForWater(0)) {
-            this.motionY = 0.019999999552965164;
-            this.motionX *= 0.949999988079071;
-            this.motionZ *= 0.949999988079071;
+            this.motionY = 0.02f;
+            this.motionX *= 0.95f;
+            this.motionZ *= 0.95f;
         } else {
             final int xMod = this.worldObj.rand.nextInt(10);
             final int yMod = this.worldObj.rand.nextInt(30);
@@ -67,7 +67,7 @@ public class EntityLostMask extends Entity implements WindHandler {
             final int n3 = 2;
             array2[n3] += zMod;
             this.setRotator(a);
-            this.motionY -= 0.05000000074505806;
+            this.motionY -= 0.05f;
         }
         this.moveEntity(this.motionX, this.motionY, this.motionZ);
     }

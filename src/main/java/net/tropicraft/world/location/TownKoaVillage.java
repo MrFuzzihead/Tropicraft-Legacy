@@ -1,8 +1,5 @@
 package net.tropicraft.world.location;
 
-import java.io.File;
-
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.nbt.NBTTagCompound;
@@ -14,8 +11,8 @@ import net.tropicraft.entity.koa.EntityKoaFisher;
 import net.tropicraft.entity.koa.EntityKoaHunter;
 import net.tropicraft.entity.koa.EntityKoaShaman;
 import net.tropicraft.entity.koa.EntityKoaTrader;
+import net.tropicraft.util.TCSchematics;
 
-import CoroUtil.util.CoroUtilFile;
 import CoroUtil.world.location.ManagedLocation;
 import CoroUtil.world.location.SpawnLocationData;
 import CoroUtil.world.location.town.TownObject;
@@ -24,6 +21,7 @@ import build.ICustomGen;
 import build.world.Build;
 import build.world.BuildJob;
 import build.world.BuildManager;
+import cpw.mods.fml.common.FMLLog;
 
 public class TownKoaVillage extends TownObject implements ICustomGen {
 
@@ -31,6 +29,8 @@ public class TownKoaVillage extends TownObject implements ICustomGen {
     public int areaWidth;
     public int areaHeight;
     public int direction;
+    /** True once a schematic build job has actually been queued, see {@link #genSchematic()}. */
+    private boolean structureQueued;
 
     public TownKoaVillage() {
         this.areaLength = TownKoaVillageGenHelper.areaLength;
@@ -52,16 +52,41 @@ public class TownKoaVillage extends TownObject implements ICustomGen {
     }
 
     public void genStructure() {
-        this.genSchematic();
+        this.structureQueued = this.genSchematic();
     }
 
-    public void genSchematic() {
+    public boolean isStructureQueued() {
+        return this.structureQueued;
+    }
+
+    /**
+     * Queues the village schematic for building.
+     * <p>
+     * CoroUtil's {@code Build} does not report a missing or corrupt schematic: it catches the exception in
+     * {@code readNBT}, prints a stack trace and leaves a build with zero size behind. That build is then queued,
+     * the village registers itself as a live town, and nothing is ever placed - the failure mode the Koa villages
+     * shipped with. Both failure cases are detected here instead, so the caller can skip the village entirely.
+     *
+     * @return true if a build job was queued
+     */
+    public boolean genSchematic() {
         final int yOffset = 0;
+        // Extracts the bundled asset to <save folder>/TCSchematics on first use and reports it once if that fails.
+        final String schematicPath = TCSchematics.getBasePath("koavillage");
+        if (schematicPath == null) {
+            return false;
+        }
         final Build mainStructureData = new Build(
             this.spawn.posX,
             this.spawn.posY + yOffset,
             this.spawn.posZ,
-            CoroUtilFile.getSaveFolderPath() + "TCSchematics" + File.separator + "koavillage");
+            schematicPath);
+        if (mainStructureData.levelData == null || mainStructureData.map_sizeY <= 0) {
+            FMLLog.severe(
+                "[Tropicraft] Could not read the Koa village schematic from %s - village generation is disabled.",
+                schematicPath + TCSchematics.EXTENSION);
+            return false;
+        }
         final BuildJob bj = new BuildJob(
             -99,
             this.spawn.posX,
@@ -77,10 +102,11 @@ public class TownKoaVillage extends TownObject implements ICustomGen {
         bj.customGenCallback = (ICustomGen) this;
         this.areaHeight = mainStructureData.map_sizeY;
         BuildServerTicks.buildMan.addBuild(bj);
+        return true;
     }
 
     public void spawnEntitiesForce() {
-        System.out.println("Spawning koa village population for village: " + this.spawn);
+        FMLLog.info("[Tropicraft] Spawning Koa village population for village: %s", this.spawn);
         this.tickMonitorPersistantMembers();
     }
 
@@ -154,8 +180,8 @@ public class TownKoaVillage extends TownObject implements ICustomGen {
                 (double) (this.spawn.posY + parData.coords.posY),
                 (double) (this.spawn.posZ + parData.coords.posZ + 0.5f));
             this.getWorld()
-                .spawnEntityInWorld((Entity) ent);
-            this.addEntity(parData.type, (EntityLivingBase) ent);
+                .spawnEntityInWorld(ent);
+            this.addEntity(parData.type, ent);
             parData.entityUUID = ent.getPersistentID();
             ent.onSpawnWithEgg((IEntityLivingData) null);
         }

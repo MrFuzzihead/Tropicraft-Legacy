@@ -77,7 +77,7 @@ public abstract class EntityEchinoderm extends EntityWaterMob {
                         final double newY = this.posY + 1.0;
                         final double newZ = this.posZ + 0.5 * (mate.posZ - this.posZ);
                         egg.setLocationAndAngles(newX, newY, newZ, 0.0f, 0.0f);
-                        this.worldObj.spawnEntityInWorld((Entity) egg);
+                        this.worldObj.spawnEntityInWorld(egg);
                     }
                 }
             }
@@ -99,7 +99,7 @@ public abstract class EntityEchinoderm extends EntityWaterMob {
         EntityEchinoderm closestMate = null;
         double closestSqDist = -1.0;
         final AxisAlignedBB aabb = this.boundingBox.expand(8.0, 8.0, 8.0);
-        for (final Object obj : this.worldObj.getEntitiesWithinAABB((Class) this.getClass(), aabb)) {
+        for (final Object obj : this.worldObj.getEntitiesWithinAABB(this.getClass(), aabb)) {
             if (obj == this) {
                 continue;
             }
@@ -108,7 +108,7 @@ public abstract class EntityEchinoderm extends EntityWaterMob {
             if (!this.isPotentialMate(other)) {
                 continue;
             }
-            final double sqDist = this.getDistanceSqToEntity((Entity) other);
+            final double sqDist = this.getDistanceSqToEntity(other);
             if (sqDist >= 4.0 || (closestSqDist != -1.0 && sqDist >= closestSqDist)) {
                 continue;
             }

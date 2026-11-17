@@ -62,6 +62,29 @@ public class ColorHelper {
         return getColor(rgb[0], rgb[1], rgb[2]);
     }
 
+    /**
+     * Blends {@code foreground} over {@code background}, both 0xRRGGBB, with the given foreground alpha. The result
+     * carries no alpha channel, which is what the cocktail colour (an item colour, not a pixel) wants.
+     * <p>
+     * Moved here from {@code drinks/ColorMixer}, a 300 line colour-space utility of which this was the only method
+     * anything called.
+     * </p>
+     */
+    public static int alphaBlend(final int background, final int foreground, final float foregroundAlpha) {
+        final float backgroundRed = getRed(background);
+        final float backgroundGreen = getGreen(background);
+        final float backgroundBlue = getBlue(background);
+        final float foregroundRed = getRed(foreground);
+        final float foregroundGreen = getGreen(foreground);
+        final float foregroundBlue = getBlue(foreground);
+        final float blend = foregroundAlpha;
+        final float inverse = 1.0f - blend;
+        return getColor(
+            foregroundRed * blend + backgroundRed * inverse,
+            foregroundGreen * blend + backgroundGreen * inverse,
+            foregroundBlue * blend + backgroundBlue * inverse);
+    }
+
     static {
         ColorHelper.woolValues = HashBiMap.create();
         ColorHelper.colorValues = Lists.newArrayList();

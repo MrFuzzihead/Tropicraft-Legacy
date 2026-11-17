@@ -172,7 +172,7 @@ public class MapGenVolcano {
         MapGenVolcano.volcanoSpawnBiomesLand = Arrays
             .asList(BiomeGenTropicraft.tropics, BiomeGenTropicraft.rainforestPlains);
         MapGenVolcano.volcanoSpawnBiomesOcean = Arrays.asList(BiomeGenTropicraft.tropicsOcean);
-        VOLCANO_BLOCK = (Block) TCBlockRegistry.chunkOHead;
+        VOLCANO_BLOCK = TCBlockRegistry.chunkOHead;
         LAVA_BLOCK = Blocks.lava;
     }
 }

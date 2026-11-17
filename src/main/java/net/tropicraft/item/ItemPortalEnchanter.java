@@ -5,8 +5,6 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -77,8 +75,8 @@ public class ItemPortalEnchanter extends ItemTropicraft {
                             FMLCommonHandler.instance()
                                 .getMinecraftServerInstance()
                                 .worldServerForDimension(entityplayer.dimension))
-                                    .buildTeleporterAt(x + searchX, y, z + searchZ, (Entity) entityplayer);
-                        itemstack.damageItem(1, (EntityLivingBase) entityplayer);
+                                    .buildTeleporterAt(x + searchX, y, z + searchZ, entityplayer);
+                        itemstack.damageItem(1, entityplayer);
                     }
                 }
             }

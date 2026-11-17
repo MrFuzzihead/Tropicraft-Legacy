@@ -55,7 +55,7 @@ public class RenderUmbrella extends Render {
         this.blue = ColorHelper.getBlue(entityUmbrella.getColor());
         Minecraft.getMinecraft().renderEngine.bindTexture(TropicraftUtils.getTextureEntity("umbrellaLayer"));
         GL11.glScalef(-1.0f, -1.0f, 1.0f);
-        this.modelUmbrella.render((Entity) entityUmbrella, 0.0f, 1.0f, 0.1f, 0.0f, 0.0f, 0.25f);
+        this.modelUmbrella.render(entityUmbrella, 0.0f, 1.0f, 0.1f, 0.0f, 0.0f, 0.25f);
         GL11.glPushMatrix();
         GL11.glEnable(3042);
         GL11.glBlendFunc(770, 771);
@@ -64,7 +64,7 @@ public class RenderUmbrella extends Render {
             .put(new float[] { this.red, this.green, this.blue, this.alpha })).position(0);
         GL11.glTexEnv(8960, 8705, this.color);
         Minecraft.getMinecraft().renderEngine.bindTexture(TropicraftUtils.getTextureEntity("umbrellaColorLayer"));
-        this.modelUmbrella.render((Entity) entityUmbrella, 0.0f, 1.0f, 0.1f, 0.0f, 0.0f, 0.25f);
+        this.modelUmbrella.render(entityUmbrella, 0.0f, 1.0f, 0.1f, 0.0f, 0.0f, 0.25f);
         GL11.glDisable(3042);
         GL11.glTexEnvf(8960, 8704, 8448.0f);
         GL11.glPopMatrix();

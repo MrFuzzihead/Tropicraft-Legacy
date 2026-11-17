@@ -32,14 +32,18 @@ public class CommandTCTime extends CommandBase {
     }
 
     public String getCommandUsage(final ICommandSender commandSender) {
-        return "/tc time [set <time>]";
+        return "/tc time [get|set <time>|sync]";
     }
 
     public List<String> addTabCompletionOptions(final ICommandSender commandSender, final String[] args) {
-        return args.length == 1 ? getListOfStringsMatchingLastWord(args, new String[] { "set" }) : null;
+        return args.length == 1 ? getListOfStringsMatchingLastWord(args, new String[] { "get", "set", "sync" }) : null;
     }
 
     public void processCommand(final ICommandSender commandSender, final String[] args) {
+        if (args.length > 0 && args[0].equalsIgnoreCase("sync")) {
+            syncTropicsToOverworld(commandSender);
+            return;
+        }
         if (args.length > 0 && args[0].equalsIgnoreCase("set")) {
             if (args.length < 2) {
                 throw new WrongUsageException(getCommandUsage(commandSender), new Object[0]);
@@ -75,5 +79,34 @@ public class CommandTCTime extends CommandBase {
                         info.getThunderTime(),
                         TCTimeAndWeatherData.isDetached(info))));
         }
+    }
+
+    /**
+     * Copies the overworld's clock and weather into the Tropics, for a pack developer migrating a world that was
+     * created before the Tropics had their own clock (or after somebody moved one of them by hand).
+     */
+    private void syncTropicsToOverworld(final ICommandSender commandSender) {
+        final MinecraftServer server = MinecraftServer.getServer();
+        final WorldServer overworld = server == null ? null : server.worldServerForDimension(0);
+        final WorldServer tropics = TropicraftWorldUtils.tropics();
+        if (overworld == null || tropics == null) {
+            commandSender
+                .addChatMessage(new ChatComponentText("Both the overworld and the Tropics have to be loaded."));
+            return;
+        }
+        final WorldInfo source = overworld.getWorldInfo();
+        final WorldInfo target = tropics.getWorldInfo();
+        target.setWorldTime(source.getWorldTime());
+        target.setRaining(source.isRaining());
+        target.setRainTime(source.getRainTime());
+        target.setThundering(source.isThundering());
+        target.setThunderTime(source.getThunderTime());
+        commandSender.addChatMessage(
+            new ChatComponentText(
+                String.format(
+                    "Copied the overworld's clock and weather into the Tropics (time %d, raining %s, thundering %s).",
+                    target.getWorldTime() % 24000L,
+                    target.isRaining(),
+                    target.isThundering())));
     }
 }

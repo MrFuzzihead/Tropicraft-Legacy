@@ -103,7 +103,7 @@ public class WorldGenTropicraftFruitTrees extends TCGenBase {
 
     static {
         WOOD_BLOCK = Blocks.log;
-        FRUIT_LEAF_BLOCK = (Block) TCBlockRegistry.fruitLeaves;
-        REGULAR_LEAF_BLOCK = (Block) TCBlockRegistry.rainforestLeaves;
+        FRUIT_LEAF_BLOCK = TCBlockRegistry.fruitLeaves;
+        REGULAR_LEAF_BLOCK = TCBlockRegistry.rainforestLeaves;
     }
 }

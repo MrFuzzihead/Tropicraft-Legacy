@@ -20,6 +20,6 @@
   "updateUrl" : "https://github.com/MrFuzzihead/Tropicraft-Legacy/releases/latest",
   "parent" : "",
   "screenshots": [],
-  "dependencies": []
+  "dependencies": ["CoroAI", "unimixins"]
 }
 ]

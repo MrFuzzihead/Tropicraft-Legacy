@@ -89,17 +89,14 @@ public class VMonkey extends EntityCoroAI {
     }
 
     public boolean attackEntityFrom(final DamageSource par1DamageSource, final float par2) {
-        this.worldObj.playSoundAtEntity((Entity) this, "monkeyhurt", 1.0f, 1.0f);
+        this.worldObj.playSoundAtEntity(this, "monkeyhurt", 1.0f, 1.0f);
         return super.attackEntityFrom(par1DamageSource, par2);
     }
 
     public void attackMelee(final Entity ent, final float dist) {
         super.attackMelee(ent, dist);
-        this.worldObj.playSoundAtEntity(
-            (Entity) this,
-            (this.worldObj.rand.nextInt(3) == 0) ? "monkeyangry" : "monkeyhiccup",
-            1.0f,
-            1.0f);
+        this.worldObj
+            .playSoundAtEntity(this, (this.worldObj.rand.nextInt(3) == 0) ? "monkeyangry" : "monkeyhiccup", 1.0f, 1.0f);
     }
 
     protected String getLivingSound() {

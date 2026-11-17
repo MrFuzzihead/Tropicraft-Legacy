@@ -76,30 +76,9 @@ public class MapGenUndergroundGrove {
                             && this.getBlock(i, this.y - l + 1, k, blocks) == Blocks.air
                             && this.getBlock(i, this.y - l + 2, k, blocks) == Blocks.air
                             && rand.nextInt(3) != 0) {
-                            this.placeBlockAndMeta(
-                                i,
-                                this.y - l,
-                                k,
-                                (Block) TCBlockRegistry.tikiTorch,
-                                1,
-                                blocks,
-                                metas);
-                            this.placeBlockAndMeta(
-                                i,
-                                this.y - l + 1,
-                                k,
-                                (Block) TCBlockRegistry.tikiTorch,
-                                1,
-                                blocks,
-                                metas);
-                            this.placeBlockAndMeta(
-                                i,
-                                this.y - l + 2,
-                                k,
-                                (Block) TCBlockRegistry.tikiTorch,
-                                0,
-                                blocks,
-                                metas);
+                            this.placeBlockAndMeta(i, this.y - l, k, TCBlockRegistry.tikiTorch, 1, blocks, metas);
+                            this.placeBlockAndMeta(i, this.y - l + 1, k, TCBlockRegistry.tikiTorch, 1, blocks, metas);
+                            this.placeBlockAndMeta(i, this.y - l + 2, k, TCBlockRegistry.tikiTorch, 0, blocks, metas);
                         }
                     }
                 }

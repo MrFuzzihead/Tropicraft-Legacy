@@ -1,6 +1,5 @@
 package net.tropicraft.entity.underdasea;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.nbt.NBTTagCompound;
@@ -64,7 +63,7 @@ public abstract class EntityEchinodermEgg extends EntityLiving {
             final double newY = this.posY;
             final double newZ = this.posZ;
             baby.setLocationAndAngles(newX, newY, newZ, 0.0f, 0.0f);
-            this.worldObj.spawnEntityInWorld((Entity) baby);
+            this.worldObj.spawnEntityInWorld(baby);
         }
     }
 

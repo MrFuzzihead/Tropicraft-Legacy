@@ -3,6 +3,7 @@ package net.tropicraft.block;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockStairs;
 import net.tropicraft.registry.TCCreativeTabRegistry;
+import net.tropicraft.util.TropicraftNames;
 
 public class BlockTropicraftStairs extends BlockStairs {
 
@@ -13,10 +14,7 @@ public class BlockTropicraftStairs extends BlockStairs {
     }
 
     public String getUnlocalizedName() {
-        return String.format("tile.%s%s", "tropicraft:", this.getActualName(super.getUnlocalizedName()));
+        return TropicraftNames.block(super.getUnlocalizedName());
     }
 
-    protected String getActualName(final String unlocalizedName) {
-        return unlocalizedName.substring(unlocalizedName.indexOf(46) + 1);
-    }
 }

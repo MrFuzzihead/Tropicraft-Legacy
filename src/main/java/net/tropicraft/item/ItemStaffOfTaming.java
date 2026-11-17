@@ -2,7 +2,6 @@ package net.tropicraft.item;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -21,15 +20,15 @@ public class ItemStaffOfTaming extends Item {
 
     public ItemStack onItemRightClick(final ItemStack itemstack, final World world, final EntityPlayer entityplayer) {
         if (!entityplayer.capabilities.isCreativeMode) {
-            itemstack.damageItem(1, (EntityLivingBase) entityplayer);
+            itemstack.damageItem(1, entityplayer);
         }
         world.playSoundAtEntity(
-            (Entity) entityplayer,
+            entityplayer,
             "random.bow",
             0.5f,
             0.4f / (ItemStaffOfTaming.itemRand.nextFloat() * 0.4f + 0.8f));
         if (!world.isRemote) {
-            world.spawnEntityInWorld((Entity) new EntityTameBall(world, (EntityLivingBase) entityplayer));
+            world.spawnEntityInWorld(new EntityTameBall(world, entityplayer));
         }
         return itemstack;
     }
@@ -39,13 +38,13 @@ public class ItemStaffOfTaming extends Item {
             if (player.isSneaking()) {
                 if (!(entity instanceof EntityPlayer)) {
                     if (entity.ridingEntity != null) {
-                        entity.mountEntity((Entity) null);
+                        entity.mountEntity(null);
                     } else {
-                        entity.mountEntity((Entity) player);
+                        entity.mountEntity(player);
                     }
                 }
             } else if (player.ridingEntity != null) {
-                player.mountEntity((Entity) null);
+                player.mountEntity(null);
             } else {
                 player.mountEntity(entity);
             }

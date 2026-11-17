@@ -5,7 +5,6 @@ import java.util.List;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
@@ -148,12 +147,12 @@ public class EntityUmbrella extends Entity {
         }
         if (d < 1.0) {
             final double d8 = d * 2.0 - 1.0;
-            this.motionY += 0.03999999910593033 * d8;
+            this.motionY += 0.04f * d8;
         } else {
             if (this.motionY < 0.0) {
                 this.motionY /= 2.0;
             }
-            this.motionY += 0.007000000216066837;
+            this.motionY += 0.007f;
         }
         if (this.onGround) {
             this.motionX = 0.0;
@@ -180,14 +179,13 @@ public class EntityUmbrella extends Entity {
             d12 = -20.0;
         }
         this.setRotation(this.rotationYaw += (float) d12, this.rotationPitch);
-        final List<?> list = (List<?>) this.worldObj.getEntitiesWithinAABBExcludingEntity(
-            (Entity) this,
-            this.boundingBox.expand(0.20000000298023224, 0.2, 0.20000000298023224));
+        final List<?> list = (List<?>) this.worldObj
+            .getEntitiesWithinAABBExcludingEntity(this, this.boundingBox.expand(0.2f, 0.2, 0.2f));
         if (list != null && list.size() > 0) {
             for (int j2 = 0; j2 < list.size(); ++j2) {
                 final Entity entity = (Entity) list.get(j2);
                 if (entity != this.riddenByEntity && entity.canBePushed() && entity instanceof EntityUmbrella) {
-                    entity.applyEntityCollision((Entity) this);
+                    entity.applyEntityCollision(this);
                 }
             }
         }
@@ -206,12 +204,10 @@ public class EntityUmbrella extends Entity {
                 && ((EntityPlayer) damagesource.getEntity()).capabilities.isCreativeMode;
             if (flag || this.getDamage() > 40.0f) {
                 if (this.riddenByEntity != null) {
-                    this.riddenByEntity.mountEntity((Entity) this);
+                    this.riddenByEntity.mountEntity(this);
                 }
                 if (!flag) {
-                    this.entityDropItem(
-                        new ItemStack((Item) TCItemRegistry.umbrella, 1, this.getDamageFromColor()),
-                        0.0f);
+                    this.entityDropItem(new ItemStack(TCItemRegistry.umbrella, 1, this.getDamageFromColor()), 0.0f);
                 }
                 this.setDead();
                 final int y = this.spawnY + 4;

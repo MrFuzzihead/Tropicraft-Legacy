@@ -8,6 +8,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.tropicraft.registry.TCBlockRegistry;
 import net.tropicraft.registry.TCCreativeTabRegistry;
+import net.tropicraft.util.TropicraftNames;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -39,18 +40,15 @@ public class BlockTropicraftFence extends BlockFence {
 
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(final IIconRegister iconRegister) {
-        this.blockIcon = iconRegister.registerIcon(this.getActualName(this.getFormattedTextureName()));
+        this.blockIcon = iconRegister.registerIcon(TropicraftNames.afterFirstDot(this.getFormattedTextureName()));
     }
 
     protected String getFormattedTextureName() {
-        return String.format("tile.%s%s", "tropicraft:", this.getActualName(this.getTextureName()));
+        return TropicraftNames.block(this.getTextureName());
     }
 
     public String getUnlocalizedName() {
-        return String.format("tile.%s%s", "tropicraft:", this.getActualName(super.getUnlocalizedName()));
+        return TropicraftNames.block(super.getUnlocalizedName());
     }
 
-    protected String getActualName(final String unlocalizedName) {
-        return unlocalizedName.substring(unlocalizedName.indexOf(46) + 1);
-    }
 }

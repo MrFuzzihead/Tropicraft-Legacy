@@ -1,7 +1,5 @@
 package net.tropicraft.entity.hostile;
 
-import java.util.Random;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -123,7 +121,7 @@ public class EntityTropiCreeper extends EntityCoroAI implements IMob {
             if (par1DamageSource.getEntity() instanceof EntityPlayer) {
                 int y = this.worldObj.getHeightValue((int) this.posX, (int) this.posZ);
                 final int xo = this.rand.nextInt(3) + 4;
-                final int zo = xo + this.rand.nextInt(3) - new Random().nextInt(3);
+                final int zo = xo + this.rand.nextInt(3) - this.rand.nextInt(3);
                 for (int x = (int) this.posX - xo; x < (int) this.posX + xo; ++x) {
                     for (int z = (int) this.posZ - zo; z < (int) this.posZ + zo; ++z) {
                         y = this.worldObj.getHeightValue(x, z);

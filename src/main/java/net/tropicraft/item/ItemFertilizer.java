@@ -62,33 +62,21 @@ public class ItemFertilizer extends ItemTropicraft {
                             continue;
                         }
                         if (ItemFertilizer.itemRand.nextInt(9) == 0) {
-                            world.setBlock(
-                                k2,
-                                l2,
-                                i2,
-                                (Block) TCBlockRegistry.flowers,
-                                ItemFertilizer.itemRand.nextInt(16),
-                                3);
+                            world.setBlock(k2, l2, i2, TCBlockRegistry.flowers, ItemFertilizer.itemRand.nextInt(16), 3);
                             continue;
                         }
                         if (ItemFertilizer.itemRand.nextInt(9) == 0) {
-                            world.setBlock(
-                                k2,
-                                l2,
-                                i2,
-                                (Block) TCBlockRegistry.flowers,
-                                ItemFertilizer.itemRand.nextInt(16),
-                                3);
+                            world.setBlock(k2, l2, i2, TCBlockRegistry.flowers, ItemFertilizer.itemRand.nextInt(16), 3);
                             continue;
                         }
                         if (ItemFertilizer.itemRand.nextInt(9) == 0) {
-                            world.setBlock(k2, l2, i2, (Block) TCBlockRegistry.pineapple, 7, 3);
-                            world.setBlock(k2, l2 + 1, i2, (Block) TCBlockRegistry.pineapple, 8, 3);
+                            world.setBlock(k2, l2, i2, TCBlockRegistry.pineapple, 7, 3);
+                            world.setBlock(k2, l2 + 1, i2, TCBlockRegistry.pineapple, 8, 3);
                             continue;
                         }
                         if (ItemFertilizer.itemRand.nextInt(8) == 0) {
-                            world.setBlock(k2, l2, i2, (Block) TCBlockRegistry.tallFlowers, 0, 3);
-                            world.setBlock(k2, l2 + 1, i2, (Block) TCBlockRegistry.tallFlowers, 1, 3);
+                            world.setBlock(k2, l2, i2, TCBlockRegistry.tallFlowers, 0, 3);
+                            world.setBlock(k2, l2 + 1, i2, TCBlockRegistry.tallFlowers, 1, 3);
                         }
                         continue;
                     }

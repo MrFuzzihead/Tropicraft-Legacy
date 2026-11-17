@@ -2,7 +2,6 @@ package net.tropicraft.client.entity.render;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
 import net.tropicraft.client.entity.model.ModelFish;
@@ -27,26 +26,17 @@ public class RenderTropicalFish extends RenderWaterMob {
         return TropicraftUtils.bindTextureEntity("tropicalFish");
     }
 
-    public void renderTropicalFish(final EntityTropicalFish fish, final double d, final double d1, final double d2,
-        final float f, final float f1) {
-        this.fish.inWater = fish.isInWater();
-        super.renderWaterMob(fish, d, d1, d2, f, f1);
-    }
-
-    public void func_110827_b(final EntityLiving entityliving, final double d, final double d1, final double d2,
-        final float f, final float f1) {
-        this.renderTropicalFish((EntityTropicalFish) entityliving, d, d1, d2, f, f1);
-    }
-
-    public void doRender(final Entity entity, final double d, final double d1, final double d2, final float f,
-        final float f1) {
-        this.renderTropicalFish((EntityTropicalFish) entity, d, d1, d2, f, f1);
+    @Override
+    protected void renderWaterMob(final EntityLivingBase entity, final double x, final double y, final double z,
+        final float yaw, final float partialTicks) {
+        this.fish.inWater = entity.isInWater();
+        super.renderWaterMob(entity, x, y, z, yaw, partialTicks);
     }
 
     protected void renderEquippedItems(final EntityLivingBase entityliving, final float f) {
         GL11.glPushMatrix();
         this.fish.Body.postRender(0.045f);
-        this.bindEntityTexture((Entity) entityliving);
+        this.bindEntityTexture(entityliving);
         GL11.glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
         GL11.glTranslatef(0.85f, 0.0f, 0.0f);
         this.mask.renderFish(((EntityTropicalFish) entityliving).getColor() * 2);

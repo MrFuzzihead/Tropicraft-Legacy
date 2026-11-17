@@ -2,7 +2,6 @@ package net.tropicraft.item;
 
 import java.util.List;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -34,7 +33,7 @@ public class ItemSnareTrap extends ItemTropicraft {
             return false;
         }
         final List objs = world.getEntitiesWithinAABB(
-            (Class) EntitySnareTrap.class,
+            EntitySnareTrap.class,
             AxisAlignedBB.getBoundingBox(
                 (double) x,
                 (double) (y - height + 1),
@@ -46,7 +45,7 @@ public class ItemSnareTrap extends ItemTropicraft {
             return false;
         }
         final EntitySnareTrap trap = new EntitySnareTrap(world, x, y - height + 1, z, height, dir);
-        world.spawnEntityInWorld((Entity) trap);
+        world.spawnEntityInWorld(trap);
         if (!player.capabilities.isCreativeMode) {
             --stack.stackSize;
         }

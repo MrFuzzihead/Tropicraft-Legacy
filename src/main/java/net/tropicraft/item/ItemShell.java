@@ -1,6 +1,5 @@
 package net.tropicraft.item;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
@@ -32,7 +31,7 @@ public class ItemShell extends ItemTropicraftMulti {
         }
         if (entityhanging != null && entityhanging.onValidSurface()) {
             if (!par3World.isRemote) {
-                par3World.spawnEntityInWorld((Entity) entityhanging);
+                par3World.spawnEntityInWorld(entityhanging);
             }
             --par1ItemStack.stackSize;
         }

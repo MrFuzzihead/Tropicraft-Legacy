@@ -100,7 +100,7 @@ public class EntityTCItemFrame extends EntityItemFrame implements IEntityAdditio
     }
 
     public boolean onValidSurface() {
-        if (!this.worldObj.getCollidingBoundingBoxes((Entity) this, this.boundingBox)
+        if (!this.worldObj.getCollidingBoundingBoxes(this, this.boundingBox)
             .isEmpty()) {
             return false;
         }

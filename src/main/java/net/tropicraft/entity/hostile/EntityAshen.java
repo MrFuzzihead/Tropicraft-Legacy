@@ -1,10 +1,7 @@
 package net.tropicraft.entity.hostile;
 
-import java.util.Random;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIBase;
@@ -20,6 +17,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
+import net.tropicraft.util.TropicraftUtils;
+
 public abstract class EntityAshen extends EntityMob implements IRangedAttackMob {
 
     public static final int DATAWATCHER_MASK_TYPE = 16;
@@ -33,29 +32,33 @@ public abstract class EntityAshen extends EntityMob implements IRangedAttackMob 
     public EntityAshen(final World par1World) {
         super(par1World);
         this.setSize(0.5f, 1.3f);
-        this.setMaskType(new Random().nextInt(7));
+        this.setMaskType(this.rand.nextInt(7));
         this.actionPicker = 0;
-        this.tasks.addTask(1, (EntityAIBase) new EntityAISwimming((EntityLiving) this));
+        this.tasks.addTask(1, (EntityAIBase) new EntityAISwimming(this));
         this.tasks.addTask(2, (EntityAIBase) new AIAshenChaseAndPickupLostMask(this, 1.0));
         this.tasks.addTask(3, (EntityAIBase) new EntityAIMeleeAndRangedAttack((IRangedAttackMob) this, 1.0, 60, 5.0f));
         this.tasks.addTask(4, (EntityAIBase) new EntityAIWander((EntityCreature) this, 1.0));
-        this.tasks
-            .addTask(5, (EntityAIBase) new EntityAIWatchClosest((EntityLiving) this, (Class) EntityPlayer.class, 8.0f));
-        this.tasks.addTask(6, (EntityAIBase) new EntityAILookIdle((EntityLiving) this));
+        this.tasks.addTask(5, (EntityAIBase) new EntityAIWatchClosest(this, EntityPlayer.class, 8.0f));
+        this.tasks.addTask(6, (EntityAIBase) new EntityAILookIdle(this));
         this.targetTasks.addTask(1, (EntityAIBase) new EntityAIHurtByTarget((EntityCreature) this, false));
         this.targetTasks.addTask(
             2,
-            (EntityAIBase) new EntityAINearestAttackableTarget(
-                (EntityCreature) this,
-                (Class) EntityPlayer.class,
-                0,
-                true));
+            (EntityAIBase) new EntityAINearestAttackableTarget((EntityCreature) this, EntityPlayer.class, 0, true));
     }
 
     protected void entityInit() {
         super.entityInit();
         this.dataWatcher.addObject(DATAWATCHER_MASK_TYPE, 0);
         this.dataWatcher.addObject(DATAWATCHER_ACTION_STATE, 0);
+    }
+
+    @Override
+    public void onLivingUpdate() {
+        super.onLivingUpdate();
+        // See EntityEIH: this family does not inherit EntityCoroAI's peaceful self-removal.
+        if (TropicraftUtils.isPeaceful(this.worldObj)) {
+            this.setDead();
+        }
     }
 
     protected void applyEntityAttributes() {
@@ -116,7 +119,7 @@ public abstract class EntityAshen extends EntityMob implements IRangedAttackMob 
             this.posY,
             this.posZ,
             this.rotationYaw);
-        this.worldObj.spawnEntityInWorld((Entity) this.maskToTrack);
+        this.worldObj.spawnEntityInWorld(this.maskToTrack);
     }
 
     public void pickupMask(final EntityLostMask mask) {

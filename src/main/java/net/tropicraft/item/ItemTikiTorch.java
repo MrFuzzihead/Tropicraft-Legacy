@@ -2,7 +2,6 @@ package net.tropicraft.item;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -54,12 +53,12 @@ public class ItemTikiTorch extends ItemTropicraft {
             .isSolid()) {
             return false;
         }
-        if (!world.canPlaceEntityOnSide(block, x, y, z, false, side, (Entity) player, itemstack)) {
+        if (!world.canPlaceEntityOnSide(block, x, y, z, false, side, player, itemstack)) {
             return false;
         }
         final Block blockBelow = world.getBlock(x, y - 1, z);
         if (blockBelow instanceof BlockFence) {
-            world.setBlock(x, y, z, (Block) TCBlockRegistry.tikiTorch, 0, 3);
+            world.setBlock(x, y, z, TCBlockRegistry.tikiTorch, 0, 3);
             world.playSoundEffect(
                 (double) (x + 0.5f),
                 (double) (y + 0.5f),
@@ -75,9 +74,9 @@ public class ItemTikiTorch extends ItemTropicraft {
             TCBlockRegistry.tikiTorch.onBlockPlaced(world, x, y, z, side, hitX, hitY, hitZ, 0);
             TCBlockRegistry.tikiTorch.onBlockPlaced(world, x, y, z, side, hitX, hitY, hitZ, 0);
             TCBlockRegistry.tikiTorch.onBlockPlaced(world, x, y, z, side, hitX, hitY, hitZ, 0);
-            world.setBlock(x, y, z, (Block) TCBlockRegistry.tikiTorch, 1, 3);
-            world.setBlock(x, y + 1, z, (Block) TCBlockRegistry.tikiTorch, 1, 3);
-            world.setBlock(x, y + 2, z, (Block) TCBlockRegistry.tikiTorch, 0, 3);
+            world.setBlock(x, y, z, TCBlockRegistry.tikiTorch, 1, 3);
+            world.setBlock(x, y + 1, z, TCBlockRegistry.tikiTorch, 1, 3);
+            world.setBlock(x, y + 2, z, TCBlockRegistry.tikiTorch, 0, 3);
             TCBlockRegistry.tikiTorch.onBlockPlaced(world, x, y, z, side, hitX, hitY, hitZ, 0);
             TCBlockRegistry.tikiTorch.onBlockPlaced(world, x, y, z, side, hitX, hitY, hitZ, 0);
             TCBlockRegistry.tikiTorch.onBlockPlaced(world, x, y, z, side, hitX, hitY, hitZ, 0);

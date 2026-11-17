@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
+import net.tropicraft.util.TCSchematics;
 
 import CoroUtil.world.WorldDirector;
 import CoroUtil.world.WorldDirectorManager;
@@ -18,11 +19,13 @@ public class TownKoaVillageGenHelper {
     public static int areaHeight;
 
     public static boolean hookTryGenVillage(final ChunkCoordinates parCoords, final World parWorld) {
+        // Cheap, cached, logs once per JVM. Bailing here keeps half-built villages out of the world director.
+        if (TCSchematics.getBasePath("koavillage") == null) {
+            return false;
+        }
         final int directionTry = getBestGenDirection(parCoords, parWorld);
         if (directionTry != -1) {
-            System.out.println("test success! dir: " + directionTry);
             final ChunkCoordinates centerCoords = getCoordsFromAdjustedDirection(parCoords, directionTry);
-            System.out.println("centerCoords: " + centerCoords);
             final TownKoaVillage village = new TownKoaVillage();
             final WorldDirector wd = WorldDirectorManager.instance()
                 .getCoroUtilWorldDirector(parWorld);
@@ -38,6 +41,11 @@ public class TownKoaVillageGenHelper {
             village.initData(newID, parWorld.provider.dimensionId, centerCoords);
             village.direction = directionTry;
             village.initFirstTime();
+            if (!village.isStructureQueued()) {
+                // The schematic was found but could not be read (corrupt or truncated asset); genSchematic()
+                // has already logged it. Registering the village would leave a permanent empty town.
+                return false;
+            }
             wd.addTickingLocation(village);
             return true;
         }

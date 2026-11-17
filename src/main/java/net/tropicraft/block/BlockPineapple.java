@@ -16,6 +16,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.tropicraft.info.TCNames;
 import net.tropicraft.registry.TCCreativeTabRegistry;
+import net.tropicraft.util.TropicraftNames;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -43,8 +44,8 @@ public class BlockPineapple extends BlockTallFlowers implements IGrowable {
     public void registerBlockIcons(final IIconRegister iconRegister) {
         this.topIcons = new IIcon[this.names.length];
         for (int i = 0; i < this.names.length; ++i) {
-            this.topIcons[i] = iconRegister
-                .registerIcon(this.getActualName(this.getFormattedTextureName()) + "_" + TCNames.pineappleNames[i]);
+            this.topIcons[i] = iconRegister.registerIcon(
+                TropicraftNames.afterFirstDot(this.getFormattedTextureName()) + "_" + TCNames.pineappleNames[i]);
         }
         this.bottomIcon = iconRegister.registerIcon("tropicraft:pineapple_lower");
     }
@@ -70,7 +71,7 @@ public class BlockPineapple extends BlockTallFlowers implements IGrowable {
         if (world.getBlock(i, j, k) == this && meta < 7 && world.isAirBlock(i, j + 1, k)) {
             final int growth = meta;
             if (growth >= 6) {
-                world.setBlock(i, j + 1, k, (Block) this, 8, 3);
+                world.setBlock(i, j + 1, k, this, 8, 3);
                 world.setBlockMetadataWithNotify(i, j, k, 7, 3);
             } else {
                 world.setBlockMetadataWithNotify(i, j, k, growth + 1, 3);
@@ -112,17 +113,12 @@ public class BlockPineapple extends BlockTallFlowers implements IGrowable {
     }
 
     protected String getFormattedTextureName() {
-        return String.format("tile.%s%s", "tropicraft:", this.getActualName(this.getTextureName()));
+        return TropicraftNames.block(this.getTextureName());
     }
 
     @Override
     public String getUnlocalizedName() {
-        return String.format("tile.%s%s", "tropicraft:", this.getActualName("tallFlower"));
-    }
-
-    @Override
-    protected String getActualName(final String unlocalizedName) {
-        return unlocalizedName.substring(unlocalizedName.indexOf(46) + 1);
+        return TropicraftNames.block("tallFlower");
     }
 
     @Override
@@ -137,6 +133,6 @@ public class BlockPineapple extends BlockTallFlowers implements IGrowable {
 
     @Override
     public void func_149853_b(final World world, final Random rand, final int x, final int y, final int z) {
-        world.setBlock(x, y + 1, z, (Block) this, 8, 3);
+        world.setBlock(x, y + 1, z, this, 8, 3);
     }
 }

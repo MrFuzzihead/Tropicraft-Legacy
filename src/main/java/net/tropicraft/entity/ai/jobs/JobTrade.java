@@ -2,7 +2,6 @@ package net.tropicraft.entity.ai.jobs;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -13,7 +12,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.MathHelper;
-import net.tropicraft.Tropicraft;
 import net.tropicraft.block.tileentity.TileEntityPurchasePlate;
 import net.tropicraft.economy.ItemEntry;
 import net.tropicraft.economy.ItemValues;
@@ -56,27 +54,28 @@ public class JobTrade extends JobBase {
 
     public int getOfferedItemsValue() {
         int value = 0;
-        try {
-            for (int i = 0; i < this.offeredItems.size(); ++i) {
-                value += ItemValues.getItemEntry((ItemStack) this.offeredItems.get(i))
-                    .getTotalValue((ItemStack) this.offeredItems.get(i));
+        for (int i = 0; i < this.offeredItems.size(); ++i) {
+            final ItemStack offered = (ItemStack) this.offeredItems.get(i);
+            final ItemEntry entry = ItemValues.getItemEntry(offered);
+            // Items that are not valued are worth nothing rather than fatal - this used to NPE and the catch that
+            // swallowed it made the trade UI show a nonsense credit.
+            if (entry != null) {
+                value += entry.getTotalValue(offered);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
         }
         return value;
     }
 
     public int returnCredit() {
         final int value = 0;
-        try {
-            for (int i = 0; i < this.offeredItems.size(); ++i) {
-                this.activeTrader.inventory.addItemStackToInventory((ItemStack) this.offeredItems.get(i));
-            }
-            this.offeredItems.clear();
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        if (this.activeTrader == null) {
+            // Nobody to hand the offerings back to; keep them rather than dropping them on the floor.
+            return value;
         }
+        for (int i = 0; i < this.offeredItems.size(); ++i) {
+            this.activeTrader.inventory.addItemStackToInventory((ItemStack) this.offeredItems.get(i));
+        }
+        this.offeredItems.clear();
         return value;
     }
 
@@ -91,14 +90,14 @@ public class JobTrade extends JobBase {
             this.ent.getNavigator()
                 .clearPathEntity();
             this.ai.walkTo(
-                (Entity) this.ent,
+                this.ent,
                 this.tradeBlockPos.posX,
                 this.tradeBlockPos.posY + 1,
                 this.tradeBlockPos.posZ,
                 (float) this.ai.maxPFRange,
                 600);
         }
-        this.idTradeBlock = (Block) TCBlockRegistry.purchasePlate;
+        this.idTradeBlock = TCBlockRegistry.purchasePlate;
         this.ai.maxDistanceFromHome = 0.5;
         this.tradeDistTrigger = 4.0f;
         if (this.tradeBlockPos == null) {
@@ -116,12 +115,11 @@ public class JobTrade extends JobBase {
             }
         }
         if (this.activeTrader == null) {
-            this.activeTrader = this.ent.worldObj
-                .getClosestPlayerToEntity((Entity) this.ent, (double) this.tradeDistTrigger);
+            this.activeTrader = this.ent.worldObj.getClosestPlayerToEntity(this.ent, (double) this.tradeDistTrigger);
             if (this.activeTrader != null) {
                 this.tradeStart();
             }
-        } else if (this.ent.getDistanceToEntity((Entity) this.activeTrader) > this.tradeDistTrigger * 1.5) {
+        } else if (this.ent.getDistanceToEntity(this.activeTrader) > this.tradeDistTrigger * 1.5) {
             this.tradeReset();
         } else {
             this.tradeTick();
@@ -136,8 +134,16 @@ public class JobTrade extends JobBase {
     }
 
     public void tradeConfirmCallback() {
+        if (this.tradePlate == null || this.activeTrader == null) {
+            return;
+        }
+        final int buyableIndex = this.tradePlate.itemIndex;
+        if (buyableIndex < 0 || buyableIndex >= ItemValues.itemsBuyable.size()) {
+            this.tradeSuccess();
+            return;
+        }
         int credit = this.getOfferedItemsValue();
-        final ItemEntry ie = ItemValues.itemsBuyable.get(this.tradePlate.itemIndex);
+        final ItemEntry ie = ItemValues.itemsBuyable.get(buyableIndex);
         final int cost = ie.value;
         if (credit >= cost) {
             credit -= cost;
@@ -165,7 +171,6 @@ public class JobTrade extends JobBase {
             this.tradePlate.credit = 0;
             this.tradePlate.activeTrader = null;
         }
-        Tropicraft.dbg("trade reset");
     }
 
     public void tradeTick() {
@@ -188,7 +193,6 @@ public class JobTrade extends JobBase {
             final int randZ = (int) this.ent.posZ + this.ent.worldObj.rand.nextInt(range) - range / 2;
             final Block foundID = this.ent.worldObj.getBlock(randX, randY, randZ);
             if (foundID == id) {
-                Tropicraft.dbg("found trade block");
                 return new ChunkCoordinates(randX, randY, randZ);
             }
         }
@@ -206,7 +210,7 @@ public class JobTrade extends JobBase {
     public boolean isAreaSecure() {
         if (this.tradeBlockPos != null) {
             final List list = this.ent.worldObj.getEntitiesWithinAABBExcludingEntity(
-                (Entity) this.ent,
+                this.ent,
                 AxisAlignedBB
                     .getBoundingBox(
                         (double) this.tradeBlockPos.posX,
@@ -228,18 +232,17 @@ public class JobTrade extends JobBase {
 
     public void onIdleTickAct() {
         if (this.activeTrader != null) {
-            this.ent.faceEntity((Entity) this.activeTrader, 15.0f, 15.0f);
-        } else if (this.tradeBlockPos != null) {}
+            this.ent.faceEntity(this.activeTrader, 15.0f, 15.0f);
+        }
         if (this.activeTrader == null && this.ent.getNavigator()
             .noPath()) {
-            final Random rand = new Random();
             if (this.tradeBlockPos != null && this.ent.worldObj.rand.nextInt(100) == 0) {
                 final int tryX = this.tradeBlockPos.posX;
                 final int tryZ = this.tradeBlockPos.posZ;
                 if (!CoroUtilBlock
                     .isAir(this.ent.worldObj.getBlock(tryX, MathHelper.floor_double(this.ent.posY - 1.0), tryZ))) {
                     this.ai.walkTo(
-                        (Entity) this.ent,
+                        this.ent,
                         this.tradeBlockPos.posX,
                         MathHelper.floor_double(this.ent.posY),
                         this.tradeBlockPos.posZ,
@@ -261,7 +264,6 @@ public class JobTrade extends JobBase {
                 this.offeredItems.add(is);
                 if (this.tradePlate != null) {
                     this.tradePlate.credit = this.getOfferedItemsValue();
-                    System.out.println("VERIFY THIS CODE IN hookInteract()");
                     MinecraftServer.getServer()
                         .getConfigurationManager()
                         .sendPacketToAllPlayers(this.tradePlate.getDescriptionPacket());

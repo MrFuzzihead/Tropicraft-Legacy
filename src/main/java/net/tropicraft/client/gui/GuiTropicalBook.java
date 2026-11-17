@@ -1,5 +1,6 @@
 package net.tropicraft.client.gui;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.audio.ISound;
@@ -10,9 +11,11 @@ import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.util.ResourceLocation;
+import net.tropicraft.encyclopedia.CraftingAvailability;
 import net.tropicraft.encyclopedia.Encyclopedia;
 import net.tropicraft.encyclopedia.TropicalBook;
 import net.tropicraft.util.TropicraftUtils;
@@ -21,11 +24,22 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiTropicalBook extends GuiScreen {
+
+    /** The recipe page is drawn every frame; one failed recipe must not fill the log. */
+    private static boolean recipeFailureLogged;
+    /** Whether the recipe pages only list what the player can make right now. Remembered for the session. */
+    private static boolean craftableOnly;
+    /** The recipe list as currently shown, i.e. after the filter. Kept in step by refreshRecipes(). */
+    private final List<ShapedRecipes> visibleRecipes = new ArrayList<ShapedRecipes>();
+
+    private static final int FILTER_LABEL_DX = 110;
+    private static final int FILTER_LABEL_DY = -100;
 
     private TropicalBook book;
     private int indexPage;
@@ -63,7 +77,59 @@ public class GuiTropicalBook extends GuiScreen {
     }
 
     public void initGui() {
+        this.refreshRecipes();
         this.addButtons();
+    }
+
+    /**
+     * Rebuilds {@link #visibleRecipes} for the selected page. Called when the selection, the content mode or the
+     * filter changes - not per frame: the player cannot touch their inventory while the book is open.
+     */
+    private void refreshRecipes() {
+        this.visibleRecipes.clear();
+        if (!(this.book instanceof Encyclopedia)) {
+            return;
+        }
+        final List<ShapedRecipes> recipes = ((Encyclopedia) this.book).getRecipesForEntry(this.selectedIndex);
+        if (recipes == null) {
+            return;
+        }
+        final InventoryPlayer inventory = this.mc == null || this.mc.thePlayer == null ? null
+            : this.mc.thePlayer.inventory;
+        for (final ShapedRecipes recipe : recipes) {
+            if (!craftableOnly || CraftingAvailability.canCraft(recipe, inventory)) {
+                this.visibleRecipes.add(recipe);
+            }
+        }
+    }
+
+    /** How many content pages there are, taking the craftable-only filter into account. */
+    private int contentPageCount() {
+        if (this.contentMode == TropicalBook.ContentMode.RECIPE) {
+            return this.visibleRecipes.size();
+        }
+        return this.book.getContentPageCount(this.selectedIndex, this.contentMode);
+    }
+
+    private String filterLabel() {
+        return craftableOnly ? "Craftable only" : "All recipes";
+    }
+
+    private int filterLabelX() {
+        return this.width / 2 + FILTER_LABEL_DX;
+    }
+
+    private int filterLabelY() {
+        return this.height / 2 + FILTER_LABEL_DY;
+    }
+
+    /** @return true when a click at these coordinates is on the craftable-only filter label. */
+    private boolean isOverFilterLabel(final int mouseX, final int mouseY) {
+        return this.indexPage != -1 && this.contentMode == TropicalBook.ContentMode.RECIPE
+            && mouseX >= filterLabelX()
+            && mouseY >= filterLabelY()
+            && mouseX < filterLabelX() + this.fontRendererObj.getStringWidth(filterLabel()) + 2
+            && mouseY < filterLabelY() + 9;
     }
 
     protected void actionPerformed(final GuiButton guibutton) {
@@ -123,7 +189,7 @@ public class GuiTropicalBook extends GuiScreen {
             int indexPosition = 0;
             for (int entry = this.indexPage * this.book.entriesPerIndexPage(); entry
                 < (this.indexPage + 1) * this.book.entriesPerIndexPage() && entry < this.book.getPageCount(); ++entry) {
-                String pageTitle = this.book.getPageTitleNotVisible(entry);
+                String pageTitle = this.book.getHiddenPageTitle();
                 int color = 4456448;
                 if (this.book.isPageVisible(entry)) {
                     pageTitle = this.book.getPageTitleByIndex(entry);
@@ -222,7 +288,7 @@ public class GuiTropicalBook extends GuiScreen {
                             4456448));
                 }
                 if ((this.contentPage + 1) * this.book.entriesPerContentPage(this.contentMode)
-                    < this.book.getContentPageCount(this.selectedIndex, this.contentMode)) {
+                    < this.contentPageCount()) {
                     this.buttonList.add(
                         new GuiClearButton(
                             2012,
@@ -269,6 +335,17 @@ public class GuiTropicalBook extends GuiScreen {
     }
 
     protected void mouseClicked(final int x, final int y, final int mousebutton) {
+        if (mousebutton == 0 && this.isOverFilterLabel(x, y)) {
+            // The filter is a label rather than a button: the book's buttons are 11x22 icon slices, not text.
+            craftableOnly = !craftableOnly;
+            this.contentPage = 0;
+            this.refreshRecipes();
+            this.addButtons();
+            this.mc.getSoundHandler()
+                .playSound(
+                    (ISound) PositionedSoundRecord.func_147674_a(new ResourceLocation("tropicraft:pageFlip"), 1.0f));
+            return;
+        }
         if (mousebutton == 0) {
             for (int l = 0; l < this.buttonList.size(); ++l) {
                 final GuiButton guibutton = (GuiButton) this.buttonList.get(l);
@@ -350,10 +427,21 @@ public class GuiTropicalBook extends GuiScreen {
                 }
                 case RECIPE: {
                     this.fontRendererObj.drawString("Crafting", this.width / 2 + 110, this.height / 2 - 110, 4456448);
+                    this.fontRendererObj.drawString(filterLabel(), filterLabelX(), filterLabelY(), 3355647);
+                    if (this.visibleRecipes.isEmpty()) {
+                        this.fontRendererObj.drawString(
+                            craftableOnly ? "Nothing here is craftable yet" : "No recipe",
+                            this.width / 2 + 30,
+                            this.height / 2 - 70,
+                            4456448);
+                    }
                     try {
                         this.printRecipes();
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        if (!recipeFailureLogged) {
+                            recipeFailureLogged = true;
+                            FMLLog.warning("[Tropicraft] Could not draw an encyclopedia recipe page: %s", e);
+                        }
                     }
                     break;
                 }
@@ -386,7 +474,7 @@ public class GuiTropicalBook extends GuiScreen {
     }
 
     private void printRecipes() throws Exception {
-        final List<ShapedRecipes> recipes = ((Encyclopedia) this.book).getRecipesForEntry(this.selectedIndex);
+        final List<ShapedRecipes> recipes = this.visibleRecipes;
         if (recipes == null || recipes.isEmpty()) {
             return;
         }
@@ -395,7 +483,7 @@ public class GuiTropicalBook extends GuiScreen {
         int indexPosition = 0;
         for (int entry = this.contentPage * this.book.entriesPerContentPage(this.contentMode); entry
             < (this.contentPage + 1) * this.book.entriesPerContentPage(this.contentMode); ++entry) {
-            if (entry >= this.book.getContentPageCount(this.selectedIndex, this.contentMode)) {
+            if (entry >= this.visibleRecipes.size()) {
                 return;
             }
             final Encyclopedia.RecipeEntry recipe = ((Encyclopedia) this.book).getFormattedRecipe(recipes.get(entry));

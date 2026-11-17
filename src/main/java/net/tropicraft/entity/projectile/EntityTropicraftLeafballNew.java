@@ -49,13 +49,15 @@ public class EntityTropicraftLeafballNew extends EntityThrowableUsefull {
         }
     }
 
+    // CoroUtil's EntityThrowableUsefull declares both of these public, so a protected override is a compile error
+    // as soon as that jar is deobfuscated (i.e. on any dev run); the wider modifier is a legal override either way.
     @Override
-    protected void readEntityFromNBT(NBTTagCompound tagCompund) {
+    public void readEntityFromNBT(NBTTagCompound tagCompund) {
 
     }
 
     @Override
-    protected void writeEntityToNBT(NBTTagCompound tagCompound) {
+    public void writeEntityToNBT(NBTTagCompound tagCompound) {
 
     }
 
@@ -71,7 +73,7 @@ public class EntityTropicraftLeafballNew extends EntityThrowableUsefull {
         for (Object o : list) {
             final Entity entity2 = (Entity) o;
             if (entity2.canBeCollidedWith() && this.ticksInAir >= 2) {
-                final float f = 0.3f;
+
                 entity = entity2;
             }
         }
@@ -88,14 +90,12 @@ public class EntityTropicraftLeafballNew extends EntityThrowableUsefull {
                 && (this.getThrower() == null || this.getThrower() instanceof ICoroAI)) {
                 if (this.getThrower() != null && ((ICoroAI) this.getThrower()).getAIAgent().dipl_info
                     .isEnemy(((ICoroAI) movingobjectposition.entityHit).getAIAgent().dipl_info)) {
-                    movingobjectposition.entityHit.attackEntityFrom(
-                        DamageSource.causeThrownDamage((Entity) this, (Entity) this.getThrower()),
-                        (float) byte0);
+                    movingobjectposition.entityHit
+                        .attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), (float) byte0);
                 }
             } else {
-                movingobjectposition.entityHit.attackEntityFrom(
-                    DamageSource.causeThrownDamage((Entity) this, (Entity) this.getThrower()),
-                    (float) byte0);
+                movingobjectposition.entityHit
+                    .attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), (float) byte0);
             }
         }
         if (!this.worldObj.isRemote) {

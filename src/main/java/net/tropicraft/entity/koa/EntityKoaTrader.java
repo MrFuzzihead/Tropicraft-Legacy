@@ -2,7 +2,6 @@ package net.tropicraft.entity.koa;
 
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.tropicraft.entity.ai.jobs.JobTrade;
@@ -31,7 +30,7 @@ public class EntityKoaTrader extends EntityKoaBase {
     }
 
     public IEntityLivingData onSpawnWithEgg(final IEntityLivingData par1EntityLivingData) {
-        this.agent.entInv.setSlotContents(0, new ItemStack((Item) TCItemRegistry.swordEudialyte));
+        this.agent.entInv.setSlotContents(0, new ItemStack(TCItemRegistry.swordEudialyte));
         this.agent.entInv.syncToClient();
         return super.onSpawnWithEgg(par1EntityLivingData);
     }

@@ -99,19 +99,13 @@ public class ModelTropiCreeper extends ModelBase {
         this.leg2.rotateAngleX = MathHelper.cos(f * 0.6662f + 3.141593f) * 1.4f * f1;
         this.leg3.rotateAngleX = MathHelper.cos(f * 0.6662f + 3.141593f) * 1.4f * f1;
         this.leg4.rotateAngleX = MathHelper.cos(f * 0.6662f) * 1.4f * f1;
-        final ModelRenderer hat1 = this.hat1;
-        final ModelRenderer hat2 = this.hat2;
-        final ModelRenderer hat3 = this.hat3;
         final float rotateAngleX = this.head.rotateAngleX / 6.2342343f;
-        hat3.rotateAngleX = rotateAngleX;
-        hat2.rotateAngleX = rotateAngleX;
-        hat1.rotateAngleX = rotateAngleX;
-        final ModelRenderer hat4 = this.hat1;
-        final ModelRenderer hat5 = this.hat2;
-        final ModelRenderer hat6 = this.hat3;
+        this.hat3.rotateAngleX = rotateAngleX;
+        this.hat2.rotateAngleX = rotateAngleX;
+        this.hat1.rotateAngleX = rotateAngleX;
         final float rotateAngleY = this.head.rotateAngleY / 6.2342343f;
-        hat6.rotateAngleY = rotateAngleY;
-        hat5.rotateAngleY = rotateAngleY;
-        hat4.rotateAngleY = rotateAngleY;
+        this.hat3.rotateAngleY = rotateAngleY;
+        this.hat2.rotateAngleY = rotateAngleY;
+        this.hat1.rotateAngleY = rotateAngleY;
     }
 }

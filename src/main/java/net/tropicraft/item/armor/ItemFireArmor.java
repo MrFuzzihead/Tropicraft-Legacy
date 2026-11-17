@@ -21,6 +21,7 @@ import net.minecraftforge.common.ISpecialArmor;
 import net.tropicraft.registry.TCItemRegistry;
 
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -43,7 +44,7 @@ public class ItemFireArmor extends ItemTropicraftArmor {
                 MathHelper.floor_double(player.posX),
                 MathHelper.floor_double(player.posY + 1.0),
                 MathHelper.floor_double(player.posZ))) {
-                itemStack.damageItem(-1, (EntityLivingBase) player);
+                itemStack.damageItem(-1, player);
             }
         }
     }
@@ -80,25 +81,32 @@ public class ItemFireArmor extends ItemTropicraftArmor {
         return new ISpecialArmor.ArmorProperties(10, 0.15, Integer.MAX_VALUE);
     }
 
+    /**
+     * Finds the particle layers of the client's effect renderer.
+     * <p>
+     * This used to look the field up by name ({@code "fxLayers"}), which is the development name: in a release jar the
+     * field is {@code field_78477_e}, so the lookup failed, {@code fxLayers} stayed null and the chestplate's particle
+     * redirection silently never ran. It is now found by type - the renderer has exactly one {@code List[]} - and the
+     * duplicated catch (both branches were the same code) is gone.
+     * </p>
+     */
     @SideOnly(Side.CLIENT)
     public static void getFXLayers() {
-        Field field = null;
         try {
-            field = EffectRenderer.class.getDeclaredField("fxLayers");
-            field.setAccessible(true);
-            ItemFireArmor.fxLayers = (List[]) field.get(
-                FMLClientHandler.instance()
-                    .getClient().effectRenderer);
-        } catch (Exception ex3) {
-            try {
-                field = EffectRenderer.class.getDeclaredField("fxLayers");
-                field.setAccessible(true);
-                ItemFireArmor.fxLayers = (List[]) field.get(
-                    FMLClientHandler.instance()
-                        .getClient().effectRenderer);
-            } catch (Exception ex2) {
-                ex2.printStackTrace();
+            final EffectRenderer renderer = FMLClientHandler.instance()
+                .getClient().effectRenderer;
+            for (final Field field : EffectRenderer.class.getDeclaredFields()) {
+                if (field.getType() == List[].class) {
+                    field.setAccessible(true);
+                    ItemTropicraftArmor.fxLayers = (List[]) field.get(renderer);
+                    return;
+                }
             }
+            FMLLog.severe(
+                "[Tropicraft] The effect renderer has no particle layer array; fire armour particles will not be "
+                    + "redirected.");
+        } catch (final Exception e) {
+            FMLLog.severe("[Tropicraft] Could not read the effect renderer's particle layers: %s", e);
         }
     }
 
@@ -109,11 +117,11 @@ public class ItemFireArmor extends ItemTropicraftArmor {
         }
         float range = 0.2f;
         final float speed = 0.08f;
-        final Random rand = new Random();
+        final Random rand = player.worldObj.rand;
         final World worldRef = player.worldObj;
         int extraRand = 0;
         final double plSpeed = Math.sqrt(player.motionX * player.motionX + player.motionZ * player.motionZ);
-        if (plSpeed < 0.10000000149011612) {
+        if (plSpeed < 0.1f) {
             extraRand = 7;
         }
         if (this == TCItemRegistry.fireBoots) {
@@ -167,7 +175,7 @@ public class ItemFireArmor extends ItemTropicraftArmor {
                         gatherY + (rand.nextFloat() * range - range / 2.0f),
                         gatherZ + (rand.nextFloat() * range - range / 2.0f),
                         player.motionX + motionX,
-                        0.009999999776482582,
+                        0.01f,
                         player.motionZ + motionZ);
                     player.worldObj.spawnParticle(
                         particle,
@@ -175,7 +183,7 @@ public class ItemFireArmor extends ItemTropicraftArmor {
                         gatherY + (rand.nextFloat() * range - range / 2.0f),
                         gatherZ + (rand.nextFloat() * range - range / 2.0f),
                         player.motionX - motionX,
-                        0.009999999776482582,
+                        0.01f,
                         player.motionZ - motionZ);
                 }
             }
@@ -188,10 +196,10 @@ public class ItemFireArmor extends ItemTropicraftArmor {
                 player.worldObj.spawnParticle(
                     particle2,
                     player.posX + (rand.nextFloat() * range - range / 2.0f),
-                    player.posY - 0.800000011920929 + (rand.nextFloat() * range - range / 2.0f),
+                    player.posY - 0.8f + (rand.nextFloat() * range - range / 2.0f),
                     player.posZ + (rand.nextFloat() * range - range / 2.0f),
                     (double) (rand.nextFloat() * speed - speed / 2.0f),
-                    -0.05000000074505806,
+                    -0.05f,
                     (double) (rand.nextFloat() * speed - speed / 2.0f));
             }
         } else if (this == TCItemRegistry.fireChestplate) {
@@ -211,10 +219,10 @@ public class ItemFireArmor extends ItemTropicraftArmor {
                 player.worldObj.spawnParticle(
                     particle3,
                     gatherX2 + (rand.nextFloat() * range - range / 2.0f),
-                    player.posY - 0.4000000059604645 + (rand.nextFloat() * range - range / 2.0f),
+                    player.posY - 0.4f + (rand.nextFloat() * range - range / 2.0f),
                     gatherZ2 + (rand.nextFloat() * range - range / 2.0f),
                     (double) (rand.nextFloat() * speed - speed / 2.0f),
-                    -0.009999999776482582,
+                    -0.01f,
                     (double) (rand.nextFloat() * speed - speed / 2.0f));
             }
         } else if (this == TCItemRegistry.fireHelmet) {
@@ -235,21 +243,20 @@ public class ItemFireArmor extends ItemTropicraftArmor {
                 player.worldObj.spawnParticle(
                     particle3,
                     gatherX2 + (rand.nextFloat() * range - range / 2.0f),
-                    player.posY + 0.699999988079071,
+                    player.posY + 0.7f,
                     gatherZ2 + (rand.nextFloat() * range - range / 2.0f),
                     (double) (rand.nextFloat() * speed - speed / 2.0f),
-                    -0.009999999776482582,
+                    -0.01f,
                     (double) (rand.nextFloat() * speed - speed / 2.0f));
             }
             if (ItemFireArmor.fxLayers != null) {
                 for (int layer = 0; layer < 4; ++layer) {
                     for (int j = 0; j < ItemFireArmor.fxLayers[layer].size(); ++j) {
                         final EntityFX entity1 = (EntityFX) ItemFireArmor.fxLayers[layer].get(j);
-                        if (entity1 instanceof EntityFlameFX && player.getDistanceToEntity((Entity) entity1) < 4.0f
+                        if (entity1 instanceof EntityFlameFX && player.getDistanceToEntity(entity1) < 4.0f
                             && entity1.posY > player.posY) {
-                            if (player.getDistanceToEntity((Entity) entity1) < 2.0f) {}
-                            if (player.getDistanceToEntity((Entity) entity1) < 2.0f || rand.nextInt(5) == 0) {
-                                this.moveEnt((Entity) entity1, (Entity) player, false);
+                            if (player.getDistanceToEntity(entity1) < 2.0f || rand.nextInt(5) == 0) {
+                                this.moveEnt(entity1, player, false);
                             }
                         }
                     }
@@ -260,7 +267,7 @@ public class ItemFireArmor extends ItemTropicraftArmor {
 
     public void moveEnt(final Entity ent, final Entity center, final boolean shield) {
         final float look = 0.0f;
-        final double dist = 0.10000000149011612;
+        final double dist = 0.1f;
         final double gatherX = center.posX + -Math.sin((center.rotationYaw + look) / 180.0f * 3.1415927f)
             * Math.cos(center.rotationPitch / 180.0f * 3.1415927f)
             * dist;
@@ -284,11 +291,11 @@ public class ItemFireArmor extends ItemTropicraftArmor {
             }
             final double newspeed;
             double speed = newspeed = 0.02;
-            float pitch = (float) (Math.atan2(vecX, vecZ) * 180.0 / 3.1415927410125732);
+            float pitch = (float) (Math.atan2(vecX, vecZ) * 180.0 / 3.1415927f);
             float angle;
             float f;
-            for (f = (angle = (float) (Math.atan2(vecZ, vecX) * 180.0
-                / 3.1415927410125732)), angle += 180.0f, angle = f; angle < 0.0f; angle += 360.0f) {}
+            for (f = (angle = (float) (Math.atan2(vecZ, vecX) * 180.0 / 3.1415927f)), angle += 180.0f, angle = f; angle
+                < 0.0f; angle += 360.0f) {}
             while (angle >= 360.0f) {
                 angle -= 360.0f;
             }
@@ -303,26 +310,26 @@ public class ItemFireArmor extends ItemTropicraftArmor {
                 speed = 0.03;
                 if (ent.worldObj.rand.nextInt(5) == 0) {
                     angle += 20.0f;
-                    speed = 0.05999999865889549;
+                    speed = 0.06f;
                 }
             }
             final float rad_angle = angle * 0.01745329f;
             final float rad_pitch = pitch * 0.01745329f * 2.0f;
             final float uhh = 1.0f;
-            final float newY = uhh * (float) Math.sin(rad_pitch);
+
             float projection = uhh * (float) Math.cos(rad_pitch);
             projection = 1.0f;
             final float newX = projection * (float) Math.cos(rad_angle);
             final float newZ = projection * (float) Math.sin(rad_angle);
             final float newVecX = newX / uhh;
-            final float newVecY = newY / uhh;
+
             final float newVecZ = newZ / uhh;
             ent.motionY += vecY / var2 * speed;
             ent.motionX += newVecX * speed;
             ent.motionZ += newVecZ * speed;
             if (shield) {
                 if (shield && ent.worldObj.rand.nextInt(10) == 0) {
-                    ent.motionY += 0.05000000074505806;
+                    ent.motionY += 0.05f;
                 }
             }
         }

@@ -34,6 +34,10 @@ public class ConfigGenRates implements IConfigCategory {
         "on average. Higher numbers are rarer, 0 disables them." })
     public static int eihChanceInTropics;
     public static boolean genTropicraftFlowersInOverworld;
+    @ConfigComment({ "Whether volcanoes generate in the Tropics.",
+        "Turning this off only affects chunks generated afterwards; existing volcanoes stay in the world." })
+    public static boolean genVolcanoes;
+
     public static boolean genTropicraftInOverworld;
     public static boolean genPineapplesInOverworld;
     public static boolean genBambooInOverworld;
@@ -58,6 +62,7 @@ public class ConfigGenRates implements IConfigCategory {
         ConfigGenRates.genOverworldEIHInWarmBiomesOnly = false;
         ConfigGenRates.eihChanceInTropics = EIH_CHANCE;
         ConfigGenRates.genTropicraftFlowersInOverworld = true;
+        ConfigGenRates.genVolcanoes = true;
         ConfigGenRates.genTropicraftInOverworld = true;
         ConfigGenRates.genPineapplesInOverworld = true;
         ConfigGenRates.genBambooInOverworld = true;

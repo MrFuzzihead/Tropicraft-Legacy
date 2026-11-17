@@ -7,9 +7,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.tropicraft.block.tileentity.TileEntityBambooChest;
-import net.tropicraft.factory.TileEntityFactory;
 import net.tropicraft.info.TCRenderIDs;
 import net.tropicraft.registry.TCCreativeTabRegistry;
+import net.tropicraft.util.TropicraftNames;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -28,7 +28,7 @@ public class BlockBambooChest extends BlockChest {
     }
 
     public TileEntity createNewTileEntity(final World world, final int i) {
-        return TileEntityFactory.getBambooChestTE();
+        return new TileEntityBambooChest();
     }
 
     public IIcon getIcon(final int i, final int j) {
@@ -45,15 +45,12 @@ public class BlockBambooChest extends BlockChest {
     }
 
     public String getUnlocalizedName() {
-        return String.format("tile.%s%s", "tropicraft:", this.getActualName(super.getUnlocalizedName()));
-    }
-
-    protected String getActualName(final String unlocalizedName) {
-        return unlocalizedName.substring(unlocalizedName.indexOf(46) + 1);
+        return TropicraftNames.block(super.getUnlocalizedName());
     }
 
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(final IIconRegister iconRegister) {
-        this.blockIcon = iconRegister.registerIcon(String.format("%s", this.getActualName(this.getUnlocalizedName())));
+        this.blockIcon = iconRegister
+            .registerIcon(String.format("%s", TropicraftNames.afterFirstDot(this.getUnlocalizedName())));
     }
 }

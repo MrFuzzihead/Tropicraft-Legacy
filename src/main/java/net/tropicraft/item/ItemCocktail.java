@@ -6,8 +6,6 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumAction;
@@ -21,7 +19,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.tropicraft.block.tileentity.TileEntityBambooMug;
-import net.tropicraft.drinks.ColorMixer;
 import net.tropicraft.drinks.Drink;
 import net.tropicraft.drinks.Ingredient;
 import net.tropicraft.drinks.MixerRecipe;
@@ -29,6 +26,7 @@ import net.tropicraft.registry.TCBlockRegistry;
 import net.tropicraft.registry.TCCreativeTabRegistry;
 import net.tropicraft.registry.TCDrinkMixerRegistry;
 import net.tropicraft.registry.TCItemRegistry;
+import net.tropicraft.util.ColorHelper;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -106,38 +104,24 @@ public class ItemCocktail extends ItemTropicraft {
     }
 
     public static ItemStack makeCocktail(final MixerRecipe recipe) {
-        final ItemStack stack = new ItemStack(TCItemRegistry.cocktail);
-        final NBTTagCompound nbt = new NBTTagCompound();
-        final Drink drink = recipe.getCraftingResult();
-        nbt.setByte("DrinkID", (byte) drink.drinkId);
-        final NBTTagList tagList = new NBTTagList();
-        Ingredient primary = null;
-        final List<Ingredient> additives = new LinkedList<Ingredient>();
-        for (final Ingredient ingredient : recipe.getIngredients()) {
-            final NBTTagCompound ingredientNbt = new NBTTagCompound();
-            ingredientNbt.setByte("IngredientID", (byte) ingredient.ingredientId);
-            tagList.appendTag((NBTBase) ingredientNbt);
-            if (ingredient.isPrimary()) {
-                primary = ingredient;
-            } else {
-                additives.add(ingredient);
-            }
-        }
-        nbt.setTag("Ingredients", (NBTBase) tagList);
-        int color = (primary == null) ? 15973942 : primary.getColor();
-        for (final Ingredient additive : additives) {
-            color = ColorMixer.getInstance()
-                .alphaBlendRGBA(color, additive.getColor(), additive.getAlpha());
-        }
-        nbt.setInteger("Color", color);
-        stack.stackTagCompound = nbt;
-        return stack;
+        return makeCocktail(recipe.getIngredients(), (byte) recipe.getCraftingResult().drinkId);
     }
 
     public static ItemStack makeCocktail(final Ingredient[] ingredients) {
+        return makeCocktail(ingredients, (byte) 0);
+    }
+
+    /**
+     * Builds the cocktail stack: the drink id, the ingredient list and the blended colour.
+     * <p>
+     * Both public overloads used to carry their own copy of this - the only difference was the drink id and where the
+     * ingredients came from.
+     * </p>
+     */
+    private static ItemStack makeCocktail(final Ingredient[] ingredients, final byte drinkId) {
         final ItemStack stack = new ItemStack(TCItemRegistry.cocktail);
         final NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setByte("DrinkID", (byte) 0);
+        nbt.setByte("DrinkID", drinkId);
         final NBTTagList tagList = new NBTTagList();
         Ingredient primary = null;
         final List<Ingredient> additives = new LinkedList<Ingredient>();
@@ -154,8 +138,7 @@ public class ItemCocktail extends ItemTropicraft {
         nbt.setTag("Ingredients", (NBTBase) tagList);
         int color = (primary == null) ? 15973942 : primary.getColor();
         for (final Ingredient additive : additives) {
-            color = ColorMixer.getInstance()
-                .alphaBlendRGBA(color, additive.getColor(), additive.getAlpha());
+            color = ColorHelper.alphaBlend(color, additive.getColor(), additive.getAlpha());
         }
         nbt.setInteger("Color", color);
         stack.stackTagCompound = nbt;
@@ -211,15 +194,15 @@ public class ItemCocktail extends ItemTropicraft {
             return false;
         }
         if (par3World.canPlaceEntityOnSide(
-            (Block) TCBlockRegistry.bambooMug,
+            TCBlockRegistry.bambooMug,
             par4,
             par5,
             par6,
             false,
             par7,
-            (Entity) par2EntityPlayer,
+            par2EntityPlayer,
             (ItemStack) null)) {
-            final Block var12 = (Block) TCBlockRegistry.bambooMug;
+            final Block var12 = TCBlockRegistry.bambooMug;
             final int var13 = this.getMetadata(par1ItemStack.getItemDamage());
             final int var14 = var12.onBlockPlaced(par3World, par4, par5, par6, par7, par8, par9, par10, var13);
             if (this.placeBlockAt(
@@ -251,11 +234,11 @@ public class ItemCocktail extends ItemTropicraft {
     public boolean placeBlockAt(final ItemStack stack, final EntityPlayer player, final World world, final int x,
         final int y, final int z, final int side, final float hitX, final float hitY, final float hitZ,
         final int metadata) {
-        if (!world.setBlock(x, y, z, (Block) TCBlockRegistry.bambooMug, metadata, 2)) {
+        if (!world.setBlock(x, y, z, TCBlockRegistry.bambooMug, metadata, 2)) {
             return false;
         }
         if (world.getBlock(x, y, z) == TCBlockRegistry.bambooMug) {
-            TCBlockRegistry.bambooMug.onBlockPlacedBy(world, x, y, z, (EntityLivingBase) player, (ItemStack) null);
+            TCBlockRegistry.bambooMug.onBlockPlacedBy(world, x, y, z, player, (ItemStack) null);
             TCBlockRegistry.bambooMug.onPostBlockPlaced(world, x, y, z, metadata);
             final TileEntityBambooMug mug = (TileEntityBambooMug) world.getTileEntity(x, y, z);
             mug.setCocktail(stack.copy());
@@ -299,11 +282,7 @@ public class ItemCocktail extends ItemTropicraft {
 
     public ItemStack onEaten(final ItemStack par1ItemStack, final World par2World,
         final EntityPlayer par3EntityPlayer) {
-        par2World.playSoundAtEntity(
-            (Entity) par3EntityPlayer,
-            "random.burp",
-            0.5f,
-            par2World.rand.nextFloat() * 0.1f + 0.9f);
+        par2World.playSoundAtEntity(par3EntityPlayer, "random.burp", 0.5f, par2World.rand.nextFloat() * 0.1f + 0.9f);
         for (final Ingredient ingredient : getIngredients(par1ItemStack)) {
             ingredient.onDrink(par3EntityPlayer);
         }

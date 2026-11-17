@@ -156,7 +156,7 @@ public class WorldGenTropicraftCurvedPalm extends TCDirectionalGen {
     }
 
     static {
-        woodID = (Block) TCBlockRegistry.logs;
-        leafID = (Block) TCBlockRegistry.palmLeaves;
+        woodID = TCBlockRegistry.logs;
+        leafID = TCBlockRegistry.palmLeaves;
     }
 }

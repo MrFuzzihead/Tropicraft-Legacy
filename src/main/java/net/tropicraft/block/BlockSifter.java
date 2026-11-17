@@ -2,7 +2,6 @@ package net.tropicraft.block;
 
 import java.util.Random;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,7 +12,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.tropicraft.block.tileentity.TileEntitySifter;
-import net.tropicraft.factory.TileEntityFactory;
 import net.tropicraft.registry.TCBlockRegistry;
 import net.tropicraft.registry.TCItemRegistry;
 
@@ -25,7 +23,7 @@ public class BlockSifter extends BlockTropicraft implements ITileEntityProvider 
     }
 
     public TileEntity createNewTileEntity(final World var1, final int var2) {
-        return TileEntityFactory.getSifterTE();
+        return new TileEntitySifter();
     }
 
     public int getRenderBlockPass() {
@@ -41,7 +39,7 @@ public class BlockSifter extends BlockTropicraft implements ITileEntityProvider 
     }
 
     public Item getItemDropped(final int id, final Random random, final int j) {
-        return Item.getItemFromBlock((Block) TCBlockRegistry.sifter);
+        return Item.getItemFromBlock(TCBlockRegistry.sifter);
     }
 
     public boolean onBlockActivated(final World world, final int i, final int j, final int k,
@@ -53,10 +51,9 @@ public class BlockSifter extends BlockTropicraft implements ITileEntityProvider 
         final TileEntitySifter tileentitysifta = (TileEntitySifter) world.getTileEntity(i, j, k);
         if (tileentitysifta != null && stack != null && !tileentitysifta.isSifting()) {
             final Item helditem = stack.getItem();
-            if (helditem == Item.getItemFromBlock((Block) Blocks.sand)
+            if (helditem == Item.getItemFromBlock(Blocks.sand)
                 || (helditem == TCItemRegistry.ore && stack.getItemDamage() == 5)
-                || (helditem == Item.getItemFromBlock((Block) TCBlockRegistry.mineralSands)
-                    && stack.getItemDamage() == 3)) {
+                || (helditem == Item.getItemFromBlock(TCBlockRegistry.mineralSands) && stack.getItemDamage() == 3)) {
                 final ItemStack getCurrentEquippedItem = entityplayer.getCurrentEquippedItem();
                 --getCurrentEquippedItem.stackSize;
                 if (helditem == TCItemRegistry.ore) {
@@ -64,14 +61,14 @@ public class BlockSifter extends BlockTropicraft implements ITileEntityProvider 
                         .getFloat("AmtRefined");
                     tileentitysifta.setSifting(
                         true,
-                        (helditem == Item.getItemFromBlock((Block) Blocks.sand)) ? 1
-                            : ((helditem == Item.getItemFromBlock((Block) TCBlockRegistry.mineralSands)) ? 2 : 3),
+                        (helditem == Item.getItemFromBlock(Blocks.sand)) ? 1
+                            : ((helditem == Item.getItemFromBlock(TCBlockRegistry.mineralSands)) ? 2 : 3),
                         percent);
                 } else {
                     tileentitysifta.setSifting(
                         true,
-                        (helditem == Item.getItemFromBlock((Block) Blocks.sand)) ? 1
-                            : ((helditem == Item.getItemFromBlock((Block) TCBlockRegistry.mineralSands)) ? 2 : 3),
+                        (helditem == Item.getItemFromBlock(Blocks.sand)) ? 1
+                            : ((helditem == Item.getItemFromBlock(TCBlockRegistry.mineralSands)) ? 2 : 3),
                         -1.0f);
                 }
             }

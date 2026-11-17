@@ -53,7 +53,7 @@ public class WorldGenTCUndergrowth extends TCGenBase {
     }
 
     static {
-        WOOD_BLOCK = (Block) TCBlockRegistry.logs;
-        LEAF_BLOCK = (Block) TCBlockRegistry.rainforestLeaves;
+        WOOD_BLOCK = TCBlockRegistry.logs;
+        LEAF_BLOCK = TCBlockRegistry.rainforestLeaves;
     }
 }

@@ -42,7 +42,7 @@ public class TileEntityFirePit extends TileEntity {
     @SideOnly(Side.CLIENT)
     public void tickAnimate() {
         final int amount = 5 / (Minecraft.getMinecraft().gameSettings.particleSetting + 1);
-        final Random rand = new Random();
+        final Random rand = this.worldObj.rand;
         for (int i = 0; i < amount; ++i) {
             final double speed = 0.15;
             final EntityRotFX entityfx = this.pm.spawnNewParticleIconFX(

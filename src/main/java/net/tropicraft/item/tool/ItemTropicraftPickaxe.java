@@ -57,8 +57,8 @@ public class ItemTropicraftPickaxe extends ItemTropicraftTool {
     static {
         blocksEffectiveAgainst = Sets.newHashSet(
             Blocks.cobblestone,
-            (Block) Blocks.double_stone_slab,
-            (Block) Blocks.stone_slab,
+            Blocks.double_stone_slab,
+            Blocks.stone_slab,
             Blocks.stone,
             Blocks.sandstone,
             Blocks.mossy_cobblestone,
@@ -80,7 +80,7 @@ public class ItemTropicraftPickaxe extends ItemTropicraftTool {
             Blocks.golden_rail,
             Blocks.activator_rail,
             TCBlockRegistry.azuriteOre,
-            (Block) TCBlockRegistry.oreBlocks,
+            TCBlockRegistry.oreBlocks,
             TCBlockRegistry.eudialyteOre,
             TCBlockRegistry.zirconOre);
     }

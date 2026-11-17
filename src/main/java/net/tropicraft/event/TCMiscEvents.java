@@ -11,11 +11,13 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.world.WorldEvent;
+import net.tropicraft.Tropicraft;
 import net.tropicraft.config.ConfigMisc;
 import net.tropicraft.entity.placeable.EntityChair;
 import net.tropicraft.util.EffectHelper;
 import net.tropicraft.util.TropicraftWorldUtils;
 import net.tropicraft.world.TCTimeAndWeatherData;
+import net.tropicraft.world.chunk.ChunkProviderTropicraft;
 
 import CoroUtil.forge.CoroAI;
 import CoroUtil.world.WorldDirector;
@@ -47,11 +49,37 @@ public class TCMiscEvents {
         }
     }
 
+    /**
+     * Drops the chunk provider of a world that is going away. {@code ChunkProviderTropicraft} keeps a static set of
+     * live providers so the shutdown flush can reach them, and without this every world ever loaded - including
+     * those of a client that reconnected - would stay referenced and be flushed.
+     */
+    @SubscribeEvent
+    public void worldUnload(final WorldEvent.Unload event) {
+        ChunkProviderTropicraft.onWorldUnloaded(event.world);
+    }
+
+    /** Leaving a world is the last chance to persist encyclopedia progress that is still inside the debounce window. */
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public void clientWorldUnload(final WorldEvent.Unload event) {
+        if (!event.world.isRemote) {
+            return;
+        }
+        if (Tropicraft.encyclopedia != null) {
+            Tropicraft.encyclopedia.flush();
+        }
+    }
+
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void tickClient(final TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
-            EffectHelper.tick();
+            EffectHelper.tick(Side.CLIENT);
+            // Debounced encyclopedia writes: see TropicalBook#SAVE_DEBOUNCE_MILLIS.
+            if (Tropicraft.encyclopedia != null) {
+                Tropicraft.encyclopedia.flushIfDirty();
+            }
         }
         if (Minecraft.getMinecraft().currentScreen instanceof GuiMainMenu) {
             for (int ii = 0; ii < ExtendedRenderer.rotEffRenderer.fxLayers.length; ++ii) {
@@ -64,7 +92,9 @@ public class TCMiscEvents {
     @SubscribeEvent
     public void tickServer(final TickEvent.ServerTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
-            EffectHelper.tick();
+            // Only the entries in server-side worlds: see EffectHelper.tick(Side) for why this matters in single
+            // player.
+            EffectHelper.tick(Side.SERVER);
         }
         final MinecraftServer server = FMLCommonHandler.instance()
             .getMinecraftServerInstance();
@@ -85,7 +115,7 @@ public class TCMiscEvents {
                 continue;
             }
             for (int ii = 0; ii < world.playerEntities.size(); ++ii) {
-                final Entity entity1 = (Entity) world.playerEntities.get(ii);
+                final Entity entity1 = world.playerEntities.get(ii);
                 if (entity1 instanceof EntityPlayerMP && ((EntityPlayerMP) entity1).isPotionActive(Potion.confusion)
                     && entity1.ridingEntity instanceof EntityChair) {
                     entity1.ridingEntity = null;

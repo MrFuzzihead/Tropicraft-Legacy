@@ -16,6 +16,7 @@ import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 import net.tropicraft.entity.EntityLand;
 import net.tropicraft.registry.TCBlockRegistry;
+import net.tropicraft.util.TropicraftUtils;
 
 public class EntityEIH extends EntityLand implements IMob {
 
@@ -62,6 +63,12 @@ public class EntityEIH extends EntityLand implements IMob {
 
     public void onLivingUpdate() {
         super.onLivingUpdate();
+        // EntityCoroAI's mobs remove themselves on peaceful; this one does not inherit that, and vanilla does not
+        // sweep hostile mobs when the difficulty changes (measured, see ServerGameTests).
+        if (TropicraftUtils.isPeaceful(this.worldObj)) {
+            this.setDead();
+            return;
+        }
         if (!this.isImmobile()) {
             this.prevRotationYaw = this.rotationYaw;
             this.prevRotationPitch = this.rotationPitch;
@@ -159,9 +166,9 @@ public class EntityEIH extends EntityLand implements IMob {
                     final double d = entity.posX - this.posX;
                     final double d2 = entity.posZ - this.posZ;
                     final float f2 = MathHelper.sqrt_double(d * d + d2 * d2);
-                    this.motionX = d / f2 * 0.75 * 0.800000011920929 + this.motionX * 0.20000000298023224;
-                    this.motionZ = d2 / f2 * 0.75 * 0.800000011920929 + this.motionZ * 0.20000000298023224;
-                    this.motionY = 0.4000000059604645;
+                    this.motionX = d / f2 * 0.75 * 0.8f + this.motionX * 0.2f;
+                    this.motionZ = d2 / f2 * 0.75 * 0.8f + this.motionZ * 0.2f;
+                    this.motionY = 0.4f;
                 }
             } else if (f < 1.5 && entity.boundingBox.maxY > this.boundingBox.minY
                 && entity.boundingBox.minY < this.boundingBox.maxY) {

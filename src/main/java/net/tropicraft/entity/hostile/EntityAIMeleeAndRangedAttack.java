@@ -1,6 +1,5 @@
 package net.tropicraft.entity.hostile;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IRangedAttackMob;
@@ -68,19 +67,18 @@ public class EntityAIMeleeAndRangedAttack extends EntityAIBase {
         final double d0 = this.entityHost
             .getDistanceSq(this.attackTarget.posX, this.attackTarget.boundingBox.minY, this.attackTarget.posZ);
         final boolean flag = this.entityHost.getEntitySenses()
-            .canSee((Entity) this.attackTarget);
+            .canSee(this.attackTarget);
         if (flag) {
             ++this.field_75318_f;
         } else {
             this.field_75318_f = 0;
         }
-        if (d0 > this.shootCutoffRangeSqr || this.field_75318_f >= 20) {}
         if (this.field_75318_f >= 20) {
             this.entityHost.getNavigator()
-                .tryMoveToEntityLiving((Entity) this.attackTarget, this.entityMoveSpeed);
+                .tryMoveToEntityLiving(this.attackTarget, this.entityMoveSpeed);
         }
         this.entityHost.getLookHelper()
-            .setLookPositionWithEntity((Entity) this.attackTarget, 30.0f, 30.0f);
+            .setLookPositionWithEntity(this.attackTarget, 30.0f, 30.0f);
         if (--this.rangedAttackTime == 0) {
             float f2;
             final float f = f2 = MathHelper.sqrt_double(d0) / this.shootCutoffRange;
@@ -95,7 +93,7 @@ public class EntityAIMeleeAndRangedAttack extends EntityAIBase {
                 this.rangedAttackTime = MathHelper
                     .floor_float(f * (this.maxRangedAttackTime - this.field_96561_g) + this.field_96561_g);
             } else if (d0 <= this.meleeHitRange) {
-                this.entityHost.attackEntityAsMob((Entity) this.attackTarget);
+                this.entityHost.attackEntityAsMob(this.attackTarget);
                 this.rangedAttackTime = 20;
             }
         } else if (this.rangedAttackTime < 0) {
