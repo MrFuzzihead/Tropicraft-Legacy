@@ -1,6 +1,9 @@
 package net.tropicraft.gametest;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,6 +17,7 @@ import java.util.zip.CRC32;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -40,6 +44,7 @@ import net.minecraftforge.common.util.FakePlayerFactory;
 import net.tropicraft.block.tileentity.TileEntityEIHMixer;
 import net.tropicraft.block.tileentity.TileEntityKoaChest;
 import net.tropicraft.drinks.Drink;
+import net.tropicraft.drinks.Ingredient;
 import net.tropicraft.economy.ItemEntry;
 import net.tropicraft.economy.ItemValues;
 import net.tropicraft.entity.hostile.EntityAshenHunter;
@@ -124,6 +129,7 @@ public final class ServerGameTests {
         tropicsChunksGenerate();
         deferredDecorationFlushesWhenItsNeighbourhoodLoads();
         drinkMixerMixesItsDocumentedRecipes();
+        drinkIngredientsAreTranslated();
         return failures;
     }
 
@@ -1356,13 +1362,60 @@ public final class ServerGameTests {
                 mixer.getIngredients()[0] != null && mixer.getIngredients()[1] == null,
                 "after sugar + sugar the mixer holds " + describe(mixer.getIngredients()));
 
-            // A mug on an empty mixer is not an ingredient, and must not be swallowed.
+            // The mug is the container, not an ingredient: it can go in first, it does not occupy a slot, and the
+            // mix starts by itself once the second ingredient arrives.
             resetMixer(mixer);
             clickMixer(overworld, player, x, y, z, new ItemStack(TCItemRegistry.bambooMug));
             assertTrue(
-                "a bamboo mug is not an ingredient",
-                mixer.getIngredients()[0] == null && !mixer.isMixing(),
-                "an empty mixer took a mug: " + describe(mixer.getIngredients()) + " mixing=" + mixer.isMixing());
+                "a bamboo mug goes in first without taking an ingredient slot",
+                mixer.hasMug && mixer.getIngredients()[0] == null && !mixer.isMixing(),
+                "an empty mixer took a mug: " + describe(mixer.getIngredients()) + " mug=" + mixer.hasMug);
+            clickMixer(overworld, player, x, y, z, new ItemStack(TCItemRegistry.lime));
+            clickMixer(overworld, player, x, y, z, new ItemStack(Items.sugar));
+            assertTrue(
+                "the mix starts on its own once the mug is in and the mixer is full",
+                mixer.isMixing(),
+                "mug first, then lime + sugar left the mixer idle: " + describe(mixer.getIngredients()));
+            for (int tick = 0; tick < TileEntityEIHMixer.TICKS_TO_MIX; ++tick) {
+                mixer.updateEntity();
+            }
+            assertTrue(
+                "mug first, then lime + sugar mixes a Limeade",
+                ItemCocktail.getDrink(mixer.result) == Drink.limeade,
+                "got " + mixer.result);
+
+            // A second mug is refused, and stays in the player's hand.
+            resetMixer(mixer);
+            clickMixer(overworld, player, x, y, z, new ItemStack(TCItemRegistry.bambooMug));
+            clickMixer(overworld, player, x, y, z, new ItemStack(TCItemRegistry.bambooMug));
+            assertTrue(
+                "a second bamboo mug is refused",
+                mixer.hasMug && player.inventory.mainInventory[player.inventory.currentItem] != null,
+                "the second mug was eaten; the hand holds "
+                    + player.inventory.mainInventory[player.inventory.currentItem]);
+
+            // The cocktail carries only what was put in: the water bucket the recipes used to list is gone, so the
+            // tooltip lists two ingredients and not a phantom third one.
+            resetMixer(mixer);
+            clickMixer(overworld, player, x, y, z, new ItemStack(Items.sugar));
+            clickMixer(overworld, player, x, y, z, new ItemStack(TCItemRegistry.lime));
+            mixAndCheck(mixer, player, overworld, x, y, z, "sugar then lime mixes a Limeade", Drink.limeade);
+            assertTrue(
+                "the mixed cocktail carries exactly the two ingredients that went in",
+                mixer.result != null && ItemCocktail.getIngredients(mixer.result).length == 2,
+                "ingredients on the cocktail: " + java.util.Arrays.toString(ItemCocktail.getIngredients(mixer.result)));
+
+            // Collecting it hands it to the player instead of throwing it on the ground.
+            emptyInventory(player);
+            clickMixer(overworld, player, x, y, z, (ItemStack) null);
+            assertTrue(
+                "the finished drink goes into the player's inventory",
+                playerHas(player, TCItemRegistry.cocktail),
+                "nothing was collected; the mixer holds " + mixer.result);
+            assertTrue(
+                "the finished drink is not dropped on the ground",
+                droppedItems(overworld, x, y, z, TCItemRegistry.cocktail) == 0,
+                droppedItems(overworld, x, y, z, TCItemRegistry.cocktail) + " cocktails were thrown on the floor");
         } catch (final Throwable t) {
             t.printStackTrace();
             fail("the drink mixer mixes its documented recipes", t.toString());
@@ -1376,7 +1429,98 @@ public final class ServerGameTests {
         mixer.getIngredients()[1] = null;
         mixer.result = null;
         mixer.mixing = false;
+        mixer.hasMug = false;
         mixer.ticks = 0;
+    }
+
+    private static boolean playerHas(final FakePlayer player, final Item item) {
+        for (final ItemStack held : player.inventory.mainInventory) {
+            if (held != null && held.getItem() == item) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static void emptyInventory(final FakePlayer player) {
+        for (int slot = 0; slot < player.inventory.mainInventory.length; ++slot) {
+            player.inventory.mainInventory[slot] = null;
+        }
+    }
+
+    /** How many of {@code item} are lying on the ground within a block and a half of the mixer. */
+    private static int droppedItems(final WorldServer world, final int x, final int y, final int z, final Item item) {
+        int found = 0;
+        for (final Object entity : world.loadedEntityList) {
+            if (!(entity instanceof EntityItem)) {
+                continue;
+            }
+            final EntityItem drop = (EntityItem) entity;
+            if (drop.getEntityItem() != null && drop.getEntityItem()
+                .getItem() == item && drop.getDistanceSq((double) x + 0.5, (double) y + 0.5, (double) z + 0.5) < 9.0) {
+                ++found;
+            }
+        }
+        return found;
+    }
+
+    // ---------------------------------------------------------------------------------------------------------
+    // Cocktail tooltips (the drink mixer's recipes listed a third ingredient the two-slot mixer could not hold,
+    // and the tropics water bucket had no lang entry under the name it reports, so a Limeade's tooltip read
+    // "Sugar / Lime / item.bucketTropicsWater.name / Limeade")
+    // ---------------------------------------------------------------------------------------------------------
+
+    private static void drinkIngredientsAreTranslated() {
+        final InputStream stream = ServerGameTests.class.getResourceAsStream("/assets/tropicraft/lang/en_US.lang");
+        if (stream == null) {
+            fail("every Tropicraft drink ingredient is named in en_US.lang", "the lang file is not on the classpath");
+            return;
+        }
+        final Set<String> keys = new HashSet<String>();
+        try {
+            final BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
+            try {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    line = line.trim();
+                    if (line.isEmpty() || line.startsWith("#")) {
+                        continue;
+                    }
+                    final int equals = line.indexOf('=');
+                    if (equals > 0) {
+                        keys.add(line.substring(0, equals));
+                    }
+                }
+            } finally {
+                reader.close();
+            }
+        } catch (final Throwable t) {
+            fail("every Tropicraft drink ingredient is named in en_US.lang", t.toString());
+            return;
+        }
+
+        final List<String> missing = new ArrayList<String>();
+        for (final Ingredient ingredient : Ingredient.ingredientsList) {
+            if (ingredient == null) {
+                continue;
+            }
+            final Item item = ingredient.getIngredientItem();
+            final Object registryName = Item.itemRegistry.getNameForObject(item);
+            if (registryName == null || !registryName.toString()
+                .startsWith("tropicraft:")) {
+                // Vanilla ingredients are named by vanilla's own lang file.
+                continue;
+            }
+            final String key = ingredient.getIngredient()
+                .getUnlocalizedName() + ".name";
+            if (!keys.contains(key)) {
+                missing.add(registryName + " reports " + key);
+            }
+        }
+        assertTrue(
+            "every Tropicraft drink ingredient is named in en_US.lang",
+            missing.isEmpty(),
+            "no translation for: " + missing);
     }
 
     private static void clickMixer(final WorldServer world, final FakePlayer player, final int x, final int y,

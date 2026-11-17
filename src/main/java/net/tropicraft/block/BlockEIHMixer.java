@@ -13,7 +13,6 @@ import net.minecraft.world.World;
 import net.tropicraft.block.tileentity.TileEntityEIHMixer;
 import net.tropicraft.info.TCRenderIDs;
 import net.tropicraft.registry.TCCreativeTabRegistry;
-import net.tropicraft.registry.TCItemRegistry;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -50,7 +49,9 @@ public class BlockEIHMixer extends BlockTropicraft implements ITileEntityProvide
         final ItemStack stack = entityPlayer.getCurrentEquippedItem();
         final TileEntityEIHMixer mixer = (TileEntityEIHMixer) world.getTileEntity(x, y, z);
         if (mixer.isDoneMixing()) {
-            mixer.retrieveResult();
+            // Straight into the player's inventory (or on the ground if it does not fit) - the mixer used to throw
+            // the drink it had just made at the player's feet.
+            mixer.retrieveResult(entityPlayer);
             return true;
         }
         if (stack == null) {
@@ -60,10 +61,6 @@ public class BlockEIHMixer extends BlockTropicraft implements ITileEntityProvide
         final ItemStack ingredientStack = stack.copy();
         ingredientStack.stackSize = 1;
         if (mixer.addToMixer(ingredientStack)) {
-            entityPlayer.inventory.decrStackSize(entityPlayer.inventory.currentItem, 1);
-        }
-        if (stack.getItem() == TCItemRegistry.bambooMug && mixer.canMix()) {
-            mixer.startMixing();
             entityPlayer.inventory.decrStackSize(entityPlayer.inventory.currentItem, 1);
         }
         return true;
