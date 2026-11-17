@@ -105,6 +105,7 @@ What the current checks cover - all of it needs the real game:
 | deferred decoration flushes when its neighbourhood loads | the deferred-decoration gate and the throttled sweep |
 | the shutdown flush decorates parked chunks | the shutdown decoration flush, through `ChunkProviderServer.loadChunk` |
 | the Tropicraft dimension generates | worldgen smoke test |
+| the drink mixer mixes its documented recipes (either ingredient order, a pair of two additives, two primaries and a duplicate refused, a mug is not an ingredient) | the ingredient gate that made "Sugar + Lime" - and every other additive-first click - do nothing (#53) |
 
 To add a check, add a method to `ServerGameTests` and call it from `runAll()`; use the `assertTrue(name, condition,
 detail)` helper so the log, the exit code and the report agree. Anything that only needs to be *computed* belongs in

@@ -199,30 +199,58 @@ public class TileEntityEIHMixer extends TileEntity {
         this.sync();
     }
 
+    /**
+     * Puts an ingredient into the first free slot.
+     * <p>
+     * The order the player clicks in must not matter, because the recipe table matches a recipe in either order
+     * ({@link TCDrinkMixerRegistry#getResult(ItemStack[])}) and the ingredients are sorted by id before the drink is
+     * built anyway. The mixer used to insist on a primary ingredient first and an additive second, which silently
+     * refused perfectly valid input: an additive-first pair such as "Sugar + Lime" - the order the recipes are written
+     * in and the order the drink mixer's own tutorial gives - did nothing at all, and a recipe whose two ingredients
+     * are both additives (Pineapple Cubes + Coconut Chunk) could not even be started.
+     * </p>
+     * <p>
+     * What a drink really cannot have is two primary ingredients, so that, rather than the slot the ingredient lands
+     * in, is the rule enforced here.
+     * </p>
+     */
     public boolean addToMixer(final ItemStack ingredient) {
-        if (this.ingredients[0] == null) {
-            if (ingredient.getItem() != TCItemRegistry.cocktail) {
-                final Ingredient i = findMatchingIngredient(ingredient);
-                if (i == null || !i.isPrimary()) {
-                    return false;
-                }
-            }
-            this.ingredients[0] = ingredient;
-            this.sync();
-            return true;
+        if (ingredient == null || ingredient.getItem() == null) {
+            return false;
         }
-        if (this.ingredients[1] != null) {
+        final int slot = (this.ingredients[0] == null) ? 0 : ((this.ingredients[1] == null) ? 1 : -1);
+        if (slot < 0) {
             return false;
         }
         if (ingredient.getItem() == TCItemRegistry.cocktail) {
+            // A cocktail already carries the primary ingredient of the drink it came from, so it can start a mix but
+            // never extend one.
+            if (slot != 0) {
+                return false;
+            }
+            this.ingredients[slot] = ingredient;
+            this.sync();
+            return true;
+        }
+        final Ingredient added = findMatchingIngredient(ingredient);
+        if (added == null) {
+            // Not a drink ingredient at all (the bamboo mug, tools, dirt...).
             return false;
         }
-        final List<Ingredient> ingredients0 = listIngredients(this.ingredients[0]);
-        final Ingredient j = findMatchingIngredient(ingredient);
-        if (j == null || j.isPrimary() || ingredients0.contains(j)) {
-            return false;
+        for (final ItemStack existing : this.ingredients) {
+            if (existing == null) {
+                continue;
+            }
+            for (final Ingredient present : listIngredients(existing)) {
+                if (present == null) {
+                    continue;
+                }
+                if (present == added || (present.isPrimary() && added.isPrimary())) {
+                    return false;
+                }
+            }
         }
-        this.ingredients[1] = ingredient;
+        this.ingredients[slot] = ingredient;
         this.sync();
         return true;
     }

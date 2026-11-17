@@ -20,6 +20,11 @@ public final class MixerRecipes {
         registerMixerRecipe(Drink.orangeade, Ingredient.orange, Ingredient.sugar, Ingredient.waterBucket);
         registerMixerRecipe(Drink.lemonade, Ingredient.lemon, Ingredient.sugar, Ingredient.waterBucket);
         registerMixerRecipe(Drink.blackCoffee, Ingredient.roastedCoffeeBean, Ingredient.waterBucket);
+        // Pineapple Cubes + Coconut Chunk is the pair the drink mixer's own recipe list gives for a Piña Colada, and
+        // the form the two ingredients actually have in the inventory; it is registered first so that
+        // drinkToIngredientsMap - which the crafting table recipe and the encyclopedia read - keeps pointing at the
+        // pair it pointed at before.
+        registerMixerRecipe(Drink.pinaColada, Ingredient.pineappleChunks, Ingredient.coconutChunk);
         registerMixerRecipe(Drink.pinaColada, Ingredient.pineapple, Ingredient.coconutChunk);
         registerMixerRecipe(Drink.pinaColada, Ingredient.pineappleChunks, Ingredient.coconut);
     }
