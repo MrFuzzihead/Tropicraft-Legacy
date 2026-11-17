@@ -107,6 +107,13 @@ What the current checks cover - all of it needs the real game:
 | the Tropicraft dimension generates | worldgen smoke test |
 | the drink mixer mixes its documented recipes (either ingredient order, the mug first or last, a pair of two additives, two primaries and a duplicate refused, the drink collected into the inventory) | the ingredient gate that made "Sugar + Lime" - and every other additive-first click - do nothing (#53) |
 | every Tropicraft drink ingredient has a `en_US.lang` entry under the name it reports | the Limeade tooltip reading `Sugar / Lime / item.bucketTropicsWater.name` |
+| overworld tropical flowers cover ~1% of a warm grass chunk, and no chunk becomes a meadow | the 6.2.5 terrain snap waking up ten flower features per chunk, ~10% of a chunk's surface (#52) |
+| overworld tropical flowers respect the biome gate (taiga/ice plains/plains/forest/mesa get none, savanna does, and the gate is switchable) | tropical flowers appearing in every grassy overworld biome |
+| the overworld flower rate follows `flowersPerChunkInOverworld` | the density knob doing nothing |
+| overworld Eastern Island Heads follow `eihChanceInOverworld`, including 0 to switch them off | one head every 160 blocks, in every biome |
+
+The flower checks run on a flat grass platform with fixed per-chunk seeds rather than on real generated chunks: the
+same code measured 0.2, 17 and 24 flowers per chunk depending on which region the run's random world seed produced.
 
 To add a check, add a method to `ServerGameTests` and call it from `runAll()`; use the `assertTrue(name, condition,
 detail)` helper so the log, the exit code and the report agree. Anything that only needs to be *computed* belongs in

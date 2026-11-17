@@ -9,6 +9,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraftforge.common.BiomeDictionary;
 import net.tropicraft.config.ConfigGenRates;
 import net.tropicraft.registry.TCBlockRegistry;
 import net.tropicraft.world.biomes.BiomeGenTropicraft;
@@ -42,16 +43,7 @@ public class TCWorldGenerator implements IWorldGenerator {
                     final int k = chunkX + random.nextInt(16) + 8;
                     final int i1 = chunkZ + random.nextInt(16) + 8;
                     if (ConfigGenRates.genTropicraftFlowersInOverworld) {
-                        // Snap to the terrain like the tropics decorate does; a random Y in 64..125 only lands on
-                        // the surface of the column by luck, which is why these features were effectively invisible.
-                        final int l = TCGenBase.terrainHeightAt(world, k, i1);
-                        for (int j3 = 0; j3 < 10; ++j3) {
-                            new WorldGenTropicraftFlowers(
-                                world,
-                                random,
-                                TCBlockRegistry.flowers,
-                                BiomeGenTropicraft.DEFAULT_FLOWER_META).generate(world, random, k, l, i1);
-                        }
+                        generateOverworldFlowers(world, random, cx, cz, k, i1);
                     }
                     if (ConfigGenRates.genTropicraftEIHInOverworld && ConfigGenRates.eihChanceInOverworld > 0
                         && random.nextInt(ConfigGenRates.eihChanceInOverworld) == 0) {
@@ -87,6 +79,53 @@ public class TCWorldGenerator implements IWorldGenerator {
                 }
             }
         }
+    }
+
+    /**
+     * Sprinkles tropical flowers over one overworld chunk.
+     * <p>
+     * The height is snapped to the terrain, like the Tropics do, because the original random Y in [64,126) only landed
+     * on the surface of a column by luck - on flat ground one try in sixty-two - which is why the overworld version of
+     * this feature was effectively invisible until 6.2.5 and nobody noticed how dense it was.
+     * </p>
+     * <p>
+     * It turned out to be dense: ten features per chunk is roughly ten percent of a grass chunk's surface, ten times
+     * what the Tropics do per chunk. The count is now {@link ConfigGenRates#flowersPerChunkInOverworld} (default 1,
+     * about one percent) and the biome gate keeps tropical flowers out of cold and dry biomes.
+     * </p>
+     */
+    private static void generateOverworldFlowers(final World world, final Random random, final int chunkX,
+        final int chunkZ, final int x, final int z) {
+        if (ConfigGenRates.genOverworldFlowersInWarmBiomesOnly) {
+            // The biome is read at the chunk centre, not at the flower anchor: the anchor can sit up to 7 blocks
+            // outside the chunk being decorated, and asking for its biome would drag a neighbouring chunk into
+            // existence (the cascading worldgen from issue #36).
+            if (!isWarmBiome(world.getBiomeGenForCoords(chunkX * 16 + 8, chunkZ * 16 + 8))) {
+                return;
+            }
+        }
+        final int y = TCGenBase.terrainHeightAt(world, x, z);
+        if (y <= 0) {
+            return;
+        }
+        for (int i = 0; i < ConfigGenRates.flowersPerChunkInOverworld; ++i) {
+            new WorldGenTropicraftFlowers(
+                world,
+                random,
+                TCBlockRegistry.flowers,
+                BiomeGenTropicraft.DEFAULT_FLOWER_META).generate(world, random, x, y, z);
+        }
+    }
+
+    /**
+     * Whether {@code biome} is warm enough for tropical flora: hot, wet or jungle per Forge's biome dictionary. For
+     * vanilla that is jungle, jungle edge, savanna and swamp; modded biomes opt in by registering as HOT, WET or
+     * JUNGLE, and biomes nobody registered are classified from their temperature and rainfall first.
+     */
+    public static boolean isWarmBiome(final BiomeGenBase biome) {
+        return BiomeDictionary.isBiomeOfType(biome, BiomeDictionary.Type.HOT)
+            || BiomeDictionary.isBiomeOfType(biome, BiomeDictionary.Type.WET)
+            || BiomeDictionary.isBiomeOfType(biome, BiomeDictionary.Type.JUNGLE);
     }
 
     /**

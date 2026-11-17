@@ -34,6 +34,17 @@ public class ConfigGenRates implements IConfigCategory {
         "on average. Higher numbers are rarer, 0 disables them." })
     public static int eihChanceInTropics;
     public static boolean genTropicraftFlowersInOverworld;
+    @ConfigComment({
+        "How many tropical flower features to try per overworld chunk. One feature places at most 35 flowers inside a",
+        "15x15 patch: 1 is about 1% of a grass chunk's surface and 3 about 2%. The ten per chunk the mod shipped before",
+        "6.2.5 was ten times that, which is why the overworld looked like a meadow once the feature started working.",
+        "0 disables the flowers without touching genTropicraftFlowersInOverworld." })
+    public static int flowersPerChunkInOverworld;
+    @ConfigComment({
+        "Restrict overworld tropical flowers to warm biomes - hot, wet or jungle per Forge's biome dictionary, i.e.",
+        "jungle, jungle edge, savanna and swamp, plus any modded biome registered as tropical.",
+        "Set to false for the old behaviour, where every grassy overworld biome was fair game." })
+    public static boolean genOverworldFlowersInWarmBiomesOnly;
     @ConfigComment({ "Whether volcanoes generate in the Tropics.",
         "Turning this off only affects chunks generated afterwards; existing volcanoes stay in the world." })
     public static boolean genVolcanoes;
@@ -58,10 +69,12 @@ public class ConfigGenRates implements IConfigCategory {
         ConfigGenRates.palmChanceOfGenInOverworld = -1;
         ConfigGenRates.palmPopulationFactorInOverworld = 3;
         ConfigGenRates.genTropicraftEIHInOverworld = true;
-        ConfigGenRates.eihChanceInOverworld = 100;
+        ConfigGenRates.eihChanceInOverworld = 500;
         ConfigGenRates.genOverworldEIHInWarmBiomesOnly = false;
         ConfigGenRates.eihChanceInTropics = EIH_CHANCE;
         ConfigGenRates.genTropicraftFlowersInOverworld = true;
+        ConfigGenRates.flowersPerChunkInOverworld = 1;
+        ConfigGenRates.genOverworldFlowersInWarmBiomesOnly = true;
         ConfigGenRates.genVolcanoes = true;
         ConfigGenRates.genTropicraftInOverworld = true;
         ConfigGenRates.genPineapplesInOverworld = true;
