@@ -77,7 +77,8 @@ public class TileEntityEIHMixerRenderer extends TileEntitySpecialRenderer {
                 GL11.glPopMatrix();
             }
         }
-        if (te.isMixing()) {
+        // The mug is in the mixer from the moment it is put in, not just while the mix runs.
+        if (te.hasMug || te.isMixing()) {
             GL11.glPushMatrix();
             GL11.glTranslatef(-0.2f, -0.25f, 0.0f);
             if (te.isDoneMixing()) {
