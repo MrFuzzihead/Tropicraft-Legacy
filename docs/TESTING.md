@@ -37,6 +37,28 @@ Coverage floors live in `addon.gradle.kts`:
 Excluded from coverage because they cannot be measured meaningfully headless: `Tags` (generated),
 `net.tropicraft.client.**`, `net.tropicraft.mixins.**` and `net.tropicraft.gametest.**`.
 
+## Structural guard: methods that call themselves
+
+`SelfRecursionGuardTest` fails the build when a method passes its own parameters straight back into the same overload.
+That is always infinite recursion (identical arguments cannot select a different overload), it compiles, it legally
+overrides a supertype method, and it only fails at runtime - which is exactly what shipped in 6.2.6 and crashed in
+issue #54, where `RenderEIH#doRender(Entity, ...)` called `this.doRender(entity, ...)`.
+
+* Scanner: `net.tropicraft.lint.SelfRecursionLint`, in test sources only. No parser dependency - comments and
+  string/char literals are blanked out (offsets preserved, so line numbers are exact), then declarations are found by
+  identifier + paren + body brace. Runs offline on the Java 8 test toolchain.
+* Coverage: `src/main/java` and `src/gameTest/java`. Test sources are skipped on purpose, since the fixtures in
+  `SelfRecursionLintTest` contain the bad shapes deliberately.
+* Deliberately not reported, so it can gate the build: intentional recursion (`f(i + 1, height)`, `walk(node.getParent())`),
+  delegation to a differently named helper (`this.renderEIH(...)`) or to `super`, and explicit upcasts
+  (`this.foo((EntityLiving) entity)`), because those all change the argument text.
+* Reviewing a hit: the fix is to delegate to `super` or to a named helper, as in `RenderEIH#renderEIH` or
+  `RenderWaterMobBase#renderWaterMob`. If a pass-through recursion is ever genuinely needed, add
+  `path/to/File.java#methodName` to `SelfRecursionGuardTest.ALLOWED` with a comment saying why.
+* `SelfRecursionLintTest` is the guard's own fixture suite: it feeds the pre-fix `RenderEIH` body in, asserts one
+  finding, and asserts silence for each accepted shape. A scanner that silently stopped matching would still pass the
+  source check, so those fixtures are what keep the guard honest.
+
 ## In-game tests
 
 `src/gameTest/java` is a separate, never-shipped `@Mod` (`tropicraftgametest`). It boots a dedicated server, runs its
@@ -122,7 +144,8 @@ jacoco coverage (executed source lines)
 
 Note: nothing in this harness renders anything. Renderer changes (`RenderWaterMobBase`) and model/animation changes
 (`ModelKoaMan`, `ModelTropiCreeper`, `ModelAshen`) are verified by hand in a client; the checklist for the last such
-change is in CODE-REVIEW.md §20.4.
+change is in CODE-REVIEW.md §20.4. The one renderer failure that is catchable without a client - a method delegating to
+itself instead of to `super`, which is issue #54 - is covered by `SelfRecursionGuardTest` above.
 ```
 
 The in-game run is most of the coverage because a dedicated server loads and touches a large part of the mod while
