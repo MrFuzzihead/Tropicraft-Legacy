@@ -18,14 +18,20 @@ public class RenderEIH extends RenderLiving {
         super((ModelBase) modeleih, f);
     }
 
+    public void renderEIH(final EntityEIH entityeih, final double d, final double d1, final double d2, final float f,
+        final float f1) {
+        super.doRender(entityeih, d, d1, d2, f, f1);
+    }
+
     public void doRender(final EntityLiving entityliving, final double d, final double d1, final double d2,
         final float f, final float f1) {
-        super.doRender(entityliving, d, d1, d2, f, f1);
+        this.renderEIH((EntityEIH) entityliving, d, d1, d2, f, f1);
     }
 
     public void doRender(final Entity entity, final double d, final double d1, final double d2, final float f,
         final float f1) {
-        this.doRender(entity, d, d1, d2, f, f1);
+        // Must not delegate to this.doRender(Entity, ...): that overload calls itself and overflows the stack.
+        this.renderEIH((EntityEIH) entity, d, d1, d2, f, f1);
     }
 
     protected void preRenderScale(final EntityEIH entityeih, final float f) {
